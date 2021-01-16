@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(test_ws)
+project(FetchVRbackend)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -131,18 +131,10 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(arm_out_node src/arm_out.cpp)
-# add_executable(arm_up_node src/arm_up.cpp)
-# add_executable(arm_command_node src/arm_command.cpp)
-# add_executable(torso_up_node  src/torso_up.cpp)
-# add_executable(gripper_command_node  src/gripperCommand.cpp)
-# add_executable(gripper_goal_node  src/arm_follow_goal.cpp)
  add_executable(waypoint_node  src/waypoint_follower.cpp)
-# add_executable(ghost_robot_node  src/fake_tf.cpp)
  add_executable(gripper_node  src/gripper.cpp)
  add_executable(direct_control_node  src/direct_control.cpp)
  add_executable(nav_node  src/nav.cpp)
-# add_executable(test_pub  src/testPub.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -155,30 +147,9 @@ include_directories(
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(arm_out_node
-#   ${catkin_LIBRARIES}
-# )
-# target_link_libraries(arm_up_node
-#   ${catkin_LIBRARIES}
-# )
-# target_link_libraries(arm_command_node
-#   ${catkin_LIBRARIES}
-# )
-# target_link_libraries(torso_up_node
-#   ${catkin_LIBRARIES}
-# )
-# target_link_libraries(gripper_command_node
-#   ${catkin_LIBRARIES}
-# )
-# target_link_libraries(gripper_goal_node
-#   ${catkin_LIBRARIES}
-# )
  target_link_libraries(waypoint_node
    ${catkin_LIBRARIES}
  )
-# target_link_libraries(ghost_robot_node
-#   ${catkin_LIBRARIES}
-# )
  target_link_libraries(gripper_node
    ${catkin_LIBRARIES}
  )
@@ -188,9 +159,6 @@ include_directories(
  target_link_libraries(nav_node
    ${catkin_LIBRARIES}
  )
-# target_link_libraries(test_pub
-#   ${catkin_LIBRARIES}
-# )
 
 #############
 ## Install ##
