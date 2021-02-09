@@ -1,0 +1,9 @@
+<launch>
+
+    <node name="waypoint_node" pkg="FetchVRbackend" type="waypoint_node" />
+    <node name="gripper_node" pkg="FetchVRbackend" type="gripper_node" />
+    <node name="direct_control_node" pkg="FetchVRbackend" type="direct_control_node" />
+    <node name="nav_node" pkg="FetchVRbackend" type="nav_node" />
+    <node name="arm_command_node" pkg="FetchVRbackend" type="arm_command_node" />
+
+</launch>
