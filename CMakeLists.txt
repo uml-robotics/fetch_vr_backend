@@ -135,6 +135,7 @@ include_directories(
  add_executable(gripper_node  src/gripper.cpp)
  add_executable(direct_control_node  src/direct_control.cpp)
  add_executable(nav_node  src/nav.cpp)
+ add_executable(arm_command_node  src/arm_command.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -157,6 +158,9 @@ include_directories(
    ${catkin_LIBRARIES}
  )
  target_link_libraries(nav_node
+   ${catkin_LIBRARIES}
+ )
+ target_link_libraries(arm_command_node
    ${catkin_LIBRARIES}
  )
 

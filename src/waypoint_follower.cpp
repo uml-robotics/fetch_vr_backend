@@ -10,7 +10,7 @@
 #include <ros/callback_queue.h>
 #include <tf/transform_broadcaster.h>
 #include <list>
-#include <std_msgs/UInt8.h>
+#include <std_msgs/Int32.h>
 
 moveit::planning_interface::MoveGroup* move_fetch_ptr;
 tf::TransformListener* listener_;
@@ -23,9 +23,12 @@ std::list<moveit::planning_interface::MoveGroup::Plan> planList;
 
 void jointCommandsCb(const geometry_msgs::PoseArray::ConstPtr& msg)
 {
+    planList.clear();
+    move_fetch_ptr->setStartStateToCurrentState();
+
     std::vector<geometry_msgs::Pose> poses;
-    uint8_t currentIndex = 1;
-    std_msgs::UInt8 indexMessage;
+    int currentIndex = 0;
+    std_msgs::Int32 indexMessage;
     for (geometry_msgs::Pose p : msg->poses){
        tf::Transform waypoint_tf;
        tf::poseMsgToTF(p, waypoint_tf);
@@ -71,8 +74,11 @@ void jointCommandsCb(const geometry_msgs::PoseArray::ConstPtr& msg)
         plan_pub.publish(plan.trajectory_.joint_trajectory);
         currentIndex++;
     }
+    indexMessage.data = -1;
+    waypoint_error_pub.publish(indexMessage);
 }
 
+/*
 void onNewTrajectory(const std_msgs::Bool::ConstPtr& msg){
     if(msg->data){
         ROS_INFO_STREAM("CLEARING LIST!");
@@ -80,6 +86,7 @@ void onNewTrajectory(const std_msgs::Bool::ConstPtr& msg){
         move_fetch_ptr->setStartStateToCurrentState();
     }
 }
+*/
 
 void confirmationCB(const std_msgs::Bool::ConstPtr& msg)
 {
@@ -103,10 +110,10 @@ int main(int argc, char** argv){
 
     ros::Subscriber goal_sub = nh.subscribe("/gripper_goal", 1000, jointCommandsCb);
     ros::Subscriber confirmation_sub = nh.subscribe("/joint_plan_confirmation", 1000, confirmationCB);
-    ros::Subscriber trajectory_signal_sub = nh.subscribe("/joint_plan_signal", 1000, onNewTrajectory);
+    //ros::Subscriber trajectory_signal_sub = nh.subscribe("/joint_plan_signal", 1000, onNewTrajectory);
     plan_pub = nh.advertise<trajectory_msgs::JointTrajectory>("/joint_plan", 1000);
     is_done_pub = nh.advertise<std_msgs::Bool>("/is_joint_plan_sent", 1000);
-    waypoint_error_pub = nh.advertise<std_msgs::UInt8>("/out_of_range_waypoints", 1000);
+    waypoint_error_pub = nh.advertise<std_msgs::Int32>("/out_of_range_waypoints", 1000);
 
     moveit::planning_interface::MoveGroup move_fetch("arm_with_torso");
     move_fetch_ptr = &move_fetch;
