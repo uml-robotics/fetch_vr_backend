@@ -3,16 +3,16 @@
 #include <control_msgs/FollowJointTrajectoryAction.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <std_msgs/Bool.h>
-#include <moveit/move_group_interface/move_group.h>
+#include <moveit/move_group_interface/move_group_interface.h>
 #include "geometry_msgs/PoseArray.h"
 #include <array>
 #include <tf/transform_listener.h>
 #include <ros/callback_queue.h>
 #include <tf/transform_broadcaster.h>
 
-moveit::planning_interface::MoveGroup* move_fetch_ptr;
+moveit::planning_interface::MoveGroupInterface* move_fetch_ptr;
 tf::TransformListener* listener_;
-moveit::planning_interface::MoveGroup::Plan plan;
+moveit::planning_interface::MoveGroupInterface::Plan plan;
 
 void jointCommandsCb(const geometry_msgs::PoseArray::ConstPtr& msg)
 {
@@ -57,7 +57,7 @@ int main(int argc, char** argv){
 
     ros::Subscriber goal_sub = nh.subscribe("/gripper_goal_execute", 3, jointCommandsCb);
 
-    moveit::planning_interface::MoveGroup move_fetch("arm_with_torso");
+    moveit::planning_interface::MoveGroupInterface move_fetch("arm_with_torso");
     move_fetch_ptr = &move_fetch;
     move_fetch_ptr->setGoalTolerance(0.01);
     tf::TransformListener listener;

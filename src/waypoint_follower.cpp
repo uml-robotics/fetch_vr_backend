@@ -3,7 +3,7 @@
 #include <control_msgs/FollowJointTrajectoryAction.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <std_msgs/Bool.h>
-#include <moveit/move_group_interface/move_group.h>
+#include <moveit/move_group_interface/move_group_interface.h>
 #include "geometry_msgs/PoseArray.h"
 #include <array>
 #include <tf/transform_listener.h>
@@ -12,14 +12,14 @@
 #include <list>
 #include <std_msgs/Int32.h>
 
-moveit::planning_interface::MoveGroup* move_fetch_ptr;
+moveit::planning_interface::MoveGroupInterface* move_fetch_ptr;
 tf::TransformListener* listener_;
 ros::Publisher plan_pub;
 ros::Publisher waypoint_error_pub;
 ros::Publisher is_done_pub;
 
-moveit::planning_interface::MoveGroup::Plan plan;
-std::list<moveit::planning_interface::MoveGroup::Plan> planList;
+moveit::planning_interface::MoveGroupInterface::Plan plan;
+std::list<moveit::planning_interface::MoveGroupInterface::Plan> planList;
 
 void jointCommandsCb(const geometry_msgs::PoseArray::ConstPtr& msg)
 {
@@ -115,7 +115,7 @@ int main(int argc, char** argv){
     is_done_pub = nh.advertise<std_msgs::Bool>("/is_joint_plan_sent", 1000);
     waypoint_error_pub = nh.advertise<std_msgs::Int32>("/out_of_range_waypoints", 1000);
 
-    moveit::planning_interface::MoveGroup move_fetch("arm_with_torso");
+    moveit::planning_interface::MoveGroupInterface move_fetch("arm_with_torso");
     move_fetch_ptr = &move_fetch;
     move_fetch_ptr->setGoalTolerance(0.01);
     move_fetch_ptr->setMaxAccelerationScalingFactor(1.0);

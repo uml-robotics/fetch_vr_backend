@@ -1,12 +1,12 @@
 #include <ros/ros.h>
 #include <actionlib/client/simple_action_client.h>
 #include <control_msgs/FollowJointTrajectoryAction.h>
-#include <moveit/move_group_interface/move_group.h>
+#include <moveit/move_group_interface/move_group_interface.h>
 #include "sensor_msgs/JointState.h"
 #include <array>
 #include <string>
 
-moveit::planning_interface::MoveGroup* move_fetch_ptr;
+moveit::planning_interface::MoveGroupInterface* move_fetch_ptr;
 
 int getIndex(std::vector<std::string> v, std::string K)
 {
@@ -51,7 +51,7 @@ int main(int argc, char** argv){
     ros::AsyncSpinner spinner(1);
     spinner.start();
 
-    moveit::planning_interface::MoveGroup move_fetch("arm_with_torso");
+    moveit::planning_interface::MoveGroupInterface move_fetch("arm_with_torso");
     move_fetch_ptr = &move_fetch;
 
     //ROS_INFO_STREAM("MOVED ARM OUT!");
