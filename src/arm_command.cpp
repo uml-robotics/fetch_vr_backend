@@ -48,7 +48,7 @@ int main(int argc, char** argv){
 
     ros::Subscriber sub = nh.subscribe("/joint_commands", 1000, jointCommandsCb);
 
-    ros::AsyncSpinner spinner(1);
+    ros::AsyncSpinner spinner(4);
     spinner.start();
 
     moveit::planning_interface::MoveGroupInterface move_fetch("arm_with_torso");
@@ -56,7 +56,7 @@ int main(int argc, char** argv){
 
     //ROS_INFO_STREAM("MOVED ARM OUT!");
 
-    ros::spin();
+    ros::waitForShutdown();
 
     return 0;
 }
