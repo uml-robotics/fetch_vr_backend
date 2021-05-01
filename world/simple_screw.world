@@ -1,0 +1,177 @@
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <world name="default">
+
+    <include>
+      <uri>model://ground_plane</uri>
+      <pose>0 0 -0.005 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://fetchit_arena</uri>
+      <name>fetchit_arena1</name>
+      <pose>0 0 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://fetchit_table_em</uri>
+      <name>fetchit_table_em1</name>
+      <pose>1.28714 -0.565 0.0 0 0 -1.57</pose>
+    </include>
+
+    <include>
+      <uri>model://screw_bin</uri>
+      <name>screw_bin</name>
+      <pose>1.273518 -0.580070 0.791994 0 0 -1.570000</pose>
+    </include>
+
+    <include>
+      <uri>model://gearbox_bolt_grey</uri>
+      <name>gearbox_bolt_grey1</name>
+      <pose>1.19481 -0.727808 0.802789 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://gearbox_bolt_grey</uri>
+      <name>gearbox_bolt_grey2</name>
+      <pose>1.11789 -0.669909 0.802789 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://gearbox_bolt_grey</uri>
+      <name>gearbox_bolt_grey3</name>
+      <pose>1.350704 -0.754017 0.802789 0 0 -1.308124</pose>
+    </include>
+
+    <include>
+      <uri>model://gearbox_bolt_grey</uri>
+      <name>gearbox_bolt_grey4</name>
+      <pose>1.243036 -0.450530 0.802789 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://gearbox_bolt_grey</uri>
+      <name>gearbox_bolt_grey5</name>
+      <pose>1.370686 -0.549596 0.812789 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>model://gearbox_bolt_grey</uri>
+      <name>gearbox_bolt_grey6</name>
+      <pose>1.268349 -0.497908 0.812789 -1.705541 -0.194300 -3.129138</pose>
+    </include>
+
+    <include>
+      <uri>model://gearbox_bolt_grey</uri>
+      <name>gearbox_bolt_grey7</name>
+      <pose>1.179747 -0.635944 0.812789 -2.169015 -1.334226 1.451970</pose>
+    </include>
+
+    <include>
+      <uri>model://gearbox_bolt_grey</uri>
+      <name>gearbox_bolt_grey8</name>
+      <pose>1.157317 -0.535487 0.812789 1.729658 0.582543 1.537639</pose>
+    </include>
+
+    <include>
+      <uri>model://gearbox_bolt_grey</uri>
+      <name>gearbox_bolt_grey9</name>
+      <pose>1.299535 -0.376243 0.812789 1.705579 -0.194322 0.840076</pose>
+    </include>
+
+    <include>
+      <uri>model://gearbox_bolt_grey</uri>
+      <name>gearbox_bolt_grey10</name>
+      <pose>1.161153 -0.385996 0.812789 -1.705525 -0.194450 3.048550</pose>
+    </include>
+
+    <include>
+      <uri>model://gearbox_bolt_grey</uri>
+      <name>gearbox_bolt_grey11</name>
+      <pose>1.288459 -0.626789 0.812789 2.170262 -1.334160 -0.036304</pose>
+    </include>
+
+    <include>
+      <uri>model://gearbox_bolt_grey</uri>
+      <name>gearbox_bolt_grey12</name>
+      <pose>1.405303 -0.419482 0.812789 1.729377 -0.582539 -0.796464</pose>
+    </include>  
+
+    <include>
+      <uri>model://gearbox_bolt_grey</uri>
+      <name>gearbox_bolt_grey13</name>
+      <pose>1.290790 -0.711409 0.812789 2.169131 -1.334256 -1.463483</pose>
+    </include>  
+
+    <include>
+      <uri>model://gearbox_bolt_grey</uri>
+      <name>gearbox_bolt_grey14</name>
+      <pose>1.405032 -0.680078 0.812789 -2.169053 1.334241 0.204366</pose>
+    </include>  
+
+    <include>
+      <uri>model://gearbox_bolt_grey</uri>
+      <name>gearbox_bolt_grey15</name>
+      <pose>1.246703 -0.623204 0.812789 -2.168823 -1.334070 1.183061</pose>
+    </include>  
+
+    <light name='user_point_light_0' type='point'>
+      <pose frame=''>1.0 1.0 3.5 0 0 0</pose>
+      <diffuse>0.7 0.7 0.7 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>10</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <direction>0 0 -1</direction>
+    </light>
+
+    <light name='user_point_light_1' type='point'>
+      <pose frame=''>-1.0 1.0 3.5 0 0 0</pose>
+      <diffuse>0.7 0.7 0.7 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>10</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <direction>0 0 -1</direction>
+    </light>
+
+    <light name='user_point_light_2' type='point'>
+      <pose frame=''>-1.0 -1.0 3.5 0 0 0</pose>
+      <diffuse>0.7 0.7 0.7 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>10</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <direction>0 0 -1</direction>
+    </light>
+
+
+    <light name='user_point_light_3' type='point'>
+      <pose frame=''>1.0 -1.0 3.5 0 0 0</pose>
+      <diffuse>0.7 0.7 0.7 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>10</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <direction>0 0 -1</direction>
+    </light>
+
+
+  </world>
+</sdf>

@@ -1,0 +1,97 @@
+<?xml version="1.0" ?>
+
+<sdf version="1.5">
+    <world name="cubes">
+        <!-- a global light source -->
+        <include>
+            <uri>model://sun</uri>
+        </include>
+
+        <!-- ground -->
+        <include>
+            <uri>model://ground_plane</uri>
+        </include>
+
+        <!-- 16 cubes -->
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>2 0 0 0 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>2 1 0 0 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>2 2 0 0 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>1 2 0 0 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>0 2 0 0 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>-1 2 0 0 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>-2 2 0 0 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>-2 1 0 0 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>-2 0 0 0 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>-2 -1 0 0 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>-2 -2 0 0 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>-1 -2 0 0 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>0 -2 0 0 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>1 -2 0 0 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>2 -2 0 0 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>2 -1 0 0 0 0</pose>
+        </include>
+
+    </world>
+</sdf>

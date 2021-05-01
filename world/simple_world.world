@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+
+<sdf version="1.5">
+    <world name="cube">
+        <!-- a global light source -->
+        <include>
+            <uri>model://sun</uri>
+        </include>
+
+        <!-- ground -->
+        <include>
+            <uri>model://ground_plane</uri>
+        </include>
+
+        <!-- cubes -->
+        <include>
+            <uri>model://cube_20k</uri>
+            <pose>1.5 0 0 0 0 0</pose>
+        </include>
+    </world>
+</sdf>
