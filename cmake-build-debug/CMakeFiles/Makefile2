@@ -75,6 +75,7 @@ CMAKE_BINARY_DIR = /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug
 all: CMakeFiles/nav_node.dir/all
 all: CMakeFiles/direct_control_node.dir/all
 all: CMakeFiles/arm_command_node.dir/all
+all: CMakeFiles/pointcloud_update_node.dir/all
 all: CMakeFiles/waypoint_node.dir/all
 all: CMakeFiles/gripper_node.dir/all
 all: gtest/all
@@ -176,6 +177,7 @@ clean: CMakeFiles/visualization_msgs_generate_messages_lisp.dir/clean
 clean: CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/clean
 clean: CMakeFiles/tf2_msgs_generate_messages_cpp.dir/clean
 clean: CMakeFiles/tf2_msgs_generate_messages_eus.dir/clean
+clean: CMakeFiles/pointcloud_update_node.dir/clean
 clean: CMakeFiles/tf2_msgs_generate_messages_lisp.dir/clean
 clean: CMakeFiles/tf2_msgs_generate_messages_nodejs.dir/clean
 clean: CMakeFiles/tf_generate_messages_eus.dir/clean
@@ -2650,6 +2652,33 @@ CMakeFiles/tf2_msgs_generate_messages_eus.dir/clean:
 .PHONY : CMakeFiles/tf2_msgs_generate_messages_eus.dir/clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/pointcloud_update_node.dir
+
+# All Build rule for target.
+CMakeFiles/pointcloud_update_node.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pointcloud_update_node.dir/build.make CMakeFiles/pointcloud_update_node.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pointcloud_update_node.dir/build.make CMakeFiles/pointcloud_update_node.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles --progress-num=20,21 "Built target pointcloud_update_node"
+.PHONY : CMakeFiles/pointcloud_update_node.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/pointcloud_update_node.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/pointcloud_update_node.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles 0
+.PHONY : CMakeFiles/pointcloud_update_node.dir/rule
+
+# Convenience name for target.
+pointcloud_update_node: CMakeFiles/pointcloud_update_node.dir/rule
+
+.PHONY : pointcloud_update_node
+
+# clean rule for target.
+CMakeFiles/pointcloud_update_node.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pointcloud_update_node.dir/build.make CMakeFiles/pointcloud_update_node.dir/clean
+.PHONY : CMakeFiles/pointcloud_update_node.dir/clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/tf2_msgs_generate_messages_lisp.dir
 
 # All Build rule for target.
@@ -2818,7 +2847,7 @@ CMakeFiles/actionlib_msgs_generate_messages_nodejs.dir/clean:
 CMakeFiles/waypoint_node.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/waypoint_node.dir/build.make CMakeFiles/waypoint_node.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/waypoint_node.dir/build.make CMakeFiles/waypoint_node.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles --progress-num=20,21 "Built target waypoint_node"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles --progress-num=22,23 "Built target waypoint_node"
 .PHONY : CMakeFiles/waypoint_node.dir/all
 
 # Build rule for subdir invocation for target.

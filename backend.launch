@@ -28,10 +28,35 @@
         <arg name="yaw" value="$(arg yaw)" />
     </include>
 
-    <node name="waypoint_node" pkg="FetchVRbackend" type="waypoint_node" />
-    <node name="gripper_node" pkg="FetchVRbackend" type="gripper_node" />
-    <node name="direct_control_node" pkg="FetchVRbackend" type="direct_control_node" />
-    <node name="nav_node" pkg="FetchVRbackend" type="nav_node" />
-    <node name="arm_command_node" pkg="FetchVRbackend" type="arm_command_node" />
+    <!-- Launch SLAM -->
+    <node pkg="gmapping" type="slam_gmapping" name="gmapping_thing" output="screen" >
+        <remap from="scan" to="/base_scan" />
+        <param name="odom_frame" value="/odom" />
+        <param name="base_frame" value="/base_link" />
+        <param name="angularUpdate" value="1.5"/>
+    </node>
+
+    <!--  Octomapping  -->
+
+    <node pkg="octomap_server" type="octomap_server_node" name="octomap_server">
+        <param name="resolution" value="0.05" />
+
+        <!-- fixed map frame (set to 'map' if SLAM or localization running!) -->
+        <param name="frame_id" type="string" value="map" />
+
+        <!-- maximum range to integrate (speedup!) -->
+        <param name="sensor_model/max_range" value="5.0" />
+
+        <!-- data source to integrate (PointCloud2) -->
+        <remap from="cloud_in" to="head_camera/depth_registered/points" />
+
+    </node>
+
+
+<!--    <node name="waypoint_node" pkg="FetchVRbackend" type="waypoint_node" />-->
+<!--    <node name="gripper_node" pkg="FetchVRbackend" type="gripper_node" />-->
+<!--    <node name="direct_control_node" pkg="FetchVRbackend" type="direct_control_node" />-->
+<!--    <node name="nav_node" pkg="FetchVRbackend" type="nav_node" />-->
+<!--    <node name="arm_command_node" pkg="FetchVRbackend" type="arm_command_node" />-->
 
 </launch>

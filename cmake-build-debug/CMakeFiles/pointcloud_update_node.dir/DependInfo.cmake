@@ -4,12 +4,15 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/jacob/catkin_ws/src/FetchVRbackend/src/arm_command.cpp" "/home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles/arm_command_node.dir/src/arm_command.cpp.o"
+  "/home/jacob/catkin_ws/src/FetchVRbackend/src/pointcloud_updater.cpp" "/home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Preprocessor definitions for this target.
 set(CMAKE_TARGET_DEFINITIONS_CXX
+  "QT_CORE_LIB"
+  "QT_GUI_LIB"
+  "QT_WIDGETS_LIB"
   "ROSCONSOLE_BACKEND_LOG4CXX"
   "ROS_BUILD_SHARED_LIBS=1"
   "ROS_PACKAGE_NAME=\"FetchVRbackend\""
@@ -46,6 +49,11 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/usr/include/pcl-1.8"
   "/usr/include/ni"
   "/usr/include/openni2"
+  "/usr/include/x86_64-linux-gnu/qt5"
+  "/usr/include/x86_64-linux-gnu/qt5/QtWidgets"
+  "/usr/include/x86_64-linux-gnu/qt5/QtGui"
+  "/usr/include/x86_64-linux-gnu/qt5/QtCore"
+  "/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++"
   )
 
 # Targets to which this target links.

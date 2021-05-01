@@ -1344,6 +1344,19 @@ tf2_msgs_generate_messages_eus/fast:
 .PHONY : tf2_msgs_generate_messages_eus/fast
 
 #=============================================================================
+# Target rules for targets named pointcloud_update_node
+
+# Build rule for target.
+pointcloud_update_node: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 pointcloud_update_node
+.PHONY : pointcloud_update_node
+
+# fast build rule for target.
+pointcloud_update_node/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pointcloud_update_node.dir/build.make CMakeFiles/pointcloud_update_node.dir/build
+.PHONY : pointcloud_update_node/fast
+
+#=============================================================================
 # Target rules for targets named tf2_msgs_generate_messages_lisp
 
 # Build rule for target.
@@ -1620,6 +1633,33 @@ src/nav.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/nav_node.dir/build.make CMakeFiles/nav_node.dir/src/nav.cpp.s
 .PHONY : src/nav.cpp.s
 
+src/pointcloud_updater.o: src/pointcloud_updater.cpp.o
+
+.PHONY : src/pointcloud_updater.o
+
+# target to build an object file
+src/pointcloud_updater.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pointcloud_update_node.dir/build.make CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.o
+.PHONY : src/pointcloud_updater.cpp.o
+
+src/pointcloud_updater.i: src/pointcloud_updater.cpp.i
+
+.PHONY : src/pointcloud_updater.i
+
+# target to preprocess a source file
+src/pointcloud_updater.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pointcloud_update_node.dir/build.make CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.i
+.PHONY : src/pointcloud_updater.cpp.i
+
+src/pointcloud_updater.s: src/pointcloud_updater.cpp.s
+
+.PHONY : src/pointcloud_updater.s
+
+# target to generate assembly for a file
+src/pointcloud_updater.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pointcloud_update_node.dir/build.make CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.s
+.PHONY : src/pointcloud_updater.cpp.s
+
 src/waypoint_follower.o: src/waypoint_follower.cpp.o
 
 .PHONY : src/waypoint_follower.o
@@ -1761,6 +1801,7 @@ help:
 	@echo "... gtest"
 	@echo "... gtest_main"
 	@echo "... nav_node"
+	@echo "... pointcloud_update_node"
 	@echo "... waypoint_node"
 	@echo "... src/arm_command.o"
 	@echo "... src/arm_command.i"
@@ -1774,6 +1815,9 @@ help:
 	@echo "... src/nav.o"
 	@echo "... src/nav.i"
 	@echo "... src/nav.s"
+	@echo "... src/pointcloud_updater.o"
+	@echo "... src/pointcloud_updater.i"
+	@echo "... src/pointcloud_updater.s"
 	@echo "... src/waypoint_follower.o"
 	@echo "... src/waypoint_follower.i"
 	@echo "... src/waypoint_follower.s"

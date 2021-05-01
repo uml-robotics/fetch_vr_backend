@@ -94,6 +94,7 @@
 /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir
 /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles/tf2_msgs_generate_messages_cpp.dir
 /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles/tf2_msgs_generate_messages_eus.dir
+/home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles/pointcloud_update_node.dir
 /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles/tf2_msgs_generate_messages_lisp.dir
 /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles/tf2_msgs_generate_messages_nodejs.dir
 /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles/tf_generate_messages_eus.dir

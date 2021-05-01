@@ -8,9 +8,10 @@ add_compile_options(-std=c++11)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roscpp actionlib moveit_ros_planning_interface sensor_msgs geometry_msgs tf
+  roscpp actionlib moveit_ros_planning_interface sensor_msgs geometry_msgs tf octomap
 )
-
+#target_link_libraries(${OCTOMAP_LIBRARIES})
+find_package(PCL 1.3)
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -113,10 +114,7 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(
-# include
-  ${catkin_INCLUDE_DIRS}
-)
+include_directories( ${catkin_INCLUDE_DIRS} ${PCL_INCLUDE_DIRS})
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -136,6 +134,7 @@ include_directories(
  add_executable(direct_control_node  src/direct_control.cpp)
  add_executable(nav_node  src/nav.cpp)
  add_executable(arm_command_node  src/arm_command.cpp)
+ add_executable(pointcloud_update_node src/pointcloud_updater.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -163,6 +162,8 @@ include_directories(
  target_link_libraries(arm_command_node
    ${catkin_LIBRARIES}
  )
+
+ target_link_libraries(pointcloud_update_node ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 
 #############
 ## Install ##
