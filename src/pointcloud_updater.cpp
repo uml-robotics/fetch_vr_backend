@@ -19,20 +19,30 @@
 #include <pcl/search/kdtree.h>
 #include <pcl/PointIndices.h>
 #include <math.h>
+#include <Eigen/Dense>
 
 using namespace octomap;
 using namespace pcl;
 using namespace std;
+using namespace Eigen;
 
 // global variables
 OcTree *tree = nullptr;
 
 // helper functions
+Vector3f toEigenVector(vector<float> xyz);
 PointCloud<PointXYZ> extract_voxel_centers(OcTree *octo);
 vector<vector<float> > getSphericalCoordinates(PointCloud<PointXYZ> pcd);
 PointCloud<PointXYZ> extract_pointcloud(PointCloud<PointXYZ> pcd, vector<int> indices);
-float getMahalanobisDistance(vector<float> p_spherical, vector<int> indices, vector<vector<float> > spherical_coords);
+float getMahalanobisDistance(vector<float> p_spherical, vector<int> indices, vector<vector<float> > spherical_coords,
+                             Matrix3f covarianceMatrix);
 vector<float> getSphericalCoordinates(PointXYZ xyz);
+Matrix3f getCovarianceMatrix(vector<vector<float> > octomap_spherical_coords);
+float getStandardMean(vector<vector<float> > points, int dimension);
+float getCircularMean(vector<vector<float> > points, int dimension);
+vector<vector<float> > getMahalanobisDistancesByIndex(PointCloud<PointXYZ> cloud_a, PointCloud<PointXYZ> cloud_b,
+                                                      vector<vector<float> > cloud_b_spherical_coords,
+                                                      Matrix3f covarianceMatrix);
 
 void cloud_cb(sensor_msgs::PointCloud2 pcd) {
     // Store current version of tree in a local variable, interesting question for Yuri as to whether this is needed
@@ -56,7 +66,15 @@ void cloud_cb(sensor_msgs::PointCloud2 pcd) {
     vector<vector<float> > octomap_spherical_coords = getSphericalCoordinates(octomap_cloud);
     vector<vector<float> > reading_spherical_coords = getSphericalCoordinates(*reading_cloud);
 
+    // Calculate the covariance matrix of each distribution
+    Matrix3f cov_octomap = getCovarianceMatrix(octomap_spherical_coords);
+    Matrix3f cov_reading = getCovarianceMatrix(reading_spherical_coords);
+
     // Run Algorithm 1 from the paper on both clouds to get mahalanobis distance info for each point in both clouds
+    vector<vector<float> > disappeared = getMahalanobisDistancesByIndex(octomap_cloud, *reading_cloud,
+                                                                        reading_spherical_coords, cov_reading);
+    vector<vector<float> > appeared = getMahalanobisDistancesByIndex(*reading_cloud, octomap_cloud,
+                                                                     octomap_spherical_coords, cov_octomap);
 
     // Threshold both clouds to obtain points which have a high probability of appearing or disappearing
 
@@ -74,8 +92,64 @@ void cloud_cb(sensor_msgs::PointCloud2 pcd) {
     // Will need a cluster object and a cluster storer object
 }
 
+Matrix3f getCovarianceMatrix(vector<vector<float> > points) {
+    // Loop through data, get mean in each dimension, using the "circular mean" for the angles
+    vector<float> means;
+    float mean_radius = getStandardMean(points, 0);
+    float mean_polar = getCircularMean(points, 1);
+    float mean_azimuth = getCircularMean(points, 2);
+    means.push_back(mean_radius);
+    means.push_back(mean_polar);
+    means.push_back(mean_azimuth);
+
+    // Loop through the matrix, using the proper means and data points to calculate the covariance for each cell
+    Matrix3f covarianceMatrix;
+    float covarianceIJ = 0;
+    for (int i=0; i<3; i++) {
+        for (int j= 0; j<3; j++) {
+            float mean_i = means[i];
+            float mean_j = means[j];
+            for (vector<float> point : points) {
+                covarianceIJ += (point[i] - mean_i) * (point[j] - mean_j);
+            }
+            covarianceIJ /= (float) points.size();
+            covarianceMatrix(i, j) = covarianceIJ;
+            covarianceIJ = 0;
+        }
+    }
+    return covarianceMatrix;
+}
+
+float getStandardMean(vector<vector<float> > points, int dimension) {
+    if (dimension > points[0].size())
+        return 0;
+    float mean = 0;
+    for (vector<float> point : points) {
+        mean += point[dimension];
+    }
+    mean /= points.size();
+    return mean;
+}
+
+// A more appropriate mean function for angles.
+float getCircularMean(vector<vector<float> > points, int dimension) {
+    if (dimension > points[0].size())
+        return 0;
+    float circular_mean = 0, x=0, y=0;
+    for (vector<float> point : points) {
+        y += sin(point[dimension]);
+    }
+    for (vector<float> point : points) {
+        x += cos(point[dimension]);
+    }
+    x /= (float)points.size();
+    y /= (float)points.size();
+    circular_mean = atan2(y, x);
+    return circular_mean;
+}
+
 vector<vector<float> > getMahalanobisDistancesByIndex(PointCloud<PointXYZ> cloud_a, PointCloud<PointXYZ> cloud_b,
-                                      vector<vector<float> > cloud_b_spherical_coords) {
+                                      vector<vector<float> > cloud_b_spherical_coords, Matrix3f covarianceMatrix) {
     // Intialize objects (array to be returned, KD tree for cloud_b)
     vector<vector<float> > distancesByIndex;
     search::KdTree<PointXYZ> pcdTree;
@@ -95,7 +169,8 @@ vector<vector<float> > getMahalanobisDistancesByIndex(PointCloud<PointXYZ> cloud
 
         // Get the spherical coordinates of p, calculate mahalanobis distance
         vector<float> p_spherical = getSphericalCoordinates(p);
-        float mahalanobis_distance = getMahalanobisDistance(p_spherical, found_indices, cloud_b_spherical_coords);
+        float mahalanobis_distance = getMahalanobisDistance(p_spherical, found_indices, cloud_b_spherical_coords,
+                                                            covarianceMatrix);
         vector<float> index_and_distance;
         index_and_distance.push_back((float)i);
         index_and_distance.push_back(mahalanobis_distance);
@@ -112,10 +187,29 @@ PointCloud<PointXYZ> extract_pointcloud(PointCloud<PointXYZ> pcd, vector<int> in
     return extracted_pcd;
 }
 
-float getMahalanobisDistance(vector<float> p_spherical, vector<int> indices, vector<vector<float> > spherical_coords) {
-    // Get covariance matrix somehow, not sure how to do this yet
+float getMahalanobisDistance(vector<float> p, vector<int> indices, vector<vector<float> > points,
+                             Matrix3f covarianceMatrix) {
+    // Following  the calculation steps detailed in the paper
+    Matrix3f covarianceInverse = covarianceMatrix.inverse();
+    Vector3f maxNeighbor (0, 0, 0), p_spher = toEigenVector(p);
+    float maxDist = 0;
+    for (int index : indices) {
+        Vector3f n = toEigenVector(points[index]);
+        Vector3f V = n - p_spher;
+        if (V.transpose() * covarianceInverse * V > maxDist) {
+            maxNeighbor = n;
+        }
+    }
+    Vector3f p_diff = p_spher - maxNeighbor;
+    float r_p = p_spher(0);
+    float d_octo = (float)tree->getResolution() / 2 ;
+    Vector3f p_corr (d_octo/r_p, d_octo/r_p, d_octo);
+    Vector3f p_dist = p_diff * (1 - 1);   // final line to add in tomorrow, magnitude vs norm of vector in spherical coords?
+    return p_dist.transpose() * covarianceInverse * p_dist;
+}
 
-    // Follow the calculation steps detailed in the paper
+Vector3f toEigenVector(vector<float> xyz) {
+    return Vector3f (xyz[0], xyz[1], xyz[2]);
 }
 
 PointCloud<PointXYZ> extract_voxel_centers(OcTree *octo) {
