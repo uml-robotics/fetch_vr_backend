@@ -81,7 +81,7 @@ void cloud_cb(sensor_msgs::PointCloud2 pcd) {
 
     // Run HBDSCAN clustering on both pointclouds to separate them into objects
 
-    // Preform some sort of classification on the objects
+    // Preform some sort of classification on the clusters (random forest, thresholding)?
 
     // Publish object data to the Unity end (gonna have to experiment with this a bunch)
 
@@ -205,7 +205,7 @@ float getMahalanobisDistance(vector<float> p, vector<int> indices, vector<vector
     float r_p = p_spher(0);
     float d_octo = (float)tree->getResolution() / 2 ;
     Vector3f p_corr (d_octo/r_p, d_octo/r_p, d_octo);
-    Vector3f p_dist = p_diff * (1 - 1);   // final line to add in tomorrow, magnitude vs norm of vector in spherical coords?
+    Vector3f p_dist = p_diff * (1 - (p_diff.cwiseAbs() / p_diff(0)).dot(p_corr / p_diff(0)));
     return p_dist.transpose() * covarianceInverse * p_dist;
 }
 
