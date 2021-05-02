@@ -1,5 +1,6 @@
 //
-// Created by jacob on 4/30/21.
+// Code to find additions and disappearances in the stored cloud on the unity end, sends appropriate updates to unity
+// Written by Jacob Epstein, May 2021
 //
 
 #include <ros/ros.h>
@@ -34,10 +35,10 @@ Vector3f toEigenVector(vector<float> xyz);
 PointCloud<PointXYZ> extract_voxel_centers(OcTree *octo);
 vector<vector<float> > getSphericalCoordinates(PointCloud<PointXYZ> pcd);
 PointCloud<PointXYZ> extract_pointcloud(PointCloud<PointXYZ> pcd, vector<int> indices);
-float getMahalanobisDistance(vector<float> p_spherical, vector<int> indices, vector<vector<float> > spherical_coords,
+float getMahalanobisDistance(vector<float> p_spherical, vector<int> indices, vector<vector<float> > points,
                              Matrix3f covarianceMatrix);
 vector<float> getSphericalCoordinates(PointXYZ xyz);
-Matrix3f getCovarianceMatrix(vector<vector<float> > octomap_spherical_coords);
+Matrix3f getCovarianceMatrix(vector<vector<float> > points);
 float getStandardMean(vector<vector<float> > points, int dimension);
 float getCircularMean(vector<vector<float> > points, int dimension);
 vector<vector<float> > getMahalanobisDistancesByIndex(PointCloud<PointXYZ> cloud_a, PointCloud<PointXYZ> cloud_b,
@@ -267,4 +268,6 @@ int main(int argc, char** argv) {
     // Subscribers
     ros::Subscriber pcd_sub = nh.subscribe("/head_camera/depth_registered/points", 1000, cloud_cb);
     ros::Subscriber octomap_sub = nh.subscribe("/octomap_full", 1000, octomap_cb);
+
+    ros::waitForShutdown(); // or ros::spin() maybe?
 }
