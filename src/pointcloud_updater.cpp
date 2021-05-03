@@ -21,6 +21,7 @@
 #include <pcl/PointIndices.h>
 #include <math.h>
 #include <Eigen/Dense>
+#include <ctime>
 
 using namespace octomap;
 using namespace pcl;
@@ -69,13 +70,15 @@ void cloud_cb(sensor_msgs::PointCloud2 pcd) {
 
     // Calculate the covariance matrix of each distribution
     Matrix3f cov_octomap = getCovarianceMatrix(octomap_spherical_coords);
+    Matrix3f octomap_inverse = cov_octomap.inverse();
     Matrix3f cov_reading = getCovarianceMatrix(reading_spherical_coords);
+    Matrix3f reading_inverse = cov_reading.inverse();
 
     // Run Algorithm 1 from the paper on both clouds to get mahalanobis distance info for each point in both clouds
     vector<vector<float> > disappeared = getMahalanobisDistancesByIndex(octomap_cloud, *reading_cloud,
-                                                                        reading_spherical_coords, cov_reading);
+                                                                        reading_spherical_coords, reading_inverse);
     vector<vector<float> > appeared = getMahalanobisDistancesByIndex(*reading_cloud, octomap_cloud,
-                                                                     octomap_spherical_coords, cov_octomap);
+                                                                     octomap_spherical_coords, octomap_inverse);
 
     // Threshold both clouds to obtain points which have a high probability of appearing or disappearing
 
@@ -157,21 +160,39 @@ vector<vector<float> > getMahalanobisDistancesByIndex(PointCloud<PointXYZ> cloud
     PointCloud<PointXYZ>::Ptr bPtr (new PointCloud<PointXYZ> ());
     *bPtr = cloud_b;
     pcdTree.setInputCloud(bPtr);
+    pcdTree.setEpsilon(0.1);
 
     // Loop through all points of cloud_a
     // calculate the point's mahalanobis distance to its KNN in cloud_b
     // add each (index, distance) pair to the 2d vector array
+    // ROS_INFO("Looping through cloud of %d points", (int)cloud_a.points.size());
     for (int i=0; i<cloud_a.points.size(); i++) {
         PointXYZ p = cloud_a[i];
         std::vector<int> found_indices;
         std::vector<float> k_sqr_distances;
-        pcdTree.nearestKSearch(p, 100, found_indices, k_sqr_distances);
-        // PointCloud<PointXYZ> neighbors = extract_pointcloud(cloud_a, found_indices);
+        pcdTree.nearestKSearch(p, 5, found_indices, k_sqr_distances);
 
         // Get the spherical coordinates of p, calculate mahalanobis distance
         vector<float> p_spherical = getSphericalCoordinates(p);
-        float mahalanobis_distance = getMahalanobisDistance(p_spherical, found_indices, cloud_b_spherical_coords,
-                                                            covarianceMatrix);
+        Vector3f maxNeighbor (1, 1, 1), p_spher = toEigenVector(p_spherical);
+        float maxDist = 0;
+        for (int index : found_indices) {
+            Vector3f n = toEigenVector(cloud_b_spherical_coords[index]);
+            Vector3f V = n - p_spher;
+            float dist = V.transpose() * covarianceMatrix * V;
+            if (dist > maxDist) {
+                maxNeighbor = n;
+                maxDist = dist;
+            }
+        }
+        Vector3f p_diff = p_spher - maxNeighbor;
+        float r_p = p_spher(0);
+        float d_octo = (float)tree->getResolution() / 2 ;
+        Vector3f p_corr (d_octo/r_p, d_octo/r_p, d_octo);
+        Vector3f p_dist = p_diff * (1 - (p_diff.cwiseAbs() / p_diff(0)).dot(p_corr / p_diff(0)));
+        float mahalanobis_distance = p_dist.transpose() * covarianceMatrix * p_dist;
+
+        // store data
         vector<float> index_and_distance;
         index_and_distance.push_back((float)i);
         index_and_distance.push_back(mahalanobis_distance);
@@ -189,16 +210,17 @@ PointCloud<PointXYZ> extract_pointcloud(PointCloud<PointXYZ> pcd, vector<int> in
 }
 
 float getMahalanobisDistance(vector<float> p, vector<int> indices, vector<vector<float> > points,
-                             Matrix3f covarianceMatrix) {
+                             Matrix3f covarianceInverse) {
     // Following  the calculation steps detailed in the paper
-    Matrix3f covarianceInverse = covarianceMatrix.inverse();
-    Vector3f maxNeighbor (0, 0, 0), p_spher = toEigenVector(p);
+    Vector3f maxNeighbor (1, 1, 1), p_spher = toEigenVector(p);
     float maxDist = 0;
     for (int index : indices) {
         Vector3f n = toEigenVector(points[index]);
         Vector3f V = n - p_spher;
-        if (V.transpose() * covarianceInverse * V > maxDist) {
-            maxNeighbor = n;
+        float dist = V.transpose() * covarianceInverse * V;
+        if (dist > maxDist) {
+            //maxNeighbor = n;
+            maxDist = dist;
         }
     }
     Vector3f p_diff = p_spher - maxNeighbor;
@@ -262,12 +284,13 @@ void octomap_cb(octomap_msgs::Octomap ot) {
 }
 
 int main(int argc, char** argv) {
+    ROS_INFO("starting pointcloud_updater");
     ros::init(argc, argv, "pointcloud_updater");
     ros::NodeHandle nh;
 
     // Subscribers
-    ros::Subscriber pcd_sub = nh.subscribe("/head_camera/depth_registered/points", 1000, cloud_cb);
-    ros::Subscriber octomap_sub = nh.subscribe("/octomap_full", 1000, octomap_cb);
+    ros::Subscriber pcd_sub = nh.subscribe("/head_camera/depth_registered/points", 3, cloud_cb);
+    ros::Subscriber octomap_sub = nh.subscribe("/octomap_full", 3, octomap_cb);
 
-    ros::waitForShutdown(); // or ros::spin() maybe?
+    ros::spin(); // or ros::spin() maybe?
 }

@@ -8,7 +8,7 @@ add_compile_options(-std=c++11)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roscpp actionlib moveit_ros_planning_interface sensor_msgs geometry_msgs tf octomap
+  roscpp actionlib moveit_ros_planning_interface sensor_msgs geometry_msgs tf
 )
 #target_link_libraries(${OCTOMAP_LIBRARIES})
 find_package(PCL 1.3)
