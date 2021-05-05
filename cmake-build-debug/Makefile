@@ -1525,6 +1525,33 @@ gtest_main/fast:
 	$(MAKE) $(MAKESILENT) -f gtest/googlemock/gtest/CMakeFiles/gtest_main.dir/build.make gtest/googlemock/gtest/CMakeFiles/gtest_main.dir/build
 .PHONY : gtest_main/fast
 
+src/ClusterTracker.o: src/ClusterTracker.cpp.o
+
+.PHONY : src/ClusterTracker.o
+
+# target to build an object file
+src/ClusterTracker.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pointcloud_update_node.dir/build.make CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.o
+.PHONY : src/ClusterTracker.cpp.o
+
+src/ClusterTracker.i: src/ClusterTracker.cpp.i
+
+.PHONY : src/ClusterTracker.i
+
+# target to preprocess a source file
+src/ClusterTracker.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pointcloud_update_node.dir/build.make CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.i
+.PHONY : src/ClusterTracker.cpp.i
+
+src/ClusterTracker.s: src/ClusterTracker.cpp.s
+
+.PHONY : src/ClusterTracker.s
+
+# target to generate assembly for a file
+src/ClusterTracker.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pointcloud_update_node.dir/build.make CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.s
+.PHONY : src/ClusterTracker.cpp.s
+
 src/arm_command.o: src/arm_command.cpp.o
 
 .PHONY : src/arm_command.o
@@ -1803,6 +1830,9 @@ help:
 	@echo "... nav_node"
 	@echo "... pointcloud_update_node"
 	@echo "... waypoint_node"
+	@echo "... src/ClusterTracker.o"
+	@echo "... src/ClusterTracker.i"
+	@echo "... src/ClusterTracker.s"
 	@echo "... src/arm_command.o"
 	@echo "... src/arm_command.i"
 	@echo "... src/arm_command.s"

@@ -2658,12 +2658,12 @@ CMakeFiles/tf2_msgs_generate_messages_eus.dir/clean:
 CMakeFiles/pointcloud_update_node.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pointcloud_update_node.dir/build.make CMakeFiles/pointcloud_update_node.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pointcloud_update_node.dir/build.make CMakeFiles/pointcloud_update_node.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles --progress-num=20,21 "Built target pointcloud_update_node"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles --progress-num=20,21,22 "Built target pointcloud_update_node"
 .PHONY : CMakeFiles/pointcloud_update_node.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/pointcloud_update_node.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/pointcloud_update_node.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/pointcloud_update_node.dir/rule
@@ -2847,7 +2847,7 @@ CMakeFiles/actionlib_msgs_generate_messages_nodejs.dir/clean:
 CMakeFiles/waypoint_node.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/waypoint_node.dir/build.make CMakeFiles/waypoint_node.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/waypoint_node.dir/build.make CMakeFiles/waypoint_node.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles --progress-num=22,23 "Built target waypoint_node"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles --progress-num=23,24 "Built target waypoint_node"
 .PHONY : CMakeFiles/waypoint_node.dir/all
 
 # Build rule for subdir invocation for target.

@@ -1922,6 +1922,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/jacob/catkin_ws/src/FetchVRbackend/src/ClusterTracker.cpp">
+			<Option target="pointcloud_update_node"/>
+		</Unit>
 		<Unit filename="/home/jacob/catkin_ws/src/FetchVRbackend/src/arm_command.cpp">
 			<Option target="arm_command_node"/>
 		</Unit>

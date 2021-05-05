@@ -4,14 +4,17 @@
 
 #ifndef FETCHVRBACKEND_CLUSTERTRACKER_H
 #define FETCHVRBACKEND_CLUSTERTRACKER_H
+#include <ros/ros.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <vector>
+#include <string>
+#include <flann/flann.hpp>
 
 using namespace pcl;
 using namespace std;
 
-// A pointcloud with points which store the mahalanobis distance
+// A pointcloud which also stores Mahalanobis Distance of each point
 typedef struct MahalanobisPointCloud {
   vector<vector<float> > points;
   vector<float> distances;
@@ -25,30 +28,26 @@ typedef struct BoundingBox {
 } BoundingBox;
 
 typedef struct Cluster {
-    PointCloud<PointXYZRGB> pointcloud;
+    MahalanobisPointCloud pointcloud;
     BoundingBox bbox;
     float score;
-    bool isSupport = false;
+    bool isSupport = false, isAppearing;
 } Cluster;
 
 class ClusterTracker {
 private:
-    vector<Cluster> clusters;
+    // stuff to add: Flann kdTree for storage
+    map<vector<float>, Cluster> clustersByCenter;
+    string additionTopic, deletionTopic;
+    ros::Publisher additionPub, deletionPub;
+    flann::Index<flann::L2_3D<float> > *index;
+    float maxBboxDim; // used for querying purposes
+    void updateSupports(Cluster &c);  // queries a cluster, calls publish if support on all clusters intersected, including itself
+    static void calculateBbox(Cluster &c);  // calculates the Bbox of a cluster
+    void publishIfSupport(Cluster c);   // determines if cluster is support, if so, publishes to appropriate topic
 public:
-    ClusterTracker();
-    void AddCluster(PointCloud<PointXYZRGB>);
+    explicit ClusterTracker(ros::NodeHandle nh);
+    void AddCluster(Cluster& c);
     ~ClusterTracker();
-
 };
-
-ClusterTracker::ClusterTracker() {
-
-}
-
-void ClusterTracker::AddCluster(PointCloud<PointXYZRGB> pcd) {
-    Cluster newCluster;
-    newCluster.pointcloud = pcd;
-    clusters.push_back(newCluster);
-}
-
 #endif //FETCHVRBACKEND_CLUSTERTRACKER_H

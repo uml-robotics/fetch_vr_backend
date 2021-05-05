@@ -134,7 +134,7 @@ include_directories( include ${catkin_INCLUDE_DIRS} ${PCL_INCLUDE_DIRS})
  add_executable(direct_control_node  src/direct_control.cpp)
  add_executable(nav_node  src/nav.cpp)
  add_executable(arm_command_node  src/arm_command.cpp)
- add_executable(pointcloud_update_node src/pointcloud_updater.cpp)
+ add_executable(pointcloud_update_node src/pointcloud_updater.cpp src/ClusterTracker.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

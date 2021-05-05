@@ -32,8 +32,10 @@ using namespace Eigen;
 
 // global variables
 OcTree *tree = nullptr;
+ClusterTracker *tracker;
 
 // helper functions
+float median(vector<float> nums);
 void initializeClusterClouds(MahalanobisPointCloud &mainCloud, vector<MahalanobisPointCloud> &clouds,
                              vector<PointIndices> &indices);
 void ClusterExtraction(MahalanobisPointCloud &cloud, vector<PointIndices> &indices);
@@ -112,6 +114,29 @@ void cloud_cb(sensor_msgs::PointCloud2 pcd) {
     initializeClusterClouds(AppearedCloud, appearingClouds, appearingIndices);
 
     // Preform some sort of classification on the clusters (random forest, thresholding)?
+    // Doing simple median thresholding at the moment
+    float classifyDistanceThreshold = 12.0; // Make this a param as well of course
+    for (const MahalanobisPointCloud& m : appearingClouds) {
+        float x = median(m.distances);
+        if (x > classifyDistanceThreshold) {
+            Cluster c;
+            c.isAppearing = true;
+            c.score = 1 - classifyDistanceThreshold / x;
+            c.pointcloud = m;
+            tracker->AddCluster(c);
+        }
+    }
+
+    for (const MahalanobisPointCloud& m : disappearingClouds) {
+        float x = median(m.distances);
+        if (x > classifyDistanceThreshold) {
+            Cluster c;
+            c.isAppearing = false;
+            c.score = 1 - classifyDistanceThreshold / x;
+            c.pointcloud = m;
+            tracker->AddCluster(c);
+        }
+    }
 
     // Publish object data to the Unity end (gonna have to experiment with this a bunch)
 
@@ -340,10 +365,18 @@ void octomap_cb(octomap_msgs::Octomap ot) {
     tree = (OcTree*) my_abstract_map;
 }
 
+float median(vector<float> nums) {
+    sort(nums.begin(), nums.end());
+    int size = (int)nums.size();
+    return size % 2 == 0 ? ((float)nums[size/2] + (float)nums[size/2-1]) / 2 : (float)nums[size/2];
+}
+
 int main(int argc, char** argv) {
     ROS_INFO("starting pointcloud_updater");
     ros::init(argc, argv, "pointcloud_updater");
     ros::NodeHandle nh;
+    ClusterTracker newTracker(nh);
+    *tracker = newTracker;
 
     // Subscribers
     ros::Subscriber pcd_sub = nh.subscribe("/head_camera/depth_registered/points", 3, cloud_cb);
