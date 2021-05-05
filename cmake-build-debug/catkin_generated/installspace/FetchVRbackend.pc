@@ -3,6 +3,6 @@ prefix=/usr/local
 Name: FetchVRbackend
 Description: Description of FetchVRbackend
 Version: 0.0.0
-Cflags: 
+Cflags: -I${prefix}/include
 Libs: -L${prefix}/lib 
 Requires: 

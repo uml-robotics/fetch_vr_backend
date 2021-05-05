@@ -18,10 +18,12 @@
 #include <octomap/OcTree.h>
 #include <pcl/filters/passthrough.h>
 #include <pcl/search/kdtree.h>
+#include <pcl/segmentation/extract_clusters.h>
 #include <pcl/PointIndices.h>
 #include <math.h>
 #include <Eigen/Dense>
 #include <ctime>
+#include "ClusterTracker.h"
 
 using namespace octomap;
 using namespace pcl;
@@ -32,6 +34,9 @@ using namespace Eigen;
 OcTree *tree = nullptr;
 
 // helper functions
+void initializeClusterClouds(MahalanobisPointCloud &mainCloud, vector<MahalanobisPointCloud> &clouds,
+                             vector<PointIndices> &indices);
+void ClusterExtraction(MahalanobisPointCloud &cloud, vector<PointIndices> &indices);
 Vector3f toEigenVector(vector<float> xyz);
 PointCloud<PointXYZ> extract_voxel_centers(OcTree *octo);
 vector<vector<float> > getSphericalCoordinates(PointCloud<PointXYZ> pcd);
@@ -61,7 +66,7 @@ void cloud_cb(sensor_msgs::PointCloud2 pcd) {
     filter.setInputCloud(cloud2);
     filter.setFilterLimits(0, 20);
     filter.filter(filtered_cloud);
-    PointCloud<PointXYZ>::Ptr reading_cloud (new pcl::PointCloud<pcl::PointXYZ> ());
+    PointCloud<PointXYZ>::Ptr reading_cloud (new pcl::PointCloud<PointXYZ> ());
     pcl::fromPCLPointCloud2(filtered_cloud, *reading_cloud);
 
     // Get spherical coordinates of points in both pointclouds
@@ -81,8 +86,30 @@ void cloud_cb(sensor_msgs::PointCloud2 pcd) {
                                                                      octomap_spherical_coords, octomap_inverse);
 
     // Threshold both clouds to obtain points which have a high probability of appearing or disappearing
+    float mahalanobisThreshold = 5.0;   // make this a param
+    MahalanobisPointCloud DisappearedCloud, AppearedCloud;
+    for (vector<float> point : disappeared) {
+        if (point[1] > mahalanobisThreshold) {
+            PointXYZ pclPoint = octomap_cloud.points[point[0]];
+            vector<float> cloudPoint {pclPoint.x, pclPoint.y, pclPoint.z};
+            DisappearedCloud.points.push_back(cloudPoint);
+        }
+    }
+    for (vector<float> point: appeared) {
+        if (point[1] > mahalanobisThreshold) {
+            PointXYZ pclPoint = reading_cloud->points[point[0]];
+            vector<float> cloudPoint {pclPoint.x, pclPoint.y, pclPoint.z};
+            AppearedCloud.points.push_back(cloudPoint);
+        }
+    }
 
-    // Run HBDSCAN clustering on both pointclouds to separate them into objects
+    // Run Euclidean cluster extraction on both pointclouds to separate them into clusters
+    vector<PointIndices> disappearingIndices, appearingIndices;
+    ClusterExtraction(DisappearedCloud, disappearingIndices);
+    ClusterExtraction(AppearedCloud, appearingIndices);
+    vector<MahalanobisPointCloud> disappearingClouds, appearingClouds;
+    initializeClusterClouds(DisappearedCloud, disappearingClouds, disappearingIndices);
+    initializeClusterClouds(AppearedCloud, appearingClouds, appearingIndices);
 
     // Preform some sort of classification on the clusters (random forest, thresholding)?
 
@@ -94,6 +121,36 @@ void cloud_cb(sensor_msgs::PointCloud2 pcd) {
     // Need some sort of interface to store all proposed cluster changes, and dynamically report the "support clusters"
     // This interface should send these support clusters over to the unity project
     // Will need a cluster object and a cluster storer object
+}
+
+void initializeClusterClouds(MahalanobisPointCloud &mainCloud, vector<MahalanobisPointCloud> &clouds,
+                             vector<PointIndices> &indices) {
+    for (const auto & indice : indices) {
+        MahalanobisPointCloud cluster;
+        for (int index : indice.indices) {
+            cluster.points.push_back(mainCloud.points[index]);
+            cluster.distances.push_back(mainCloud.distances[index]);
+        }
+        clouds.push_back(cluster);
+    }
+}
+
+void ClusterExtraction(MahalanobisPointCloud &cloud, vector<PointIndices > &indices) {
+    PointCloud<PointXYZ>::Ptr pclCloud (new PointCloud<PointXYZ>);
+    for (vector<float> point : cloud.points) {
+        PointXYZ pclPoint;
+        pclPoint.x = point[0];
+        pclPoint.y = point[1];
+        pclPoint.z = point[2];
+        pclCloud->points.push_back(pclPoint);
+    }
+    search::KdTree<PointXYZ>::Ptr tree (new search::KdTree<PointXYZ>);
+    tree->setInputCloud(pclCloud);
+    EuclideanClusterExtraction<PointXYZ> ec;
+    ec.setMinClusterSize(100);
+    ec.setMaxClusterSize(300000);
+    ec.setInputCloud(pclCloud);
+    ec.extract(indices);
 }
 
 Matrix3f getCovarianceMatrix(vector<vector<float> > points) {
