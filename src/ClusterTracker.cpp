@@ -8,6 +8,7 @@
 #include <string>
 #include <std_msgs/String.h>
 #include <flann/flann.hpp>
+#include <utility>
 #include <math.h>
 
 using namespace std;
@@ -39,18 +40,77 @@ void ClusterTracker::AddCluster(Cluster &c) {
     this->index->addPoints(dataset);
 
     // Insert Bbox center : Bbox object into the dictionary
-    this->clustersByCenter[c.bbox.center] = c;
+    //this->clustersByCenter[c.bbox.center] = c;
+    // Trying out a vector of ordered clusters
+    this->orderedClusters.push_back(c);
 
     // Call updateSupports method on cluster c
     this->updateSupports(c);
 }
 
 void ClusterTracker::updateSupports(Cluster &c) {
-    // search in maxBbox + maxCdim radius around the center of c
+    // Call publishIfSupport on c and its neighbors
+    publishIfSupport(c);
+    for (Cluster cluster : this->queryClusterCenters(c)) {
+        publishIfSupport(cluster);
+    }
+}
+
+void ClusterTracker::publishIfSupport(Cluster &c) {
+    // if cluster has already been marked as a support, do not query
+    if (c.isSupport)
+        return;
+
+    // Query the kdTree of cluster centers
+    vector<Cluster> nearby_clusters = this->queryClusterCenters(c);
+
+    // do not publish if there aren't enough clusters
+    if (nearby_clusters.size() < this->n_overlap) {
+        return;
+    }
+
+    // Count up the number of clusters for which v_intersect / c_volume > 1 - c_score
+    float c_volume = c.bbox.length * c.bbox.width * c.bbox.height;
+    float v_intersect, c_score = c.score;
+    int cluster_count;
+    for (Cluster nearby_cluster : nearby_clusters) {
+        v_intersect = this->intersect(nearby_cluster.bbox, c.bbox);
+        if (v_intersect / c_volume > 1 - c_score) {
+            cluster_count ++;
+        }
+        if (cluster_count == n_overlap) {
+            // publish the cluster!
+            c.isSupport = true;
+            if (c.isAppearing) {
+                ROS_INFO("Publishing Addition cluster of %zu points", c.pointcloud.points.size());
+                this->additionPub.publish(c);
+                return;
+            }
+            ROS_INFO("Publishing Deletion cluster of %zu points", c.pointcloud.points.size());
+            this->deletionPub.publish(c);
+            return;
+        }
+    }
+}
+
+vector<Cluster> ClusterTracker::queryClusterCenters(Cluster queryCluster) {
+    float searchRadius = this->maxBboxDim + max(queryCluster.bbox.length, queryCluster.bbox.width, queryCluster.bbox.height);
+    flann::Matrix<float> query(new float[3], 1, 3);
+    query[0][0] = queryCluster.bbox.center[0];
+    query[0][1] = queryCluster.bbox.center[1];
+    query[0][2] = queryCluster.bbox.center[2];
+    vector<vector<int> > indices;
+    vector<vector<float> > distances;
+    this->index->radiusSearch(query, indices, distances, searchRadius, flann::SearchParams());
 
     // for all found cluster centers, look up the corresponding cluster object
-
     // call publish if support on each of these clusters
+    vector<Cluster> found_clusters;
+    for (int center_index : indices[0]) {
+        // Look up the coresponding cluster object
+        found_clusters.push_back(this->orderedClusters[center_index]);
+    }
+    return found_clusters;
 }
 
 void ClusterTracker::calculateBbox(Cluster &c) {

@@ -37,17 +37,20 @@ typedef struct Cluster {
 class ClusterTracker {
 private:
     // stuff to add: Flann kdTree for storage
-    map<vector<float>, Cluster> clustersByCenter;
+//    map<vector<float>, Cluster> clustersByCenter;
+    vector<Cluster> orderedClusters;
     string additionTopic, deletionTopic;
     ros::Publisher additionPub, deletionPub;
     flann::Index<flann::L2_3D<float> > *index;
     float maxBboxDim; // used for querying purposes
+    int n_overlap; // threshold for min number of overlapping clusters which satisfy the requirements
     void updateSupports(Cluster &c);  // queries a cluster, calls publish if support on all clusters intersected, including itself
     static void calculateBbox(Cluster &c);  // calculates the Bbox of a cluster
-    void publishIfSupport(Cluster c);   // determines if cluster is support, if so, publishes to appropriate topic
+    void publishIfSupport(Cluster &c);   // determines if cluster is support, if so, publishes to appropriate topic
 public:
     explicit ClusterTracker(ros::NodeHandle nh);
     void AddCluster(Cluster& c);
+    vector<Cluster> queryClusterCenters(Cluster query_cluster);
     ~ClusterTracker();
 };
 #endif //FETCHVRBACKEND_CLUSTERTRACKER_H
