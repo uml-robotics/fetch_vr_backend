@@ -2,6 +2,7 @@
 #include <actionlib/client/simple_action_client.h>
 #include <control_msgs/FollowJointTrajectoryAction.h>
 #include <moveit/move_group_interface/move_group_interface.h>
+//#include <moveit/move_group_interface/move_group.h>
 #include "sensor_msgs/JointState.h"
 #include <array>
 #include <string>
@@ -48,7 +49,7 @@ int main(int argc, char** argv){
 
     ros::Subscriber sub = nh.subscribe("/joint_commands", 1000, jointCommandsCb);
 
-    ros::AsyncSpinner spinner(4);
+    ros::AsyncSpinner spinner(1);
     spinner.start();
 
     moveit::planning_interface::MoveGroupInterface move_fetch("arm_with_torso");
@@ -56,7 +57,7 @@ int main(int argc, char** argv){
 
     //ROS_INFO_STREAM("MOVED ARM OUT!");
 
-    ros::waitForShutdown();
+    ros::spin();
 
     return 0;
 }

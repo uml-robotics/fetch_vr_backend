@@ -4,6 +4,7 @@
 #include <trajectory_msgs/JointTrajectory.h>
 #include <std_msgs/Bool.h>
 #include <moveit/move_group_interface/move_group_interface.h>
+//#include <moveit/move_group_interface/move_group.h>
 #include "geometry_msgs/PoseArray.h"
 #include <array>
 #include <tf/transform_listener.h>
@@ -29,6 +30,7 @@ void jointCommandsCb(const geometry_msgs::PoseArray::ConstPtr& msg)
     std::vector<geometry_msgs::Pose> poses;
     int currentIndex = 0;
     std_msgs::Int32 indexMessage;
+
     for (geometry_msgs::Pose p : msg->poses){
        tf::Transform waypoint_tf;
        tf::poseMsgToTF(p, waypoint_tf);
@@ -88,6 +90,15 @@ void onNewTrajectory(const std_msgs::Bool::ConstPtr& msg){
 }
 */
 
+void forceQuitCB(const std_msgs::Bool::ConstPtr& msg)
+{
+    if(msg->data){
+//        moveit::planning_interface::MoveGroup::Plan plan_empty;
+//        move_fetch_ptr->execute(plan_empty);
+        move_fetch_ptr->stop();
+    }
+}
+
 void confirmationCB(const std_msgs::Bool::ConstPtr& msg)
 {
     if(msg->data){
@@ -110,6 +121,7 @@ int main(int argc, char** argv){
 
     ros::Subscriber goal_sub = nh.subscribe("/gripper_goal", 1000, jointCommandsCb);
     ros::Subscriber confirmation_sub = nh.subscribe("/joint_plan_confirmation", 1000, confirmationCB);
+    ros::Subscriber force_quit_sub = nh.subscribe("/joint_plan_force_quit", 1000, forceQuitCB);
     //ros::Subscriber trajectory_signal_sub = nh.subscribe("/joint_plan_signal", 1000, onNewTrajectory);
     plan_pub = nh.advertise<trajectory_msgs::JointTrajectory>("/joint_plan", 1000);
     is_done_pub = nh.advertise<std_msgs::Bool>("/is_joint_plan_sent", 1000);

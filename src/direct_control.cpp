@@ -4,6 +4,7 @@
 #include <trajectory_msgs/JointTrajectory.h>
 #include <std_msgs/Bool.h>
 #include <moveit/move_group_interface/move_group_interface.h>
+//#include <moveit/move_group_interface/move_group.h>
 #include "geometry_msgs/PoseArray.h"
 #include <array>
 #include <tf/transform_listener.h>
