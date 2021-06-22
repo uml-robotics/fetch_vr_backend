@@ -47,6 +47,7 @@ private:
     void updateSupports(Cluster &c);  // queries a cluster, calls publish if support on all clusters intersected, including itself
     static void calculateBbox(Cluster &c);  // calculates the Bbox of a cluster
     void publishIfSupport(Cluster &c);   // determines if cluster is support, if so, publishes to appropriate topic
+    float intersect(BoundingBox a, BoundingBox b); // returns the volume of the intersection of two bboxes
 public:
     explicit ClusterTracker(ros::NodeHandle nh);
     void AddCluster(Cluster& c);

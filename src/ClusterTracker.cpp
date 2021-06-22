@@ -8,7 +8,6 @@
 #include <string>
 #include <std_msgs/String.h>
 #include <flann/flann.hpp>
-#include <utility>
 #include <math.h>
 
 using namespace std;
@@ -107,7 +106,7 @@ vector<Cluster> ClusterTracker::queryClusterCenters(Cluster queryCluster) {
     // call publish if support on each of these clusters
     vector<Cluster> found_clusters;
     for (int center_index : indices[0]) {
-        // Look up the coresponding cluster object
+        // Look up the corresponding cluster object
         found_clusters.push_back(this->orderedClusters[center_index]);
     }
     return found_clusters;
@@ -136,4 +135,39 @@ void ClusterTracker::calculateBbox(Cluster &c) {
     c.bbox.width = maxY - minY;
     c.bbox.height = maxZ - minZ;
     c.bbox.center = {(maxX + minX) / 2, (maxY + minY) / 2, (maxZ + minZ) / 2};
+}
+
+float ClusterTracker::intersect(BoundingBox a, BoundingBox b) {
+    // find min and max coords in x,y,z directions of both boxes
+    float a_x_min, a_x_max, b_x_min, b_x_max;
+    float a_y_min, a_y_max, b_y_min, b_y_max;
+    float a_z_min, a_z_max, b_z_min, b_z_max;
+    float x_dim, y_dim, z_dim;
+    a_x_min = a.center[0] - a.length / 2;
+    a_x_max = a.center[0] + a.length / 2;
+    b_x_min = b.center[0] - b.length / 2;
+    b_x_max = b.center[0] + b.length / 2;
+    a_y_min = a.center[1] - a.width / 2;
+    a_y_max = a.center[1] + a.width / 2;
+    b_y_min = b.center[1] - b.width / 2;
+    b_y_max = b.center[1] + b.width / 2;
+    a_z_min = a.center[2] - a.height / 2;
+    a_z_max = a.center[2] + a.height / 2;
+    b_z_min = b.center[2] - b.height / 2;
+    b_z_max = b.center[2] + b.height / 2;
+
+    // Check if the boxes do not intersect
+    if (a_x_min > b_x_max || b_x_min > a_x_max || a_y_min > b_y_max ||
+        b_y_min > a_y_max || a_z_min > b_z_max || b_z_min > a_z_max) {
+        // no intersection
+        return 0.0;
+    }
+
+    // calculate length of intersection volume in each axial direction
+    x_dim = min(a_x_max, b_x_max) - max(a_x_min, b_x_min);
+    y_dim = min(a_y_max, b_y_max) - max(a_y_min, b_y_min);
+    z_dim = min(a_z_max, b_z_max) - max(a_z_min, b_z_min);
+
+    // return the volume of the intersection
+    return x_dim * y_dim * z_dim;
 }
