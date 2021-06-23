@@ -1552,6 +1552,33 @@ src/ClusterTracker.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/pointcloud_update_node.dir/build.make CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.s
 .PHONY : src/ClusterTracker.cpp.s
 
+src/MahalanobisHelper.o: src/MahalanobisHelper.cpp.o
+
+.PHONY : src/MahalanobisHelper.o
+
+# target to build an object file
+src/MahalanobisHelper.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pointcloud_update_node.dir/build.make CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.o
+.PHONY : src/MahalanobisHelper.cpp.o
+
+src/MahalanobisHelper.i: src/MahalanobisHelper.cpp.i
+
+.PHONY : src/MahalanobisHelper.i
+
+# target to preprocess a source file
+src/MahalanobisHelper.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pointcloud_update_node.dir/build.make CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.i
+.PHONY : src/MahalanobisHelper.cpp.i
+
+src/MahalanobisHelper.s: src/MahalanobisHelper.cpp.s
+
+.PHONY : src/MahalanobisHelper.s
+
+# target to generate assembly for a file
+src/MahalanobisHelper.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/pointcloud_update_node.dir/build.make CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.s
+.PHONY : src/MahalanobisHelper.cpp.s
+
 src/arm_command.o: src/arm_command.cpp.o
 
 .PHONY : src/arm_command.o
@@ -1833,6 +1860,9 @@ help:
 	@echo "... src/ClusterTracker.o"
 	@echo "... src/ClusterTracker.i"
 	@echo "... src/ClusterTracker.s"
+	@echo "... src/MahalanobisHelper.o"
+	@echo "... src/MahalanobisHelper.i"
+	@echo "... src/MahalanobisHelper.s"
 	@echo "... src/arm_command.o"
 	@echo "... src/arm_command.i"
 	@echo "... src/arm_command.s"

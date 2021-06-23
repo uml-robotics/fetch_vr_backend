@@ -8,6 +8,7 @@
 #include <string>
 #include <std_msgs/String.h>
 #include <flann/flann.hpp>
+#include <octomap_msgs/Octomap.h>
 #include <math.h>
 
 using namespace std;
@@ -72,7 +73,7 @@ void ClusterTracker::publishIfSupport(Cluster &c) {
     float c_volume = c.bbox.length * c.bbox.width * c.bbox.height;
     float v_intersect, c_score = c.score;
     int cluster_count;
-    for (Cluster nearby_cluster : nearby_clusters) {
+    for (const Cluster& nearby_cluster : nearby_clusters) {
         v_intersect = this->intersect(nearby_cluster.bbox, c.bbox);
         if (v_intersect / c_volume > 1 - c_score) {
             cluster_count ++;
@@ -82,11 +83,15 @@ void ClusterTracker::publishIfSupport(Cluster &c) {
             c.isSupport = true;
             if (c.isAppearing) {
                 ROS_INFO("Publishing Addition cluster of %zu points", c.pointcloud.points.size());
+                // convert the cluster to a sensor_msgs::PointCloud2
+
                 this->additionPub.publish(c);
                 return;
             }
-            ROS_INFO("Publishing Deletion cluster of %zu points", c.pointcloud.points.size());
+            ROS_INFO("Publishing Deletion cluster of %zu voxels", c.pointcloud.points.size());
             this->deletionPub.publish(c);
+            // query the octomap to get all deletion voxels, store these in another octomap
+
             return;
         }
     }
@@ -170,4 +175,8 @@ float ClusterTracker::intersect(BoundingBox a, BoundingBox b) {
 
     // return the volume of the intersection
     return x_dim * y_dim * z_dim;
+}
+
+void ClusterTracker::setOctree(OcTree &input_tree) {
+    this->tree = &input_tree;
 }

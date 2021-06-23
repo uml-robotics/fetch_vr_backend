@@ -10,14 +10,17 @@
 #include <vector>
 #include <string>
 #include <flann/flann.hpp>
+#include <octomap/OcTree.h>
 
 using namespace pcl;
 using namespace std;
+using namespace octomap;
 
 // A pointcloud which also stores Mahalanobis Distance of each point
 typedef struct MahalanobisPointCloud {
   vector<vector<float> > points;
   vector<float> distances;
+  bool isRGB = false;
 } MahalanobisPointCloud;
 
 typedef struct BoundingBox {
@@ -30,8 +33,8 @@ typedef struct BoundingBox {
 typedef struct Cluster {
     MahalanobisPointCloud pointcloud;
     BoundingBox bbox;
-    float score;
-    bool isSupport = false, isAppearing;
+    float score = 0;
+    bool isSupport = false, isAppearing = true;
 } Cluster;
 
 class ClusterTracker {
@@ -42,6 +45,7 @@ private:
     string additionTopic, deletionTopic;
     ros::Publisher additionPub, deletionPub;
     flann::Index<flann::L2_3D<float> > *index;
+    OcTree *tree = nullptr;
     float maxBboxDim; // used for querying purposes
     int n_overlap; // threshold for min number of overlapping clusters which satisfy the requirements
     void updateSupports(Cluster &c);  // queries a cluster, calls publish if support on all clusters intersected, including itself
@@ -51,6 +55,7 @@ private:
 public:
     explicit ClusterTracker(ros::NodeHandle nh);
     void AddCluster(Cluster& c);
+    void setOctree(OcTree &input_tree);
     vector<Cluster> queryClusterCenters(Cluster query_cluster);
     ~ClusterTracker();
 };
