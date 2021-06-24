@@ -1,8 +1,0 @@
-prefix=/home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug/devel
-
-Name: FetchVRbackend
-Description: Description of FetchVRbackend
-Version: 0.0.0
-Cflags: -I/home/jacob/catkin_ws/src/fetch_vr_backend/include
-Libs: -L${prefix}/lib 
-Requires: 

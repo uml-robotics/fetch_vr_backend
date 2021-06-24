@@ -50,15 +50,14 @@ private:
     OcTree *tree = nullptr;
     float maxBboxDim; // used for querying purposes
     int n_overlap; // threshold for min number of overlapping clusters which satisfy the requirements
-    void updateSupports(Cluster &c);  // queries a cluster, calls publish if support on all clusters intersected, including itself
-    static void calculateBbox(Cluster &c);  // calculates the Bbox of a cluster
-    void publishIfSupport(Cluster &c);   // determines if cluster is support, if so, publishes to appropriate topic
+    void updateSupports(Cluster c);  // queries a cluster, calls publish if support on all clusters intersected, including itself
+    static void calculateBbox(Cluster c);  // calculates the Bbox of a cluster
+    void publishIfSupport(Cluster c);   // determines if cluster is support, if so, publishes to appropriate topic
     float intersect(BoundingBox a, BoundingBox b); // returns the volume of the intersection of two bboxes
 public:
     explicit ClusterTracker(ros::NodeHandle nh);
-    void AddCluster(Cluster& c);
+    void AddCluster(Cluster c);
     void setOctree(OcTree &input_tree);
     vector<Cluster> queryClusterCenters(Cluster query_cluster);
-    ~ClusterTracker();
 };
 #endif //FETCHVRBACKEND_CLUSTERTRACKER_H

@@ -8,7 +8,7 @@ add_compile_options(-std=c++11)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roscpp actionlib moveit_ros_planning_interface sensor_msgs geometry_msgs tf
+  roscpp actionlib moveit_ros_planning_interface sensor_msgs geometry_msgs tf std_msgs message_generation
 )
 #target_link_libraries(${OCTOMAP_LIBRARIES})
 find_package(PCL 1.3)
@@ -46,11 +46,10 @@ find_package(PCL 1.3)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+ add_message_files(
+   FILES
+   VoxelCloud.msg
+ )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -67,10 +66,9 @@ find_package(PCL 1.3)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages (
+        DEPENDENCIES std_msgs sensor_msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -104,7 +102,7 @@ find_package(PCL 1.3)
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES test_ws
-#  CATKIN_DEPENDS roscpp
+  CATKIN_DEPENDS message_runtime
 #  DEPENDS system_lib
 )
 

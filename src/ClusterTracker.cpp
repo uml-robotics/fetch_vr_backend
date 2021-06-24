@@ -27,12 +27,12 @@ ClusterTracker::ClusterTracker(ros::NodeHandle nh) {
     *this->index = newTree;
 }
 
-void ClusterTracker::AddCluster(Cluster &c) {
+void ClusterTracker::AddCluster(Cluster c) {
     // Calculate the bounding box of cluster c
     ClusterTracker::calculateBbox(c);
 
     // Update maxBboxDim
-    float m = max(c.bbox.length, c.bbox.width, c.bbox.height);
+    float m = max({(float)c.bbox.length, (float)c.bbox.width, (float)c.bbox.height});
     if (m > this->maxBboxDim) {
         this->maxBboxDim = m;
     }
@@ -53,7 +53,7 @@ void ClusterTracker::AddCluster(Cluster &c) {
     this->updateSupports(c);
 }
 
-void ClusterTracker::updateSupports(Cluster &c) {
+void ClusterTracker::updateSupports(Cluster c) {
     // Call publishIfSupport on c and its neighbors
     publishIfSupport(c);
     for (Cluster cluster : this->queryClusterCenters(c)) {
@@ -61,7 +61,7 @@ void ClusterTracker::updateSupports(Cluster &c) {
     }
 }
 
-void ClusterTracker::publishIfSupport(Cluster &c) {
+void ClusterTracker::publishIfSupport(Cluster c) {
     // if cluster has already been marked as a support, do not query
     if (c.isSupport)
         return;
@@ -78,7 +78,7 @@ void ClusterTracker::publishIfSupport(Cluster &c) {
     float c_volume = c.bbox.length * c.bbox.width * c.bbox.height;
     float v_intersect, c_score = c.score;
     int cluster_count;
-    for (const Cluster& nearby_cluster : nearby_clusters) {
+    for (const Cluster nearby_cluster : nearby_clusters) {
         v_intersect = this->intersect(nearby_cluster.bbox, c.bbox);
         if (v_intersect / c_volume > 1 - c_score) {
             cluster_count ++;
@@ -107,7 +107,7 @@ void ClusterTracker::publishIfSupport(Cluster &c) {
                 return;
             }
             ROS_INFO("Publishing Deletion cluster of %zu voxels", c.pointcloud.points.size());
-            this->deletionPub.publish(c);
+            // this->deletionPub.publish(c);
             // Store in a custom voxel cloud message
 
             return;
@@ -116,7 +116,7 @@ void ClusterTracker::publishIfSupport(Cluster &c) {
 }
 
 vector<Cluster> ClusterTracker::queryClusterCenters(Cluster queryCluster) {
-    float searchRadius = this->maxBboxDim + max(queryCluster.bbox.length, queryCluster.bbox.width, queryCluster.bbox.height);
+    float searchRadius = this->maxBboxDim + max({(float)queryCluster.bbox.length, (float)queryCluster.bbox.width, (float)queryCluster.bbox.height});
     flann::Matrix<float> query(new float[3], 1, 3);
     query[0][0] = queryCluster.bbox.center[0];
     query[0][1] = queryCluster.bbox.center[1];
@@ -135,7 +135,7 @@ vector<Cluster> ClusterTracker::queryClusterCenters(Cluster queryCluster) {
     return found_clusters;
 }
 
-void ClusterTracker::calculateBbox(Cluster &c) {
+void ClusterTracker::calculateBbox(Cluster c) {
     // Calculate axis aligned Bbox by finding max and min coord in each direction
     // If this is slow, could probably just approximate the Bbox
     float minX = c.pointcloud.points[0][0], maxX = 0, minY = c.pointcloud.points[0][1], maxY = 0
@@ -187,9 +187,9 @@ float ClusterTracker::intersect(BoundingBox a, BoundingBox b) {
     }
 
     // calculate length of intersection volume in each axial direction
-    x_dim = min(a_x_max, b_x_max) - max(a_x_min, b_x_min);
-    y_dim = min(a_y_max, b_y_max) - max(a_y_min, b_y_min);
-    z_dim = min(a_z_max, b_z_max) - max(a_z_min, b_z_min);
+    x_dim = min({a_x_max, b_x_max}) - max({a_x_min, b_x_min});
+    y_dim = min({a_y_max, b_y_max}) - max({a_y_min, b_y_min});
+    z_dim = min({a_z_max, b_z_max}) - max({a_z_min, b_z_min});
 
     // return the volume of the intersection
     return x_dim * y_dim * z_dim;
