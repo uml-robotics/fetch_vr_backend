@@ -37,8 +37,17 @@ void cloud_cb(const sensor_msgs::PointCloud2& pcd) {
     // Store current version of tree in a local variable, interesting question for Yuri as to whether this is needed
     OcTree *tree_local = mh.tree;
 
-    // Extract pointcloud of all the centers of the voxels from the octomap into PCL format
-    PointCloud<PointXYZ> octomap_cloud = mh.extract_voxel_centers(tree_local);
+    // Extract pointcloud of all the centers of the OCCUPIED voxels from the octomap into PCL format
+    vector<vector<float> > octomap_voxel_centers_and_sizes = mh.extract_occupied_voxel_centers_and_sizes(tree_local);
+    mh.voxel_centers_and_sizes = octomap_voxel_centers_and_sizes;
+    PointCloud<PointXYZ> octomap_cloud;
+    for (auto center_and_size : octomap_voxel_centers_and_sizes) {
+        PointXYZ p;
+        p.x = center_and_size[0];
+        p.y = center_and_size[1];
+        p.z = center_and_size[2];
+        octomap_cloud.points.push_back(p);
+    }
 
     // Convert the pcd msg to a PCL format, extract NANs
     PCLPointCloud2::Ptr cloud2 (new PCLPointCloud2 ());
@@ -63,9 +72,9 @@ void cloud_cb(const sensor_msgs::PointCloud2& pcd) {
 
     // Run Algorithm 1 from the paper on both clouds to get mahalanobis distance info for each point in both clouds
     vector<vector<float> > disappeared = mh.getMahalanobisDistancesByIndex(octomap_cloud, *reading_cloud,
-                                                                        reading_spherical_coords, reading_inverse);
+                                                                           reading_spherical_coords, reading_inverse);
     vector<vector<float> > appeared = mh.getMahalanobisDistancesByIndex(*reading_cloud, octomap_cloud,
-                                                                     octomap_spherical_coords, octomap_inverse);
+                                                                        octomap_spherical_coords, octomap_inverse);
 
     // Threshold both clouds to obtain points which have a high probability of appearing or disappearing
     float mahalanobisThreshold = 5.0;   // make this a param

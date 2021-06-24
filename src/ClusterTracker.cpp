@@ -8,18 +8,23 @@
 #include <string>
 #include <std_msgs/String.h>
 #include <flann/flann.hpp>
+#include <sensor_msgs/PointCloud2.h>
+#include <pcl_conversions/pcl_conversions.h>
+#include <octomap/octomap.h>
 #include <octomap_msgs/Octomap.h>
 #include <math.h>
 
 using namespace std;
+using namespace pcl;
+//using namespace octomap;
 
 ClusterTracker::ClusterTracker(ros::NodeHandle nh) {
-   this->maxBboxDim = 0;
-   this->additionPub = nh.advertise<std_msgs::String>(this->additionTopic, 10); // Will end up publishing a pointcloud here
-   this->deletionPub = nh.advertise<std_msgs::String>(this->deletionTopic, 10); // Will end up publishing some sort of voxel message here
-   flann::Matrix<float> dataset;
-   flann::Index<flann::L2_3D<float> > newTree(dataset, flann::KDTreeIndexParams(4));
-   *this->index = newTree;
+    this->maxBboxDim = 0;
+    this->additionPub = nh.advertise<std_msgs::String>(this->additionTopic, 10); // Will end up publishing a pointcloud here
+    this->deletionPub = nh.advertise<std_msgs::String>(this->deletionTopic, 10); // Will end up publishing some sort of voxel message here
+    flann::Matrix<float> dataset;
+    flann::Index<flann::L2_3D<float> > newTree(dataset, flann::KDTreeIndexParams(4));
+    *this->index = newTree;
 }
 
 void ClusterTracker::AddCluster(Cluster &c) {
@@ -84,13 +89,26 @@ void ClusterTracker::publishIfSupport(Cluster &c) {
             if (c.isAppearing) {
                 ROS_INFO("Publishing Addition cluster of %zu points", c.pointcloud.points.size());
                 // convert the cluster to a sensor_msgs::PointCloud2
-
-                this->additionPub.publish(c);
+                sensor_msgs::PointCloud2 cloud;
+                PointCloud<PointXYZRGB> pclCloud;
+                PCLPointCloud2 cloud2;
+                for (vector<float> point : c.pointcloud.points) {
+                    PointXYZRGB pclPoint;
+                    pclPoint.x = point[0];
+                    pclPoint.y = point[1];
+                    pclPoint.z = point[2];
+                    pclPoint.r = (int)point[3];
+                    pclPoint.g = (int)point[4];
+                    pclPoint.b = (int)point[5];
+                }
+                toPCLPointCloud2(pclCloud, cloud2);
+                pcl_conversions::moveFromPCL(cloud2, cloud);
+                this->additionPub.publish(cloud);
                 return;
             }
             ROS_INFO("Publishing Deletion cluster of %zu voxels", c.pointcloud.points.size());
             this->deletionPub.publish(c);
-            // query the octomap to get all deletion voxels, store these in another octomap
+            // Store in a custom voxel cloud message
 
             return;
         }
@@ -121,7 +139,7 @@ void ClusterTracker::calculateBbox(Cluster &c) {
     // Calculate axis aligned Bbox by finding max and min coord in each direction
     // If this is slow, could probably just approximate the Bbox
     float minX = c.pointcloud.points[0][0], maxX = 0, minY = c.pointcloud.points[0][1], maxY = 0
-            , minZ = c.pointcloud.points[0][2], maxZ = 0;
+    , minZ = c.pointcloud.points[0][2], maxZ = 0;
     for (vector<float> point : c.pointcloud.points) {
         if (point[0] < minX)
             minX = point[0];

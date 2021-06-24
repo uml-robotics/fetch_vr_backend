@@ -1,3 +1,4 @@
+
 //
 // Created by jacob on 5/4/21.
 //
@@ -18,9 +19,10 @@ using namespace octomap;
 
 // A pointcloud which also stores Mahalanobis Distance of each point
 typedef struct MahalanobisPointCloud {
-  vector<vector<float> > points;
-  vector<float> distances;
-  bool isRGB = false;
+    vector<vector<float> > points;
+    vector<float> distances;
+    vector<float> voxel_sizes; // fill up this array if the cloud is a disappearing
+    bool isRGB = false;
 } MahalanobisPointCloud;
 
 typedef struct BoundingBox {

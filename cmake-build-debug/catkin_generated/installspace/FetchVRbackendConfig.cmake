@@ -67,8 +67,8 @@ set(FetchVRbackend_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(FetchVRbackend_SOURCE_PREFIX /home/jacob/catkin_ws/src/FetchVRbackend)
-  set(FetchVRbackend_DEVEL_PREFIX /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/devel)
+  set(FetchVRbackend_SOURCE_PREFIX /home/jacob/catkin_ws/src/fetch_vr_backend)
+  set(FetchVRbackend_DEVEL_PREFIX /home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug/devel)
   set(FetchVRbackend_INSTALL_PREFIX "")
   set(FetchVRbackend_PREFIX ${FetchVRbackend_DEVEL_PREFIX})
 else()

@@ -34,6 +34,8 @@ namespace Mahalanobis {
     public:
         // Variables
         OcTree *tree = nullptr;
+        double occupancy_threshold;
+        vector<vector<float> > voxel_centers_and_sizes;
 
         // Functions for calculating mahalanobis distance
         Matrix3f getCovarianceMatrix(vector<vector<float> > points);
@@ -58,7 +60,7 @@ namespace Mahalanobis {
         void initializeClusterClouds(MahalanobisPointCloud &mainCloud, vector<MahalanobisPointCloud> &clouds,
                                      vector<PointIndices> &indices);
         void ClusterExtraction(MahalanobisPointCloud &cloud, vector<PointIndices> &indices);
-        PointCloud<PointXYZ> extract_voxel_centers(OcTree *octo);
+        vector<vector<float> > extract_occupied_voxel_centers_and_sizes(OcTree *octo);
         MahalanobisHelper() = default;
     };
 }

@@ -144,7 +144,7 @@ Matrix3f MahalanobisHelper::getCovarianceMatrix(vector<vector<float> > points) {
 }
 
 vector<vector<float> > MahalanobisHelper::getMahalanobisDistancesByIndex(PointCloud<PointXYZ> cloud_a, PointCloud<PointXYZRGB> cloud_b,
-                                                      vector<vector<float> > cloud_b_spherical_coords, Matrix3f covarianceMatrix) {
+                                                                         vector<vector<float> > cloud_b_spherical_coords, Matrix3f covarianceMatrix) {
     // Intialize objects (array to be returned, KD tree for cloud_b)
     vector<vector<float> > distancesByIndex;
     search::KdTree<PointXYZRGB> pcdTree;
@@ -246,17 +246,21 @@ vector<vector<float> > MahalanobisHelper::getMahalanobisDistancesByIndex(PointCl
 
 ///Helper Functions for pointcloud cluster extraction
 void MahalanobisHelper::initializeClusterClouds(MahalanobisPointCloud &mainCloud, vector<MahalanobisPointCloud> &clouds,
-                             vector<PointIndices> &indices) {
+                                                vector<PointIndices> &indices) {
     for (const auto & indice : indices) {
-        MahalanobisPointCloud cluster;
+        MahalanobisPointCloud cloud;
         for (int index : indice.indices) {
-            cluster.points.push_back(mainCloud.points[index]);
-            cluster.distances.push_back(mainCloud.distances[index]);
+            cloud.points.push_back(mainCloud.points[index]);
+            cloud.distances.push_back(mainCloud.distances[index]);
             if (mainCloud.isRGB) {
-                cluster.isRGB = true;   // not really needed now, but good to have
+                cloud.isRGB = true;
+            }
+            else {  // the cloud is a subcloud of a disapperaing cloud, fill in the voxel sizes array
+                float voxel_size = this->voxel_centers_and_sizes[index][3];
+                cloud.voxel_sizes.push_back(voxel_size);
             }
         }
-        clouds.push_back(cluster);
+        clouds.push_back(cloud);
     }
 }
 
@@ -278,14 +282,13 @@ void MahalanobisHelper::ClusterExtraction(MahalanobisPointCloud &cloud, vector<P
     ec.extract(indices);
 }
 
-PointCloud<PointXYZ> MahalanobisHelper::extract_voxel_centers(OcTree *octo) {
-    PointCloud<PointXYZ> cloud_out;
+vector<vector<float> > MahalanobisHelper::extract_occupied_voxel_centers_and_sizes(OcTree *octo) {
+    vector<vector<float> > center_coords_and_size;
+    this->occupancy_threshold = (double)this->tree->getOccupancyThres();
     for (OcTree::leaf_iterator it = octo->begin_leafs(), end = octo->end_leafs(); it != end; it++) {
-        PointXYZ point;
-        point.x = (float)it.getX();
-        point.y = (float)it.getY();
-        point.z = (float)it.getZ();
-        cloud_out.points.push_back(point);
+        if (it->getOccupancy() > this->occupancy_threshold) {
+            center_coords_and_size.push_back({(float)it.getX(), (float)it.getY(), (float)it.getZ(), (float)it.getSize()});
+        }
     }
-    return cloud_out;
+    return center_coords_and_size;
 }

@@ -62,10 +62,10 @@ RM = /snap/clion/152/bin/cmake/linux/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jacob/catkin_ws/src/FetchVRbackend
+CMAKE_SOURCE_DIR = /home/jacob/catkin_ws/src/fetch_vr_backend
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug
+CMAKE_BINARY_DIR = /home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug
 
 # Utility rule file for dynamic_reconfigure_generate_messages_cpp.
 
@@ -86,6 +86,6 @@ CMakeFiles/dynamic_reconfigure_generate_messages_cpp.dir/clean:
 .PHONY : CMakeFiles/dynamic_reconfigure_generate_messages_cpp.dir/clean
 
 CMakeFiles/dynamic_reconfigure_generate_messages_cpp.dir/depend:
-	cd /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jacob/catkin_ws/src/FetchVRbackend /home/jacob/catkin_ws/src/FetchVRbackend /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles/dynamic_reconfigure_generate_messages_cpp.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jacob/catkin_ws/src/fetch_vr_backend /home/jacob/catkin_ws/src/fetch_vr_backend /home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug /home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug /home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug/CMakeFiles/dynamic_reconfigure_generate_messages_cpp.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/dynamic_reconfigure_generate_messages_cpp.dir/depend
 

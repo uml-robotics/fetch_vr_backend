@@ -44,7 +44,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/gtest/googlemock/gtest/cmake_install.cmake")
+  include("/home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug/gtest/googlemock/gtest/cmake_install.cmake")
 
 endif()
 

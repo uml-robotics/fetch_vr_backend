@@ -62,10 +62,10 @@ RM = /snap/clion/152/bin/cmake/linux/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jacob/catkin_ws/src/FetchVRbackend
+CMAKE_SOURCE_DIR = /home/jacob/catkin_ws/src/fetch_vr_backend
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug
+CMAKE_BINARY_DIR = /home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/pointcloud_update_node.dir/depend.make
@@ -78,42 +78,42 @@ include CMakeFiles/pointcloud_update_node.dir/flags.make
 
 CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.o: CMakeFiles/pointcloud_update_node.dir/flags.make
 CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.o: ../src/pointcloud_updater.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.o -c /home/jacob/catkin_ws/src/FetchVRbackend/src/pointcloud_updater.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.o -c /home/jacob/catkin_ws/src/fetch_vr_backend/src/pointcloud_updater.cpp
 
 CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jacob/catkin_ws/src/FetchVRbackend/src/pointcloud_updater.cpp > CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jacob/catkin_ws/src/fetch_vr_backend/src/pointcloud_updater.cpp > CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.i
 
 CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jacob/catkin_ws/src/FetchVRbackend/src/pointcloud_updater.cpp -o CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jacob/catkin_ws/src/fetch_vr_backend/src/pointcloud_updater.cpp -o CMakeFiles/pointcloud_update_node.dir/src/pointcloud_updater.cpp.s
 
 CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.o: CMakeFiles/pointcloud_update_node.dir/flags.make
 CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.o: ../src/ClusterTracker.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.o -c /home/jacob/catkin_ws/src/FetchVRbackend/src/ClusterTracker.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.o -c /home/jacob/catkin_ws/src/fetch_vr_backend/src/ClusterTracker.cpp
 
 CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jacob/catkin_ws/src/FetchVRbackend/src/ClusterTracker.cpp > CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jacob/catkin_ws/src/fetch_vr_backend/src/ClusterTracker.cpp > CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.i
 
 CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jacob/catkin_ws/src/FetchVRbackend/src/ClusterTracker.cpp -o CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jacob/catkin_ws/src/fetch_vr_backend/src/ClusterTracker.cpp -o CMakeFiles/pointcloud_update_node.dir/src/ClusterTracker.cpp.s
 
 CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.o: CMakeFiles/pointcloud_update_node.dir/flags.make
 CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.o: ../src/MahalanobisHelper.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.o -c /home/jacob/catkin_ws/src/FetchVRbackend/src/MahalanobisHelper.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.o -c /home/jacob/catkin_ws/src/fetch_vr_backend/src/MahalanobisHelper.cpp
 
 CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jacob/catkin_ws/src/FetchVRbackend/src/MahalanobisHelper.cpp > CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jacob/catkin_ws/src/fetch_vr_backend/src/MahalanobisHelper.cpp > CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.i
 
 CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jacob/catkin_ws/src/FetchVRbackend/src/MahalanobisHelper.cpp -o CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jacob/catkin_ws/src/fetch_vr_backend/src/MahalanobisHelper.cpp -o CMakeFiles/pointcloud_update_node.dir/src/MahalanobisHelper.cpp.s
 
 # Object files for target pointcloud_update_node
 pointcloud_update_node_OBJECTS = \
@@ -528,7 +528,7 @@ devel/lib/FetchVRbackend/pointcloud_update_node: /usr/lib/x86_64-linux-gnu/libvt
 devel/lib/FetchVRbackend/pointcloud_update_node: /usr/lib/x86_64-linux-gnu/libproj.so
 devel/lib/FetchVRbackend/pointcloud_update_node: /usr/lib/x86_64-linux-gnu/libvtkCommonCore-6.3.so.6.3.0
 devel/lib/FetchVRbackend/pointcloud_update_node: CMakeFiles/pointcloud_update_node.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable devel/lib/FetchVRbackend/pointcloud_update_node"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable devel/lib/FetchVRbackend/pointcloud_update_node"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/pointcloud_update_node.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -541,6 +541,6 @@ CMakeFiles/pointcloud_update_node.dir/clean:
 .PHONY : CMakeFiles/pointcloud_update_node.dir/clean
 
 CMakeFiles/pointcloud_update_node.dir/depend:
-	cd /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jacob/catkin_ws/src/FetchVRbackend /home/jacob/catkin_ws/src/FetchVRbackend /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug /home/jacob/catkin_ws/src/FetchVRbackend/cmake-build-debug/CMakeFiles/pointcloud_update_node.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/jacob/catkin_ws/src/fetch_vr_backend /home/jacob/catkin_ws/src/fetch_vr_backend /home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug /home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug /home/jacob/catkin_ws/src/fetch_vr_backend/cmake-build-debug/CMakeFiles/pointcloud_update_node.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/pointcloud_update_node.dir/depend
 
