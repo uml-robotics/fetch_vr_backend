@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>FetchVRbackend</name>
+  <name>fetch_vr_backend</name>
   <version>0.0.0</version>
   <description>The FetchVRbackend package</description>
 
