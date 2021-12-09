@@ -1,0 +1,6 @@
+global_frame: map
+
+update_frequency: 5.0
+publish_frequency: 0.0
+
+# plugins for global costmap are in robot folder

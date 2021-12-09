@@ -1,0 +1,5 @@
+<launch>
+    <include file="$(find nav_config)/launch/include/navigation.launch">
+        <arg name="mapfile" value="$(find nav_config)/maps/nerve-kitchen/latest.yaml" />
+    </include>
+</launch>

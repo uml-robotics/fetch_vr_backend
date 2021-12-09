@@ -1,0 +1,12 @@
+robot_base_frame: base_link
+
+transform_tolerance: 0.5
+
+robot_radius: 0.30
+
+inflater:
+  robot_radius: 0.30   # not being used in inflater layer
+  inflation_radius: 0.075
+  cost_scaling_factor: 10 # default 10, increasing it decreases cost
+
+# Obstacles are defined in robot folders
