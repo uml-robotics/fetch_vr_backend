@@ -10,6 +10,7 @@
 #include <nav_msgs/GetPlan.h>
 #include <tf/transform_listener.h>
 #include <string>
+#include <std_msgs/Int32.h>
 
 actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction>* client_ptr;
 std::list<geometry_msgs::Pose> poses;
@@ -18,10 +19,15 @@ ros::ServiceClient navService;
 tf::TransformListener* listener_;
 
 ros::Publisher plan_pub;
+ros::Publisher waypoint_error_pub;
 
 void navGoalCb(const geometry_msgs::PoseArray::ConstPtr& msg)
 {
     poses.clear();
+
+    int currentIndex = 0;
+    std_msgs::Int32 indexMessage;
+
     ROS_INFO_STREAM("NEW NAV GOAL!");
     bool gotone = false;
     for(geometry_msgs::Pose p : msg->poses)
@@ -57,11 +63,21 @@ void navGoalCb(const geometry_msgs::PoseArray::ConstPtr& msg)
         ROS_INFO_STREAM("REQ START POSE: " << req.request.start.pose.position);
 
         navService.call(req);
+	if(req.response.plan.poses.empty()) {
+            ROS_INFO_STREAM("WAYPOINT IS OUT OF RANGE: " << currentIndex);
+            indexMessage.data = currentIndex;
+            waypoint_error_pub.publish(indexMessage);
+            poses.clear();
+            return;
+        }
+
+
         plan_pub.publish(req.response.plan);
-
 	poses.push_back(p);
-
+        currentIndex++;
     }
+    indexMessage.data = -1;
+    waypoint_error_pub.publish(indexMessage);
 }
 
 void confirmationCB(const std_msgs::Bool::ConstPtr& msg)
@@ -106,6 +122,7 @@ int main(int argc, char** argv){
     ros::Subscriber goal_sub = nh.subscribe("/navigation_goal", 1000, navGoalCb);
     ros::Subscriber confirmation_sub = nh.subscribe("/nav_confirmation", 1000, confirmationCB);
     plan_pub = nh.advertise<nav_msgs::Path>("/nav_path", 1000);
+    waypoint_error_pub = nh.advertise<std_msgs::Int32>("/nav_out_of_range_waypoints", 1000);
 
     tf::TransformListener listener;
     listener_ = &listener;
