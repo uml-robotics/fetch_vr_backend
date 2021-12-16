@@ -125,7 +125,7 @@ int main(int argc, char** argv){
     //ros::Subscriber trajectory_signal_sub = nh.subscribe("/joint_plan_signal", 1000, onNewTrajectory);
     plan_pub = nh.advertise<trajectory_msgs::JointTrajectory>("/joint_plan", 1000);
     is_done_pub = nh.advertise<std_msgs::Bool>("/is_joint_plan_sent", 1000);
-    waypoint_error_pub = nh.advertise<std_msgs::Int32>("/out_of_range_waypoints", 1000);
+    waypoint_error_pub = nh.advertise<std_msgs::Int32>("/manip_out_of_range_waypoints", 1000);
 
     moveit::planning_interface::MoveGroupInterface move_fetch("arm_with_torso");
     move_fetch_ptr = &move_fetch;
