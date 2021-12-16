@@ -6,8 +6,8 @@
 
   <include file="$(find fetch_navigation)/launch/fetch_nav.launch" >
     <arg name="map_file" value="$(arg mapfile)" />
-    <arg name="move_base_include" value="$(find nav_config)/launch/include/move_base.launch.xml" />
-    <arg name="amcl_include" value="$(find nav_config)/launch/include/amcl.launch.xml" />
+    <arg name="move_base_include" value="$(find fetch_vr_backend)/launch/include/move_base.launch.xml" />
+    <arg name="amcl_include" value="$(find fetch_vr_backend)/launch/include/amcl.launch.xml" />
   </include>
 
   <node pkg="nav_config" type="dynamic_min_vel_x_node" name="dynamic_min_vel_x_node" />
