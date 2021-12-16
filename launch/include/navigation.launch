@@ -10,5 +10,5 @@
     <arg name="amcl_include" value="$(find fetch_vr_backend)/launch/include/amcl.launch.xml" />
   </include>
 
-  <node pkg="nav_config" type="dynamic_min_vel_x_node" name="dynamic_min_vel_x_node" />
+<!--  <node pkg="nav_config" type="dynamic_min_vel_x_node" name="dynamic_min_vel_x_node" /> -->
 </launch>
