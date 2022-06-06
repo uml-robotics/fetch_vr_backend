@@ -4,7 +4,8 @@
     <node name="gripper_node" pkg="fetch_vr_backend" type="gripper_node" />
     <!-- <node name="direct_control_node" pkg="fetch_vr_backend" type="direct_control_node" /> -->
     <!-- <node name="nav_node" pkg="fetch_vr_backend" type="nav_node" /> -->
-    <node name="nav_plan_node" pkg="fetch_vr_backend" type="nav_plan_node" />
+    <!-- <node name="nav_plan_node" pkg="fetch_vr_backend" type="nav_plan_node" /> -->
+<!--     <node name="nav_node" pkg="fetch_vr_backend" type="nav.py" output="screen" /> -->
     <node name="arm_command_node" pkg="fetch_vr_backend" type="arm_command_node" />
 
 </launch>
