@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 import rospy
 from std_msgs.msg import Bool
-from geometry_msgs.msg import PoseArray
+from geometry_msgs.msg import PoseArray, PoseStamped
 from spot_msgs.msg import TrajectoryAction, TrajectoryGoal
 import tf2_ros
 import actionlib
@@ -24,6 +24,8 @@ class Nav:
             if len(self.poses) <= 0:
                 rospy.logerr("[SPOT_NAV]: Confirmation sent but no goal poses currently queued")
                 return
+            pose = self.poses.pop(0)
+
             # send pose to the spot-ros handle trajectory server
             # Creating action client
             client = actionlib.SimpleActionClient('/spot/trajectory', TrajectoryAction)
@@ -33,10 +35,11 @@ class Nav:
 
             # Creating and setting parameters of the action goal
             trajectory_goal = TrajectoryGoal()
-            pose = self.poses.pop(0)
-            pose.frame_id = "vision"
+            ps = PoseStamped()
+            ps.pose = pose
+            ps.header.frame_id = "odom"
             tf_buffer = tf2_ros.Buffer()
-            trajectory_goal.target_pose = tf_buffer.transform(pose, "body", rospy.Duration(1))
+            trajectory_goal.target_pose = tf_buffer.transform(ps, "body", rospy.Duration(1))
             trajectory_goal.target_pose = pose
             trajectory_goal.precise_positioning = True
             trajectory_goal.duration.data = rospy.Duration(2)
