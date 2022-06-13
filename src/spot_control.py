@@ -1,9 +1,12 @@
 #! /usr/bin/env python3
 import rospy
-from std_srvs.srv import Trigger, TriggerRequest, TriggerResponse
-class SpotControl():
+from std_srvs.srv import Trigger, TriggerResponse
+
+
+class SpotControl:
     def __init__(self):
-        spot_control_sub = rospy.Subscriber("/spot_control", self.control_update_cb)
+        rospy.Subscriber("/spot_control", self.control_update_cb)
+        self.result_pub = rospy.Publisher("/spot_control_result", TriggerResponse, queue_size=1)
         rospy.wait_for_service("claim")
         rospy.wait_for_service("power_on")
         rospy.wait_for_service("sit")
@@ -20,26 +23,33 @@ class SpotControl():
         self.release = rospy.ServiceProxy("release", Trigger())
 
     def control_update_cb(self, msg):
+        resp = TriggerResponse
         if msg.data == "claim":
-            self.claim(Trigger())
+            resp = self.claim(Trigger())
         elif msg.data == "power on":
-            self.power_on(Trigger())
+            resp = self.power_on(Trigger())
         elif msg.data == "sit":
-            self.sit(Trigger())
+            resp = self.sit(Trigger())
         elif msg.data == "stand":
-            self.stand(Trigger())
+            resp = self.stand(Trigger())
         elif msg.data == "stop":
-            self.stop(Trigger())
+            resp = self.stop(Trigger())
         elif msg.data == "power off":
-            self.power_off(Trigger())
+            resp = self.power_off(Trigger())
         elif msg.data == "release":
-            self.release(Trigger())
+            resp = self.release(Trigger())
         else:
-            rospy.logerr("[SPOT_CONTROL]: Recieved an unkown control string")
+            rospy.logerr("[SPOT_CONTROL]: Received an unknown control string")
+        if not resp.success:
+            rospy.logerr("[SPOT_CONTROL]: " + resp.message)
+        else:
+            rospy.loginfo("[SPOT_CONTROL]: " + resp.message)
+        self.result_pub.publish(resp)
+
 
 def main():
     rospy.init_node("spot-control-node")
-    sc = SpotControl()
+    SpotControl()
     rospy.spin()
 
 
