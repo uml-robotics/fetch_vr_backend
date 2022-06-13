@@ -23,7 +23,7 @@ class Nav:
         trajectory_goal.duration.data = rospy.Duration(2)
 
         # send goal to the action server, wait for result, print result to console
-        rospy.loginfo("Aboutta hit up the client")
+        # rospy.loginfo("Aboutta hit up the client")
         client.send_goal(trajectory_goal)
         client.wait_for_result()
         result = client.get_result()
