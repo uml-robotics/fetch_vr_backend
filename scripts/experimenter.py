@@ -124,9 +124,9 @@ frame = tk.Frame(
 
 
 DELAY_OPTIONS = [
-1,
-2,
-3
+90,
+135,
+180
 ]
 delay = tk.IntVar(frame)
 delay.set(DELAY_OPTIONS[0])
