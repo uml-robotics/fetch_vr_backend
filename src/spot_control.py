@@ -1,11 +1,12 @@
 #! /usr/bin/env python3
 import rospy
 from std_srvs.srv import Trigger, TriggerResponse
+from std_msgs.msg import String
 
 
 class SpotControl:
     def __init__(self):
-        rospy.Subscriber("/spot_control", self.control_update_cb)
+        rospy.Subscriber("/spot_control", String, self.control_update_cb)
         self.result_pub = rospy.Publisher("/spot_control_result", TriggerResponse, queue_size=1)
         rospy.wait_for_service("claim")
         rospy.wait_for_service("power_on")
