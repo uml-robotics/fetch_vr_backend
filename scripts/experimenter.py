@@ -66,8 +66,8 @@ def askSA():
 
 
 pause_pub = rospy.Publisher('pause', Bool, queue_size=10)
-start_pub = rospy.Publisher('run_started', Bool, queue_size=10)
-end_pub = rospy.Publisher('run_ended', Bool, queue_size=10)
+start_pub = rospy.Publisher('start', Bool, queue_size=10)
+end_pub = rospy.Publisher('stop', Bool, queue_size=10)
 question_pub = rospy.Publisher('question', String, queue_size=10)
 rospy.init_node('experimenter_ui', anonymous=True)
 rate = rospy.Rate(10)
