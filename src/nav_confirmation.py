@@ -12,6 +12,7 @@ class Nav:
         self.poses = []
         self.result_pub = rospy.Publisher("/spot_nav_result", Bool, queue_size=10)
         rospy.Subscriber("/nav_goal_pose", PoseStamped, self.confirmation_cb)
+        rospy.Subscriber("/spot/body_pose", PoseStamped, self.body_pose_cb)
 
     def confirmation_cb(self, msg):
         client = actionlib.SimpleActionClient('/spot/trajectory', TrajectoryAction)
@@ -31,6 +32,22 @@ class Nav:
 
         # Send result to unity
         self.result_pub.publish(result.success)
+
+    def body_pose_cb(self, msg):
+        client = actionlib.SimpleActionClient('/spot/trajectory', TrajectoryAction)
+        client.wait_for_server()
+
+        trajectory_goal = TrajectoryGoal()
+        trajectory_goal.target_pose = msg
+        trajectory_goal.precise_positioning = True
+        trajectory_goal.duration.data = rospy.Duration(2)
+
+        # send goal to the action server, wait for result, print result to console
+        # rospy.loginfo("Aboutta hit up the client")
+        client.send_goal(trajectory_goal)
+        client.wait_for_result()
+        result = client.get_result()
+        rospy.loginfo(result)
 
 
 if __name__ == "__main__":
