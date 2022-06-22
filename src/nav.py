@@ -1,6 +1,6 @@
 #! /usr/bin/env python2
 import rospy
-from std_msgs.msg import Bool
+from std_msgs.msg import Bool, String
 from geometry_msgs.msg import PoseArray
 from tf2_geometry_msgs import PoseStamped
 from geometry_msgs.msg import PoseStamped as GeoPoseStamped
@@ -39,6 +39,8 @@ class Nav:
             gps.header = ps.header
             gps.pose = ps.pose
             self.result_pub.publish(gps)
+
+
 
 
 if __name__ == "__main__":

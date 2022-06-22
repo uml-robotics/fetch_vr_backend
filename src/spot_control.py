@@ -1,7 +1,10 @@
 #! /usr/bin/env python3
 import rospy
-from std_srvs.srv import Trigger, TriggerResponse
+from std_srvs.srv import Trigger, TriggerResponse, TriggerRequest
 from std_msgs.msg import String
+import actionlib
+from spot_msgs.msg import TrajectoryAction, TrajectoryGoal, TrajectoryResult
+from geometry_msgs.msg import PoseStamped
 
 
 class SpotControl:
@@ -17,28 +20,30 @@ class SpotControl:
         rospy.wait_for_service("release")
         self.claim = rospy.ServiceProxy("claim", Trigger)
         self.power_on = rospy.ServiceProxy("power_on", Trigger)
-        self.sit = rospy.ServiceProxy("sit", Trigger)
-        self.stand = rospy.ServiceProxy("stand", Trigger)
+        self.dock = rospy.ServiceProxy("dock", Trigger)
+        self.undock = rospy.ServiceProxy("undock", Trigger)
         self.stop = rospy.ServiceProxy("stop", Trigger)
         self.power_off = rospy.ServiceProxy("power_off", Trigger)
-        self.release = rospy.ServiceProxy("release", Trigger())
+        self.release = rospy.ServiceProxy("release", Trigger)
+        self.robot_mover = actionlib.SimpleActionClient('/spot/trajectory', TrajectoryAction)
+        self.robot_mover.wait_for_server()
 
     def control_update_cb(self, msg):
         resp = TriggerResponse
         if msg.data == "claim":
-            resp = self.claim(Trigger())
+            resp = self.claim(TriggerRequest())
         elif msg.data == "power on":
-            resp = self.power_on(Trigger())
-        elif msg.data == "sit":
-            resp = self.sit(Trigger())
-        elif msg.data == "stand":
-            resp = self.stand(Trigger())
+            resp = self.power_on(TriggerRequest())
+        elif msg.data == "dock":
+            resp = self.dock(TriggerRequest())
+        elif msg.data == "undock":
+            resp = self.undock(TriggerRequest())
         elif msg.data == "stop":
-            resp = self.stop(Trigger())
+            resp = self.stop(TriggerRequest())
         elif msg.data == "power off":
-            resp = self.power_off(Trigger())
+            resp = self.power_off(TriggerRequest())
         elif msg.data == "release":
-            resp = self.release(Trigger())
+            resp = self.release(TriggerRequest())
         else:
             rospy.logerr("[SPOT_CONTROL]: Received an unknown control string")
         if not resp.success:
