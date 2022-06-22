@@ -29,8 +29,6 @@ class Nav:
                 rospy.logerr("[SPOT_NAV]: Confirmation sent but no goal poses currently queued")
                 return
             pose = self.poses.pop(0)
-
-
             ps = PoseStamped()
             ps.pose = pose
             ps.header.frame_id = "odom"
