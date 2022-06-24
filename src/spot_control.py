@@ -11,27 +11,28 @@ class SpotControl:
     def __init__(self):
         rospy.Subscriber("/spot_control", String, self.control_update_cb)
         self.result_pub = rospy.Publisher("/spot_control_result", TriggerResponse, queue_size=1)
-        rospy.wait_for_service("claim")
-        rospy.wait_for_service("power_on")
-        rospy.wait_for_service("sit")
-        rospy.wait_for_service("stand")
-        rospy.wait_for_service("stop")
-        rospy.wait_for_service("power_off")
-        rospy.wait_for_service("release")
-        self.claim = rospy.ServiceProxy("claim", Trigger)
-        self.power_on = rospy.ServiceProxy("power_on", Trigger)
-        self.dock = rospy.ServiceProxy("dock", Trigger)
-        self.undock = rospy.ServiceProxy("undock", Trigger)
-        self.stop = rospy.ServiceProxy("stop", Trigger)
-        self.power_off = rospy.ServiceProxy("power_off", Trigger)
-        self.release = rospy.ServiceProxy("release", Trigger)
+        rospy.wait_for_service("/spot/claim")
+        rospy.wait_for_service("/spot/power_on")
+        rospy.wait_for_service("/spot/sit")
+        rospy.wait_for_service("/spot/stand")
+        rospy.wait_for_service("/spot/stop")
+        rospy.wait_for_service("/spot/power_off")
+        rospy.wait_for_service("/spot/release")
+        self.claim = rospy.ServiceProxy("/spot/claim", Trigger)
+        self.power_on = rospy.ServiceProxy("/spot/power_on", Trigger)
+        self.dock = rospy.ServiceProxy("/spot/dock", Trigger)
+        self.undock = rospy.ServiceProxy("/spot/undock", Trigger)
+        self.stop = rospy.ServiceProxy("/spot/stop", Trigger)
+        self.power_off = rospy.ServiceProxy("/spot/power_off", Trigger)
+        self.release = rospy.ServiceProxy("/spot/release", Trigger)
         self.robot_mover = actionlib.SimpleActionClient('/spot/trajectory', TrajectoryAction)
         self.robot_mover.wait_for_server()
+        rospy.loginfo("[SPOT_CONTROL]: Done Initializing!")
 
     def control_update_cb(self, msg):
         resp = TriggerResponse
         if msg.data == "claim":
-            resp = self.claim(TriggerRequest())
+            resp = self.claim()
         elif msg.data == "power on":
             resp = self.power_on(TriggerRequest())
         elif msg.data == "dock":
@@ -46,10 +47,11 @@ class SpotControl:
             resp = self.release(TriggerRequest())
         else:
             rospy.logerr("[SPOT_CONTROL]: Received an unknown control string")
+            return
         if not resp.success:
             rospy.logerr("[SPOT_CONTROL]: " + resp.message)
         else:
-            rospy.loginfo("[SPOT_CONTROL]: " + resp.message)
+            rospy.loginfo("[SPOT_CONTROL]: " + resp.message + "with command " + msg.data)
         self.result_pub.publish(resp)
 
 

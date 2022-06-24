@@ -16,7 +16,7 @@ class Nav:
         self.tagged_object_pub = rospy.Publisher("/tagged_objects", String, queue_size=10)
         self.fiducial_pose_pub = rospy.Publisher("/fiducial_poses", PoseStamped, queue_size=10)
         rospy.Subscriber("/nav_goal_pose", PoseStamped, self.confirmation_cb)
-        rospy.Subscriber("/spot/body_pose", PoseStamped, self.body_pose_cb)
+        rospy.Subscriber("/spot/vr_body_pose", PoseStamped, self.body_pose_cb)
         rospy.Subscriber("/get_tagged_objects", Bool, self.get_tagged_objects_cb)
         rospy.Subscriber("/get_fiducial_pose", String, self.get_fiducial_pose_cb)
 
@@ -82,7 +82,7 @@ class Nav:
             rospy.logerr("[SPOT_NAV]: " + resp[1])
             return
         self.fiducial_pose_pub.publish(resp[1]) # resp[1] is the pose of the object
-        rospy.loginfo("[SPOT_NAV]: Success getting pose for object " + msg.data)
+        rospy.loginfo("[SPOT_NAV]: Success getting pose of object with ID " + msg.data)
 
 
 if __name__ == "__main__":
