@@ -111,8 +111,8 @@ def unPause():
     isPaused = False
     pauseBtn.configure(text="PAUSE")
     global totalPauseDuration
-    totalPauseDuration += (datetime.now() - pauseStartTime)
     global pauseStartTime
+    totalPauseDuration += (datetime.now() - pauseStartTime)
     pauseStartTime = -1
     if isSAStarted:
         unPauseSATimer()
