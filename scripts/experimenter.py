@@ -12,7 +12,6 @@ from datetime import timedelta
 
 # CONSTANTS
 DELAY_OPTIONS = [
-1,
 90,
 135,
 180
