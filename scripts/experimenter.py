@@ -1,8 +1,11 @@
 #!/usr/bin/env python
+from email import header
+import time
 import Tkinter as tk
 import rospy
 from std_msgs.msg import String
 from std_msgs.msg import Bool
+from std_msgs.msg import Header
 import threading
 from datetime import datetime
 from datetime import timedelta
@@ -52,6 +55,7 @@ saStartTime = -1
 pause_pub = rospy.Publisher('pause', Bool, queue_size=10)
 start_pub = rospy.Publisher('start', Bool, queue_size=10)
 end_pub = rospy.Publisher('stop', Bool, queue_size=10)
+time_pub = rospy.Publisher('runtime', Header, queue_size=10)
 question_pub = rospy.Publisher('question', String, queue_size=10)
 rospy.init_node('experimenter_ui', anonymous=True)
 rate = rospy.Rate(10)
@@ -67,7 +71,9 @@ def update():
         elapsedTime = totalElapsedTime - currentPauseElapsedTime - totalPauseDuration
 
         timeLabel.config(text=str(elapsedTime).split(".")[0])
-
+        timeMsg = Header()
+        timeMsg.stamp.secs = elapsedTime.total_seconds()
+        time_pub.publish(timeMsg)
         if isSAStarted:
             if(isPaused):
                 elapsedSATime = timedelta(seconds=0)
@@ -164,7 +170,7 @@ def startSATimer():
     global saCurrentDelay
     saCurrentDelay = delay.get()
     global saCallback
-    saCallback = threading.Timer(delay.get(), askSA)
+    saCallback = threading.Timer(saCurrentDelay, askSA)
     saCallback.start()
     global saStartTime
     saStartTime = datetime.now()
@@ -175,8 +181,8 @@ def startSATimer():
     sa3Select.pack_forget()
 
 def pauseSATimer():
+    global saCallback
     if(saCallback):
-        global saCallback
         saCallback.cancel()
     totalTimeRun = pauseStartTime - saStartTime
     global saCurrentDelay
@@ -195,8 +201,8 @@ def clearSATimer():
     saBtn.configure(text="START SA TIMER")
     global saCurrentDelay
     saCurrentDelay = -1
+    global saCallback
     if(saCallback):
-        global saCallback
         saCallback.cancel()
     global saStartTime
     saStartTime = -1
