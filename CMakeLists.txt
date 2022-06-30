@@ -8,7 +8,7 @@ add_compile_options(-std=c++11)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  roscpp actionlib moveit_ros_planning_interface sensor_msgs geometry_msgs tf
+  roscpp actionlib moveit_ros_planning_interface sensor_msgs geometry_msgs tf control_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -137,6 +137,8 @@ include_directories(
  add_executable(nav_node  src/nav.cpp)
  add_executable(nav_plan_node  src/nav_plan.cpp)
  add_executable(arm_command_node  src/arm_command.cpp)
+ add_executable(head_command_node  src/head_command.cpp)
+ add_executable(torso_command_node  src/torso_command.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -165,6 +167,12 @@ include_directories(
    ${catkin_LIBRARIES}
  )
  target_link_libraries(arm_command_node
+   ${catkin_LIBRARIES}
+ )
+target_link_libraries(head_command_node
+   ${catkin_LIBRARIES}
+ )
+target_link_libraries(torso_command_node
    ${catkin_LIBRARIES}
  )
 
