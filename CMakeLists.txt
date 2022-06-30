@@ -138,6 +138,7 @@ include_directories(
  add_executable(nav_plan_node  src/nav_plan.cpp)
  add_executable(arm_command_node  src/arm_command.cpp)
  add_executable(head_command_node  src/head_command.cpp)
+ add_executable(torso_command_node  src/torso_command.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -169,6 +170,9 @@ include_directories(
    ${catkin_LIBRARIES}
  )
 target_link_libraries(head_command_node
+   ${catkin_LIBRARIES}
+ )
+target_link_libraries(torso_command_node
    ${catkin_LIBRARIES}
  )
 

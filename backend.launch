@@ -7,5 +7,6 @@
     <node name="nav_plan_node" pkg="fetch_vr_backend" type="nav_plan_node" />
     <node name="arm_command_node" pkg="fetch_vr_backend" type="arm_command_node" />
     <node name="head_command_node" pkg="fetch_vr_backend" type="head_command_node" />
+    <node name="torso_command_node" pkg="fetch_vr_backend" type="torso_command_node" />
 
 </launch>
