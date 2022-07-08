@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 import rospy
 from std_srvs.srv import Trigger, TriggerResponse, TriggerRequest
-from std_msgs.msg import String
+from std_msgs.msg import String, Bool
 import actionlib
 from spot_msgs.msg import TrajectoryAction, TrajectoryGoal, TrajectoryResult
 from geometry_msgs.msg import PoseStamped
@@ -10,7 +10,7 @@ from geometry_msgs.msg import PoseStamped
 class SpotControl:
     def __init__(self):
         rospy.Subscriber("/spot_control", String, self.control_update_cb)
-        self.result_pub = rospy.Publisher("/spot_control_result", TriggerResponse, queue_size=1)
+        self.result_pub = rospy.Publisher("/spot_control_result", Bool, queue_size=1)
         rospy.wait_for_service("/spot/claim")
         rospy.wait_for_service("/spot/power_on")
         rospy.wait_for_service("/spot/sit")
@@ -52,7 +52,9 @@ class SpotControl:
             rospy.logerr("[SPOT_CONTROL]: " + resp.message)
         else:
             rospy.loginfo("[SPOT_CONTROL]: " + resp.message + "with command " + msg.data)
-        self.result_pub.publish(resp)
+        result = Bool()
+        result.data = resp.success
+        self.result_pub.publish(result)
 
 
 def main():
