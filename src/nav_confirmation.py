@@ -16,6 +16,7 @@ class Nav:
         self.result_pub = rospy.Publisher("/spot_nav_result", Bool, queue_size=10)
         self.tagged_object_pub = rospy.Publisher("/tagged_objects", String, queue_size=10)
         self.fiducial_pose_pub = rospy.Publisher("/fiducial_poses", PoseStamped, queue_size=10)
+        self.nominal_body_pub = rospy.Publisher("/nominal_body_update", Bool, queue_size=10)
         rospy.Subscriber("/nav_goal_pose", PoseStamped, self.confirmation_cb)
         rospy.Subscriber("/spot/vr_body_pose", PoseStamped, self.body_pose_cb)
         rospy.Subscriber("/get_tagged_objects", Bool, self.get_tagged_objects_cb)
@@ -53,6 +54,9 @@ class Nav:
 
         # Send result to unity
         self.result_pub.publish(result.success)
+        t = Bool()
+        t.data = True
+        self.nominal_body_pub.publish(t)
 
     def body_pose_cb(self, msg):
         self.body_pose_queue.append(msg)
@@ -93,7 +97,6 @@ if __name__ == "__main__":
     spotNav = Nav()
     rospy.loginfo("[SPOT_NAV]: Backend up and running!")
     while not rospy.is_shutdown():
-        rospy.loginfo("checking for poses")
         if len(spotNav.body_pose_queue) > 0:
             pose = spotNav.body_pose_queue.pop()
             client = actionlib.SimpleActionClient('/spot/body_pose', TrajectoryAction)
@@ -104,7 +107,7 @@ if __name__ == "__main__":
             trajectory_goal.precise_positioning = True
             trajectory_goal.duration.data = rospy.Duration(2)
             # send goal to the action server, wait for result, print result to console
-            rospy.loginfo("Aboutta hit up the client")
+            # rospy.loginfo("Aboutta hit up the client")
             client.send_goal(trajectory_goal)
             client.wait_for_result()
             result = client.get_result()
