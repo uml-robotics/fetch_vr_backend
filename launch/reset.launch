@@ -1,0 +1,5 @@
+<launch>
+	<node name="common_manipulation" pkg="common_manipulation" type="test_prepare_arm" />
+	<node name="gripper_reset" pkg="fetch_vr_backend" type="gripper_reset.bash" />
+	<node name="head_reset" pkg="fetch_vr_backend" type="head_reset.bash" />
+</launch>
