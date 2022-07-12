@@ -1,0 +1,14 @@
+<launch>
+
+  <arg name="map" default="fetchit_map" />
+  <arg name="mapfile" default="$(find fetch_vr_backend)/maps/$(arg map)/$(arg map).yaml" />
+  <!-- Change config to use in amcl/move_base includes -->
+
+  <include file="$(find fetch_navigation)/launch/fetch_nav.launch" >
+    <arg name="map_file" value="$(arg mapfile)" />
+    <arg name="move_base_include" value="$(find fetch_vr_backend)/launch/include/move_base.launch_no_scan.xml" />
+    <arg name="amcl_include" value="$(find fetch_vr_backend)/launch/include/amcl.launch.xml" />
+  </include>
+
+  <!-- node pkg="fetch_vr_backend" type="dynamic_min_vel_x_node" name="dynamic_min_vel_x_node" / -->
+</launch>
