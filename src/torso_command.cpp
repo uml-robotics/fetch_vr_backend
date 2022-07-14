@@ -34,20 +34,26 @@ void torsoJointCB(const sensor_msgs::JointState::ConstPtr& msg)
 
     trajectory_msgs::JointTrajectoryPoint point;
     point.positions = {msg->position[torso_index]};
-    point.velocities = {msg->velocity[torso_index]};
-    point.accelerations = {0};
-    point.effort = {msg->effort[torso_index]};
+//    point.velocities = {msg->velocity[torso_index]};
+//    point.accelerations = {0};
+//    point.effort = {msg->effort[torso_index]};
 
     trajectory.points.push_back(point);
     goal.trajectory = trajectory;
 
     control_msgs::JointTolerance tolerance;
     tolerance.name = "torso_lift_joint";
-    tolerance.position = 0.05;
+    tolerance.position = 0.5;
+    tolerance.velocity = 1.0;
+    tolerance.acceleration = 1.0;
+
     goal.path_tolerance.push_back(tolerance);
 
-    tolerance.position = 0.01;
+    tolerance.position = 0.1;
     goal.goal_tolerance.push_back(tolerance);
+
+    ros::Duration t(10.0);
+    goal.goal_time_tolerance = t;
 
     client->sendGoal(goal);
 }
