@@ -23,14 +23,14 @@ class Nav:
         rospy.Subscriber("/get_fiducial_pose", String, self.get_fiducial_pose_cb)
 
     def tagged_objects_client(self):
-        rospy.wait_for_service("list_tagged_objects")
-        get_tagged_objects = rospy.ServiceProxy("list_tagged_objects", ListTaggedObjects)
+        rospy.wait_for_service("/spot/list_tagged_objects")
+        get_tagged_objects = rospy.ServiceProxy("/spot/list_tagged_objects", ListTaggedObjects)
         resp = get_tagged_objects(ListTaggedObjectsRequest())
         return resp.waypoint_ids
 
     def fiducial_pose_client(self, id):
-        rospy.wait_for_service("get_object_pose")
-        get_object_pose = rospy.ServiceProxy("get_object_pose", GetObjectPose)
+        rospy.wait_for_service("/spot/get_object_pose")
+        get_object_pose = rospy.ServiceProxy("/spot/get_object_pose", GetObjectPose)
         req = GetObjectPoseRequest()
         req.id = id
         resp = get_object_pose(req)
@@ -77,10 +77,13 @@ class Nav:
         # rospy.loginfo(result)
 
     def get_tagged_objects_cb(self, msg):
+        rospy.loginfo(msg.data)
         if msg.data:
+            rospy.loginfo("aboutta get ids")
             # Get the tagged objects by calling the tagged_objects server
             tagged_object_ids = self.tagged_objects_client()
             for tagged_object in tagged_object_ids:
+                rospy.loginfo("publishing id {}".format(tagged_object))
                 self.tagged_object_pub.publish(tagged_object)
 
     def get_fiducial_pose_cb(self, msg):

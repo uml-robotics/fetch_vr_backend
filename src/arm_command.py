@@ -1,3 +1,4 @@
+#! /usr/bin/env python2
 import rospy
 from geometry_msgs.msg import PoseArray
 from tf2_geometry_msgs import PoseStamped
