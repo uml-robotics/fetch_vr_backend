@@ -24,7 +24,7 @@ class SpotArmCommand:
         rospy.loginfo("[SPOT_MANIP]: Finished configuring!")
 
     def goal_cb(self, msg):
-        self.poses.clear()
+        self.poses = []
         for pose in msg.poses:
             self.poses.append(pose)
 
