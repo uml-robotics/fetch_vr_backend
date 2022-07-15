@@ -47,8 +47,17 @@ class SpotArmCommand:
             req.pose_point = [ps.pose.position.x, ps.pose.position.y, ps.pose.position.z,
                               ps.pose.orientation.x, ps.pose.orientation.y, ps.pose.orientation.z,
                               ps.pose.orientation.w]
+            # Set wrist_tform_tool to be the location of /gripper in the /link_wr1 frame
+            wrist_tform_tool = self.tf_buffer.lookup_transform('gripper', 'link_wr1', rospy.Time())
+            wrist_tform_tool_array = [wrist_tform_tool.transform.translation.x,
+                                      wrist_tform_tool.transform.translation.y,
+                                      wrist_tform_tool.transform.translation.z, wrist_tform_tool.transform.rotation.x,
+                                      wrist_tform_tool.transform.rotation.y, wrist_tform_tool.transform.rotation.z,
+                                      wrist_tform_tool.transform.rotation.w]
+            req.wrist_tform_tool = wrist_tform_tool_array
             resp = self.pose_gripper(req)
-            self.result_pub.publish(resp.success)
+
+            self.result_pub.publish(resp.success, wrist_tform_tool=wrist_tform_tool_array)
 
 
 if __name__ == "__main__":
