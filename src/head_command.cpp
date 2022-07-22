@@ -44,15 +44,20 @@ void headJointsCb(const sensor_msgs::JointState::ConstPtr& msg)
 
     control_msgs::JointTolerance tolerance;
     tolerance.name = "head_tilt_joint";
-    tolerance.position = 0.05;
+    tolerance.position = 3.2;
+    tolerance.velocity = 3.2;
+    tolerance.acceleration = 1.0;
     goal.path_tolerance.push_back(tolerance);
     tolerance.name = "head_pan_joint";
     goal.path_tolerance.push_back(tolerance);
 
-    tolerance.position = 0.01;
+    tolerance.position = 0.1;
     goal.goal_tolerance.push_back(tolerance);
     tolerance.name = "head_tilt_joint";
     goal.goal_tolerance.push_back(tolerance);
+
+    ros::Duration t(10.0);
+    goal.goal_time_tolerance = t;
 
     client->sendGoal(goal);
 }

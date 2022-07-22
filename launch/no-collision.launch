@@ -1,0 +1,5 @@
+<launch>
+    <include file="$(find fetch_vr_backend)/launch/include/navigation_no_scan.launch">
+        <arg name="mapfile" value="$(find fetch_vr_backend)/maps/vr-experiment/latest.yaml" />
+    </include>
+</launch>
