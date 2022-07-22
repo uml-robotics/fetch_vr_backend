@@ -1,0 +1,98 @@
+{
+    "configs":[
+        {
+            "id":"1",
+            "run": [
+                {
+                    "id":"1",
+                    "question": [
+                        {"id":1, "time":90, "q1":1, "q2":0, "q3":1 },
+                        {"id":2, "time":135, "q1":1, "q2":0, "q3":2 },
+                        {"id":3, "time":190, "q1":1, "q2":0, "q3":3 }
+                    ],
+                    "obstacles": {"OA":"wet floor sign", "OB":"traffic cone", "OC":"toolbox"},
+                    "targets": {
+                        "TA":{"id":"t1", "direction":"up"},
+                        "TB":{"id":"t2", "direction":"down"},
+                        "TC":{"id":"t3", "direction":"left"}
+                    }
+                },
+                {
+                    "id":"2",
+                    "question": [
+                        {"id":1, "time":90, "q1":1, "q2":0, "q3":1 },
+                        {"id":2, "time":135, "q1":1, "q2":0, "q3":2 },
+                        {"id":3, "time":190, "q1":1, "q2":0, "q3":3 }
+                    ],
+                    "obstacles": {"OA":"wet floor sign", "OB":"traffic cone", "OC":"toolbox"},
+                    "targets": {
+                        "TA":{"id":"t1", "direction":"up"},
+                        "TB":{"id":"t2", "direction":"down"},
+                        "TC":{"id":"t3", "direction":"left"}
+                    }
+                },
+                {
+                    "id":"3",
+                    "question": [
+                        {"id":1, "time":90, "q1":1, "q2":0, "q3":1 },
+                        {"id":2, "time":135, "q1":1, "q2":0, "q3":2 },
+                        {"id":3, "time":190, "q1":1, "q2":0, "q3":3 }
+                    ],
+                    "obstacles": {"OA":"wet floor sign", "OB":"traffic cone", "OC":"toolbox"},
+                    "targets": {
+                        "TA":{"id":"t1", "direction":"up"},
+                        "TB":{"id":"t2", "direction":"down"},
+                        "TC":{"id":"t3", "direction":"left"}
+                    }
+                }
+            ]
+        },
+        {
+            "id":"2",
+            "run": [
+                {
+                    "id":"1",
+                    "question": [
+                        {"id":1, "time":90, "q1":2, "q2":1, "q3":1 },
+                        {"id":2, "time":135, "q1":2, "q2":1, "q3":2 },
+                        {"id":3, "time":190, "q1":2, "q2":1, "q3":3 }
+                    ],
+                    "obstacles": {"OA":"wet floor sign", "OB":"traffic cone", "OC":"toolbox"},
+                    "targets": {
+                        "TA":{"id":"t1", "direction":"up"},
+                        "TB":{"id":"t2", "direction":"down"},
+                        "TC":{"id":"t3", "direction":"left"}
+                    }
+                },
+                {
+                    "id":"2",
+                    "question": [
+                        {"id":1, "time":90, "q1":2, "q2":1, "q3":1 },
+                        {"id":2, "time":135, "q1":2, "q2":2, "q3":2 },
+                        {"id":3, "time":190, "q1":2, "q2":2, "q3":3 }
+                    ],
+                    "obstacles": {"OA":"wet floor sign", "OB":"traffic cone", "OC":"toolbox"},
+                    "targets": {
+                        "TA":{"id":"t1", "direction":"up"},
+                        "TB":{"id":"t2", "direction":"down"},
+                        "TC":{"id":"t3", "direction":"left"}
+                    }
+                },
+                {
+                    "id":"3",
+                    "question": [
+                        {"id":1, "time":90, "q1":2, "q2":1, "q3":1 },
+                        {"id":2, "time":135, "q1":2, "q2":1, "q3":2 },
+                        {"id":3, "time":190, "q1":2, "q2":1, "q3":3 }
+                    ],
+                    "obstacles": {"OA":"wet floor sign", "OB":"traffic cone", "OC":"toolbox"},
+                    "targets": {
+                        "TA":{"id":"t1", "direction":"up"},
+                        "TB":{"id":"t2", "direction":"down"},
+                        "TC":{"id":"t3", "direction":"left"}
+                    }
+                }
+            ]
+        }
+    ]
+}
