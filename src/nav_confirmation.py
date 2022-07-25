@@ -34,7 +34,7 @@ class Nav:
         req = GetObjectPoseRequest()
         req.id = id
         resp = get_object_pose(req)
-        return True, resp.pose if resp.success else False, resp.message
+        return True, resp.object_pose if resp.success else False, resp.message
 
     def confirmation_cb(self, msg):
         client = actionlib.SimpleActionClient('/spot/trajectory', TrajectoryAction)
