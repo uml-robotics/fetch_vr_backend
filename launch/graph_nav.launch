@@ -1,0 +1,4 @@
+<launch>
+    <param name="/spot_vr/graph_nav_filepath" type="string" value="/home/jacobe90/Documents/blueprint_example.walk/"/>
+    <node name="graph_nav_node" pkg="fetch_vr_backend" type="graph_nav.py" output="screen" />
+</launch>

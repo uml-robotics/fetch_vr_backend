@@ -1,4 +1,4 @@
-#! /usr/bin/env python2
+#! /usr/bin/env python3
 from std_msgs.msg import Bool, String, Header, Int16MultiArray
 from geometry_msgs.msg import PoseStamped, Pose
 from sensor_msgs.msg import PointCloud2, PointField
@@ -63,6 +63,7 @@ def load_map(path):
                 continue
             with open(file_name, "rb") as snapshot_file:
                 edge_snapshot = map_pb2.EdgeSnapshot()
+                rospy.loginfo("Parsing file {}".format(file_name))
                 edge_snapshot.ParseFromString(snapshot_file.read())
                 current_edge_snapshots[edge_snapshot.id] = edge_snapshot
         for anchor in current_graph.anchoring.anchors:
@@ -82,30 +83,30 @@ class GraphNavLoader:
             self.current_edge_snapshots, self.current_anchors, self.current_anchored_world_objects = load_map(path)
 
         # For getting waypoint ids
-        rospy.Subscriber("/spot_vr/trigger_list_graph", Bool, self.list_graph_cb, queue_size=1)
-        self.list_graph_pub = rospy.Publisher("/spot_vr/waypoint_ids", String, queue_size=1)
+        rospy.Subscriber("/spot_vr_trigger_list_graph", Bool, self.list_graph_cb)
+        self.list_graph_pub = rospy.Publisher("/spot_vr/waypoint_ids", String, queue_size=100)
 
         # For getting waypoint poses
-        rospy.Subscriber("/spot_vr/trigger_get_waypoint_poses", Bool, self.get_waypoint_poses_cb, queue_size=1)
-        self.waypoint_pose_pub = rospy.Publisher("/spot_vr/waypoint_poses", PoseStamped, queue_size=5)
+        rospy.Subscriber("/spot_vr/trigger_get_waypoint_poses", Bool, self.get_waypoint_poses_cb)
+        self.waypoint_pose_pub = rospy.Publisher("/spot_vr/waypoint_poses", PoseStamped, queue_size=100)
 
         # For getting snapshot origins
-        rospy.Subscriber("/spot_vr/trigger_get_snapshot_origins", Bool, self.get_snapshot_origins_cb, queue_size=1)
-        self.snapshot_origin_pub = rospy.Publisher("/spot_vr/snapshot_origins", PoseStamped, queue_size=5)
+        rospy.Subscriber("/spot_vr/trigger_get_snapshot_origins", Bool, self.get_snapshot_origins_cb)
+        self.snapshot_origin_pub = rospy.Publisher("/spot_vr/snapshot_origins", PoseStamped, queue_size=100)
 
         # For getting snapshot points
-        rospy.Subscriber("/spot_vr/trigger_get_snapshot_points", Bool, self.get_snapshot_points_cb, queue_size=1)
-        self.snapshot_points_pub = rospy.Publisher("/spot_vr/snapshot_points", PointCloud2, queue_size=5)
-        rospy.loginfo("[GraphNavLoader]: finished configuring!")
-        rospy.spin()
+        rospy.Subscriber("/spot_vr/trigger_get_snapshot_points", Bool, self.get_snapshot_points_cb)
+        self.snapshot_points_pub = rospy.Publisher("/spot_vr/snapshot_points", PointCloud2, queue_size=100)
 
         # For getting adjacency matrix
-        rospy.Subscriber("/spot_vr/trigger_get_edges", Bool, self.get_edges_cb, queue_size=1)
+        rospy.Subscriber("/spot_vr/trigger_get_edges", Bool, self.get_edges_cb)
         self.edge_pub = rospy.Publisher("/spot_vr/edges", String, queue_size=1)
+        rospy.loginfo("[GraphNavLoader]: finished configuring!")
 
     def list_graph_cb(self, msg):
         # publish ids to a topic one by one
         for wp_id in self.current_anchors:
+            rospy.loginfo(wp_id)
             self.list_graph_pub.publish(String(wp_id))
 
     def get_waypoint_poses_cb(self, msg):
@@ -121,9 +122,12 @@ class GraphNavLoader:
 
     def get_snapshot_origins_cb(self, msg):
         # publish all snapshots to a topic on the backend
+        rospy.loginfo("logging snapshot keys: ")
+        for key in self.current_waypoint_snapshots:
+            rospy.loginfo(key)
         for waypoint in self.current_graph.waypoints:
             if waypoint.id in self.current_anchors:
-                snapshot = self.current_waypoint_snapshots[waypoint.id]
+                snapshot = self.current_waypoint_snapshots[waypoint.snapshot_id]
                 cloud = snapshot.point_cloud
                 odom_tform_cloud = get_a_tform_b(cloud.source.transforms_snapshot, ODOM_FRAME_NAME,
                                                  cloud.source.frame_name_sensor)
@@ -134,21 +138,22 @@ class GraphNavLoader:
 
                 ps = PoseStamped()
                 ps.pose = se3_to_msg(seed_tform_cloud)
-                ps.header.frame_id = waypoint.id
+                ps.header.frame_id = waypoint.snapshot_id
                 self.snapshot_origin_pub.publish(ps)
 
     def get_snapshot_points_cb(self, msg):
         for waypoint in self.current_graph.waypoints:
             if waypoint.id in self.current_anchors:
-                snapshot = self.current_waypoint_snapshots[waypoint.id]
+                snapshot = self.current_waypoint_snapshots[waypoint.snapshot_id]
                 cloud = snapshot.point_cloud
                 point_cloud_data = np.frombuffer(cloud.data, dtype=np.float32).reshape(int(cloud.num_points), 3)
-                self.snapshot_points_pub.publish(np_to_pointcloud2(point_cloud_data, parent_frame=waypoint.id))
+                self.snapshot_points_pub.publish(np_to_pointcloud2(point_cloud_data, parent_frame=waypoint.snapshot_id))
 
     def get_edges_cb(self, msg):
         for edge in self.current_graph.edges:
             if edge.id.from_waypoint in self.current_anchors and edge.id.to_waypoint in self.current_anchors:
                 self.edge_pub.publish(String(data=edge.id.from_waypoint + '*' + edge.id.to_waypoint))
+
 
 # adapted from https://gist.github.com/pgorczak/5c717baa44479fa064eb8d33ea4587e0
 def np_to_pointcloud2(points, parent_frame=None):
@@ -193,6 +198,7 @@ def main():
     rospy.init_node("graph_nav_vr")
     path = rospy.get_param("/spot_vr/graph_nav_filepath")
     GraphNavLoader(path)
+    rospy.spin()
 
 
 if __name__ == "__main__":
