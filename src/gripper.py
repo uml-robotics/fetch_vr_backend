@@ -18,6 +18,7 @@ class Gripper:
 
 
 def main():
+    rospy.init_node("gripper_command_node")
     Gripper()
     rospy.spin()
 
