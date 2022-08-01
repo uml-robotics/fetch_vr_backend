@@ -77,13 +77,12 @@ class Nav:
         # rospy.loginfo(result)
 
     def get_tagged_objects_cb(self, msg):
-        rospy.loginfo(msg.data)
+
         if msg.data:
-            rospy.loginfo("aboutta get ids")
+            #rospy.loginfo("aboutta get ids")
             # Get the tagged objects by calling the tagged_objects server
             tagged_object_ids = self.tagged_objects_client()
             for tagged_object in tagged_object_ids:
-                rospy.loginfo("publishing id {}".format(tagged_object))
                 self.tagged_object_pub.publish(tagged_object)
 
     def get_fiducial_pose_cb(self, msg):
@@ -92,7 +91,7 @@ class Nav:
             rospy.logerr("[SPOT_NAV]: " + resp[1])
             return
         self.fiducial_pose_pub.publish(resp[1]) # resp[1] is the pose of the object
-        rospy.loginfo("[SPOT_NAV]: Success getting pose of object with ID " + msg.data)
+        # rospy.loginfo("[SPOT_NAV]: Success getting pose of object with ID " + msg.data)
 
 
 if __name__ == "__main__":
@@ -114,5 +113,5 @@ if __name__ == "__main__":
             client.send_goal(trajectory_goal)
             client.wait_for_result()
             result = client.get_result()
-            rospy.loginfo(result)
+            # rospy.loginfo(result)
         rospy.sleep(0.1)
