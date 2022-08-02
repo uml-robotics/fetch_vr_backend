@@ -8,6 +8,7 @@ from PIL import ImageTk, Image
 #import Image
 import rospy
 from std_msgs.msg import String
+import rospkg
 
 class InterruptQuestions:
 
@@ -41,10 +42,15 @@ class InterruptQuestions:
     }
 
     GRID_ANSWERS = {
-        "": ""}
+        "Where is the obstacle closest to the robot?": "Submit;Reset;None;Don't know",
+        "In which direction would the robot need to turn toward to be at the next target?": "Submit;Reset;None;Don't know"}
+
 
     MAP_ANSWERS = {
-        "": ""}
+        "Where is the robot on this map?": "Submit;Reset;None;Don't know",
+        "Where was the last objective the robot reached? If you have not yet reached an objective, where was the starting location?": "Submit;Reset;None;Don't know",
+        "Where is the next objective?": "Submit;Reset;None;Don't know"
+        }
 
 
     current_question = 0
@@ -77,6 +83,7 @@ class InterruptQuestions:
         self.create_window()
         self.window.withdraw()
         #self.destroy_window()
+        self.rospack = rospkg.RosPack()
         self.window.mainloop()
 
 
@@ -117,7 +124,7 @@ class InterruptQuestions:
 
         self.gridframe.grid(row=0, column=0, padx=1, pady=1)
 
-        img = tk.PhotoImage(file="/home/csrobot/fetch_ws/src/fetch_vr_backend/resources/grid_relative_no_lines.png")
+        img = tk.PhotoImage(file=(self.rospack.get_path('fetch_vr_backend')+"/resources/grid_relative_no_lines.png"))
 
         self.canvas = Canvas(self.gridframe, width=640, height=480)
         self.canvas.pack()
@@ -125,7 +132,7 @@ class InterruptQuestions:
 
     def setupMapQuestion(self,question):
         print("setting up map question")
-        img = tk.PhotoImage(file="/home/csrobot/fetch_ws/src/fetch_vr_backend/resources/GridMap.png")
+        img = tk.PhotoImage(file=(self.rospack.get_path('fetch_vr_backend')+"/resources/GridMap.png"))
 
         self.canvas = Canvas(self.frame, width=640, height=480)
         self.canvas.pack()
@@ -137,9 +144,11 @@ class InterruptQuestions:
                 self.setupMultipleChoiceQuestion(self.question[self.current_question])
             elif self.MAP_ANSWERS.has_key(self.question[self.current_question]):
                 print ("MAP NOT IMPLEMENTED YET")
+                self.setupMapQuestion(self.question[self.current_question])
                 self.window.withdraw()
             elif self.GRID_ANSWERS.has_key(self.question[self.current_question]):
                 print ("Grid NOT IMPLEMENTED YET")
+                self.setupGridQuestion(self.question[self.current_question])
                 self.window.withdraw()
             else:
                 print( "QUESTION NOT RECOGNIZED??")

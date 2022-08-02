@@ -1,14 +1,14 @@
 {
     "configs":[
         {
-            "id":"1",
+            "id":"-1",
             "run": [
                 {
                     "id":"1",
                     "question": [
-                        {"id":1, "time":90, "q1":1, "q2":0, "q3":1 },
-                        {"id":2, "time":135, "q1":1, "q2":0, "q3":2 },
-                        {"id":3, "time":190, "q1":1, "q2":0, "q3":3 }
+                        {"id":1, "time":1, "q1":0, "q2":1, "q3":3 },
+                        {"id":2, "time":1, "q1":2, "q2":3, "q3":4 },
+                        {"id":3, "time":1, "q1":1, "q2":0, "q3":1 }
                     ],
                     "obstacles": {"OA":"wet floor sign", "OB":"traffic cone", "OC":"toolbox"},
                     "targets": {
@@ -20,9 +20,9 @@
                 {
                     "id":"2",
                     "question": [
-                        {"id":1, "time":90, "q1":1, "q2":0, "q3":1 },
-                        {"id":2, "time":135, "q1":1, "q2":0, "q3":2 },
-                        {"id":3, "time":190, "q1":1, "q2":0, "q3":3 }
+                        {"id":1, "time":1, "q1":1, "q2":0, "q3":1 },
+                        {"id":2, "time":1, "q1":1, "q2":0, "q3":2 },
+                        {"id":3, "time":1, "q1":1, "q2":0, "q3":3 }
                     ],
                     "obstacles": {"OA":"wet floor sign", "OB":"traffic cone", "OC":"toolbox"},
                     "targets": {
@@ -34,9 +34,9 @@
                 {
                     "id":"3",
                     "question": [
-                        {"id":1, "time":90, "q1":1, "q2":0, "q3":1 },
-                        {"id":2, "time":135, "q1":1, "q2":0, "q3":2 },
-                        {"id":3, "time":190, "q1":1, "q2":0, "q3":3 }
+                        {"id":1, "time":1, "q1":1, "q2":0, "q3":1 },
+                        {"id":2, "time":1, "q1":1, "q2":0, "q3":2 },
+                        {"id":3, "time":1, "q1":1, "q2":0, "q3":3 }
                     ],
                     "obstacles": {"OA":"wet floor sign", "OB":"traffic cone", "OC":"toolbox"},
                     "targets": {
