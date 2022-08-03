@@ -21,6 +21,7 @@ class SpotControl:
         self.ui_state_pub = rospy.Publisher("/spot_ui_state", Int32, queue_size=10)
         self.arm_state_pub = rospy.Publisher("/spot_arm_state", Int32, queue_size=10)
         self.result_pub = rospy.Publisher("/spot_control_result", Bool, queue_size=10)
+        self.error_message_pub = rospy.Publisher("/spot_control_error_message", String, queue_size=10)
         self.nominal_body_pub = rospy.Publisher("/nominal_body_update", Bool, queue_size=10)
 
         # Services for controlling spot
@@ -108,8 +109,9 @@ class SpotControl:
             return
         if not resp.success:
             rospy.logerr("[SPOT_CONTROL]: " + resp.message)
+            self.error_message_pub.publish(resp.message.split(':')[-1])
         else:
-            rospy.loginfo("[SPOT_CONTROL]: " + resp.message + "with command " + msg.data)
+            rospy.loginfo("[SPOT_CONTROL]: " + resp.message + " with command " + msg.data)
         result = Bool()
         result.data = resp.success
         self.result_pub.publish(result)

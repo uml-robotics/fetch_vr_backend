@@ -56,8 +56,7 @@ class SpotArmCommand:
                                       wrist_tform_tool.transform.rotation.w]
             req.wrist_tform_tool = wrist_tform_tool_array
             resp = self.pose_gripper(req)
-
-            self.result_pub.publish(resp.success, wrist_tform_tool=wrist_tform_tool_array)
+            self.result_pub.publish(resp.success)
 
 
 if __name__ == "__main__":
