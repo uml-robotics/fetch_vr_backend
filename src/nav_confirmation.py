@@ -5,7 +5,7 @@ from std_msgs.msg import Bool, String
 from spot_msgs.msg import TrajectoryAction, TrajectoryGoal
 from spot_msgs.srv import ListTaggedObjectsRequest, ListTaggedObjects
 from spot_msgs.srv import GetObjectPose, GetObjectPoseRequest
-from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import PoseStamped, Pose
 import actionlib
 
 
@@ -75,7 +75,6 @@ class Nav:
         # client.wait_for_result()
         # result = client.get_result()
         # rospy.loginfo(result)
-
     def get_tagged_objects_cb(self, msg):
 
         if msg.data:
@@ -114,4 +113,3 @@ if __name__ == "__main__":
             client.wait_for_result()
             result = client.get_result()
             # rospy.loginfo(result)
-        rospy.sleep(0.1)
