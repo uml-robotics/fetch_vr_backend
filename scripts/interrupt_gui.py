@@ -43,7 +43,7 @@ class InterruptQuestions:
 
     # Uses a map image in the prompt
     MC_MAP_ANSWERS = { 
-        "Based on where the robot is currently located on the grid, if the robot drives up 2 grid blocks, will it run into any obstacles?" : "Yes;No;"
+        "Based on where the robot is currently located on the grid, if the robot drives up 2 grid blocks, will it run into any obstacles?" : "Yes;No;Don't know"
     }
 
     SLIDER_ANSWERS = { 
@@ -51,14 +51,14 @@ class InterruptQuestions:
     }
 
     GRID_ANSWERS = {
-        "Where is the obstacle closest to the robot?": "Submit;Reset;None;Don't know",
-        "In which direction would the robot need to turn toward to be at the next target?": "Submit;Reset;None;Don't know"}
+        "Where is the obstacle closest to the robot?": "None;Don't know",
+        "In which direction would the robot need to turn toward to be at the next target?": "None;Don't know"}
 
 
     MAP_ANSWERS = {
-        "Where is the robot on this map?": "Submit;Reset;None;Don't know",
-        "Where was the last objective the robot reached? If you have not yet reached an objective, where was the starting location?": "Submit;Reset;None;Don't know",
-        "Where is the next objective?": "Submit;Reset;None;Don't know"
+        "Where is the robot on this map?": "None;Don't know",
+        "Where was the last objective the robot reached? If you have not yet reached an objective, where was the starting location?": "None;Don't know",
+        "Where is the next objective?": "None;Don't know"
         }
 
 
@@ -136,11 +136,21 @@ class InterruptQuestions:
         timeLabel = tk.Label(master=self.gridframe, text=question)
         timeLabel.pack(padx=5, pady=5)
 
-        img = tk.PhotoImage(file=(self.rospack.get_path('fetch_vr_backend')+"/resources/grid_relative_no_lines.png"))
+        self.img = tk.PhotoImage(file=(self.rospack.get_path('fetch_vr_backend')+"/resources/grid_relative_no_lines.png"))
 
         self.canvas = tk.Canvas(self.gridframe, width=640, height=480)
-        self.canvas.create_image(20,20, anchor=NW, image=img)
         self.canvas.pack()
+        self.canvas.create_image(self.canvas.winfo_width() / 2,self.canvas.winfo_height() / 2, anchor=CENTER, image=self.img)
+
+        if self.GRID_ANSWERS.has_key(question):
+            print("HAS KEY")
+        
+        answers = self.GRID_ANSWERS[question].split(';')
+        for answer in answers:
+            Choice = tk.Button(master=self.gridframe, text=answer, width=30,command=self.onButtonPressed)
+            Choice.pack()
+
+#On grid clicked add buttons
 
 
     def setupMapQuestion(self,question):
@@ -151,26 +161,48 @@ class InterruptQuestions:
             borderwidth=1
         )
 
+        timeLabel = tk.Label(master=self.mapframe, text=question)
+        timeLabel.pack(padx=5, pady=5)
+
         self.mapframe.grid(row=0, column=0, padx=1, pady=1)
 
-        img = tk.PhotoImage(file=(self.rospack.get_path('fetch_vr_backend')+"/resources/GridMap.png"))
+        self.img = tk.PhotoImage(file=(self.rospack.get_path('fetch_vr_backend')+"/resources/GridMap.png"))
 
         self.canvas = tk.Canvas(self.mapframe, width=640, height=480)
-        self.canvas.create_image(20,20, anchor=NW, image=img)
         self.canvas.pack()
+        self.canvas.create_image(self.canvas.winfo_width() / 2,self.canvas.winfo_height() / 2, anchor=CENTER, image=self.img)
+
+        if self.MAP_ANSWERS.has_key(question):
+            print("HAS KEY")
+        
+        answers = self.MAP_ANSWERS[question].split(';')
+        for answer in answers:
+            Choice = tk.Button(master=self.mapframe, text=answer, width=30,command=self.onButtonPressed)
+            Choice.pack()
+
+#On map clicked add buttons
+
 
     def process_next_question(self):
+        print(self.question[self.current_question])
+
+
+        if hasattr(self, 'frame'):
+            self.frame.destroy()
+        if hasattr(self, 'mapframe'):
+            self.mapframe.destroy()
+        if hasattr(self, 'gridframe'):
+            self.gridframe.destroy()
+
         if self.current_question < 2:
             if self.MC_ANSWERS.has_key(self.question[self.current_question]):
                 self.setupMultipleChoiceQuestion(self.question[self.current_question])
             elif self.MAP_ANSWERS.has_key(self.question[self.current_question]):
                 print ("MAP NOT IMPLEMENTED YET")
                 self.setupMapQuestion(self.question[self.current_question])
-                self.window.withdraw()
             elif self.GRID_ANSWERS.has_key(self.question[self.current_question]):
                 print ("Grid NOT IMPLEMENTED YET")
                 self.setupGridQuestion(self.question[self.current_question])
-                self.window.withdraw()
             else:
                 print( "QUESTION NOT RECOGNIZED??")
                 self.window.withdraw()
@@ -178,17 +210,14 @@ class InterruptQuestions:
             self.window.withdraw()
 
     def onButtonPressed(self):
-        print("PRESED")
         self.current_question = self.current_question + 1
         self.process_next_question()
 
 
 
     def callback(self, msg):
-        print("Callback")
         self.question = msg.data.split(';')
         self.current_question = 0
-        print(self.question[self.current_question])
         self.window.deiconify()
         self.process_next_question()
 
