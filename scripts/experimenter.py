@@ -319,19 +319,29 @@ def askSA(q1, q2, q3):
 def onIDConfirmed():
     global id
     id = idInput.get(1.0, "end-1c")
+    id = id.strip()
 
     with open(args.filename) as f:
         data = json.load(f)
 ## For Debug
 #        print(json.dumps(data, indent=4, sort_keys=True))
 
+    isValidID = False
     for key, value in data.items():
         for term in value:
             if term['id'] == id:
                global runConfigs
                runConfigs = term['run']
+               isValidID = True
+               break
+        if isValidID:
+            break
 
-    loadExperimenterUI()
+    if isValidID:
+        loadExperimenterUI()
+    else:
+        participantIDLabel.configure(text="INVALID ID: " + str(id))
+        idInput.delete("1.0","end")
 
 def loadExperimenterUI():
     for i in range(3):

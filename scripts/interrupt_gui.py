@@ -41,6 +41,15 @@ class InterruptQuestions:
         "What color is the obstacle closest to the robot?": "Yellow;Orange;Grey;None;Don't know",
     }
 
+    # Uses a map image in the prompt
+    MC_MAP_ANSWERS = { 
+        "Based on where the robot is currently located on the grid, if the robot drives up 2 grid blocks, will it run into any obstacles?" : "Yes;No;"
+    }
+
+    SLIDER_ANSWERS = { 
+        "In terms of distance, what percent of the way are you to your next target? Please use the slider." : "Submit"
+    }
+
     GRID_ANSWERS = {
         "Where is the obstacle closest to the robot?": "Submit;Reset;None;Don't know",
         "In which direction would the robot need to turn toward to be at the next target?": "Submit;Reset;None;Don't know"}
@@ -124,19 +133,31 @@ class InterruptQuestions:
 
         self.gridframe.grid(row=0, column=0, padx=1, pady=1)
 
+        timeLabel = tk.Label(master=self.gridframe, text=question)
+        timeLabel.pack(padx=5, pady=5)
+
         img = tk.PhotoImage(file=(self.rospack.get_path('fetch_vr_backend')+"/resources/grid_relative_no_lines.png"))
 
-        self.canvas = Canvas(self.gridframe, width=640, height=480)
-        self.canvas.pack()
+        self.canvas = tk.Canvas(self.gridframe, width=640, height=480)
         self.canvas.create_image(20,20, anchor=NW, image=img)
+        self.canvas.pack()
+
 
     def setupMapQuestion(self,question):
         print("setting up map question")
+        self.mapframe = tk.Frame(
+            master=self.window,
+            relief=tk.RAISED,
+            borderwidth=1
+        )
+
+        self.mapframe.grid(row=0, column=0, padx=1, pady=1)
+
         img = tk.PhotoImage(file=(self.rospack.get_path('fetch_vr_backend')+"/resources/GridMap.png"))
 
-        self.canvas = Canvas(self.frame, width=640, height=480)
-        self.canvas.pack()
+        self.canvas = tk.Canvas(self.mapframe, width=640, height=480)
         self.canvas.create_image(20,20, anchor=NW, image=img)
+        self.canvas.pack()
 
     def process_next_question(self):
         if self.current_question < 2:
@@ -164,6 +185,7 @@ class InterruptQuestions:
 
 
     def callback(self, msg):
+        print("Callback")
         self.question = msg.data.split(';')
         self.current_question = 0
         print(self.question[self.current_question])
