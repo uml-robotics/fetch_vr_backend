@@ -10,24 +10,23 @@ class Gripper:
         rospy.Subscriber("/gripper_command", GripperCommandGoal, self.gripper_command_cb)
         rospy.wait_for_service("/spot/gripper_angle_open")
         self.gripper_command = rospy.ServiceProxy("/spot/gripper_angle_open", GripperAngleMove)
+        self.commands = []
         rospy.loginfo("[SPOT_GRIPPER]: finished configuring!")
 
     def gripper_command_cb(self, msg):
-        radians = math.radians(-900 * msg.command.position)
-        resp = self.gripper_command(GripperAngleMoveRequest(gripper_angle=radians))
-        if resp.success:
-            rospy.loginfo("[SPOT_GRIPPER]: Success moving gripper! Radians: {}".format(radians))
-        else:
-            rospy.logerr("[SPOT_GRIPPER}: " + resp.message + " Radians: {}".format(radians))
-
-
-#def main():
-
+        r = math.radians(-900 * msg.command.position)
+        self.commands.append(r)
 
 
 if __name__ == "__main__":
     rospy.init_node("gripper_command_node")
-    Gripper()
-    rospy.spin()
-    rospy.loginfo("Exiting Gripper node")
-    #main()
+    gripper = Gripper()
+    while not rospy.is_shutdown():
+        if len(gripper.commands) > 0:
+            while len(gripper.commands) > 0:
+                radians = gripper.commands.pop(0)
+                resp = gripper.gripper_command(GripperAngleMoveRequest(gripper_angle=radians))
+                if resp.success:
+                    rospy.loginfo("[SPOT_GRIPPER]: Success moving gripper! Radians: {}".format(radians))
+                else:
+                    rospy.logerr("[SPOT_GRIPPER]: " + resp.message + " Radians: {}".format(radians))
