@@ -14,6 +14,7 @@ class Gripper:
         rospy.loginfo("[SPOT_GRIPPER]: finished configuring!")
 
     def gripper_command_cb(self, msg):
+
         r = math.radians(-900 * msg.command.position)
         self.commands.append(r)
 

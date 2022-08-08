@@ -1,9 +1,10 @@
 #! /usr/bin/env python2
 import rospy
-from geometry_msgs.msg import PoseArray
+from geometry_msgs.msg import PoseArray, Transform
 from tf2_geometry_msgs import PoseStamped
 from std_msgs.msg import Bool
 import tf2_ros
+import tf
 from spot_msgs.srv import HandPose, HandPoseRequest
 
 
@@ -17,10 +18,9 @@ class SpotArmCommand:
 
         self.tf_buffer = tf2_ros.Buffer()
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
-
+        self.br = tf.TransformBroadcaster()
         rospy.wait_for_service("/spot/gripper_pose")
         self.pose_gripper = rospy.ServiceProxy("/spot/gripper_pose", HandPose)
-
         rospy.loginfo("[SPOT_MANIP]: Finished configuring!")
 
     def goal_cb(self, msg):
@@ -48,18 +48,37 @@ class SpotArmCommand:
                               ps.pose.orientation.x, ps.pose.orientation.y, ps.pose.orientation.z,
                               ps.pose.orientation.w]
             # Set wrist_tform_tool to be the location of /gripper in the /link_wr1 frame
-            wrist_tform_tool = self.tf_buffer.lookup_transform('gripper', 'wrist', rospy.Time())
-            wrist_tform_tool_array = [wrist_tform_tool.transform.translation.x,
-                                      wrist_tform_tool.transform.translation.y,
-                                      wrist_tform_tool.transform.translation.z, wrist_tform_tool.transform.rotation.x,
-                                      wrist_tform_tool.transform.rotation.y, wrist_tform_tool.transform.rotation.z,
-                                      wrist_tform_tool.transform.rotation.w]
-            req.wrist_tform_tool = wrist_tform_tool_array
+            # wrist_tform_tool = self.tf_buffer.lookup_transform('gripper', 'link_wr1', rospy.Time())
+            # wrist_tform_tool_array = [wrist_tform_tool.transform.translation.x,
+            #                           wrist_tform_tool.transform.translation.y,
+            #                           wrist_tform_tool.transform.translation.z, wrist_tform_tool.transform.rotation.x,
+            #                           wrist_tform_tool.transform.rotation.y, wrist_tform_tool.transform.rotation.z,
+            #                           wrist_tform_tool.transform.rotation.w]
+            # req.wrist_tform_tool = wrist_tform_tool_array
             resp = self.pose_gripper(req)
             self.result_pub.publish(resp.success)
 
 
 if __name__ == "__main__":
     rospy.init_node("spot_arm_command")
-    SpotArmCommand()
+    spot_arm = SpotArmCommand()
+    while not rospy.is_shutdown():
+        while True:
+            spot_arm.br.sendTransform((0.019557, 0, 0), tf.transformations.quaternion_from_euler(0, 0, 0),
+                              rospy.Time.now(),
+                              "gripper_origin",
+                              "link_wr1")
+            try:
+                origin = spot_arm.tf_buffer.lookup_transform("gripper_origin", "gripper", rospy.Time())
+                pos = (origin.transform.translation.x,
+                       origin.transform.translation.y,
+                       origin.transform.translation.z)
+                rot = (origin.transform.rotation.x,
+                       origin.transform.rotation.y,
+                       origin.transform.rotation.z,
+                       origin.transform.rotation.w)
+                spot_arm.br.sendTransform(pos, rot, rospy.Time.now(), "ui_gripper_origin", "gripper")
+            except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+                continue
+
     rospy.spin()
