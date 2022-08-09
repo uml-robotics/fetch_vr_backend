@@ -48,13 +48,13 @@ class SpotArmCommand:
                               ps.pose.orientation.x, ps.pose.orientation.y, ps.pose.orientation.z,
                               ps.pose.orientation.w]
             # Set wrist_tform_tool to be the location of /gripper in the /link_wr1 frame
-            # wrist_tform_tool = self.tf_buffer.lookup_transform('gripper', 'link_wr1', rospy.Time())
-            # wrist_tform_tool_array = [wrist_tform_tool.transform.translation.x,
-            #                           wrist_tform_tool.transform.translation.y,
-            #                           wrist_tform_tool.transform.translation.z, wrist_tform_tool.transform.rotation.x,
-            #                           wrist_tform_tool.transform.rotation.y, wrist_tform_tool.transform.rotation.z,
-            #                           wrist_tform_tool.transform.rotation.w]
-            # req.wrist_tform_tool = wrist_tform_tool_array
+            wrist_tform_tool = self.tf_buffer.lookup_transform('ui_gripper_origin', 'link_wr1', rospy.Time())
+            wrist_tform_tool_array = [wrist_tform_tool.transform.translation.x,
+                                      wrist_tform_tool.transform.translation.y,
+                                      wrist_tform_tool.transform.translation.z, wrist_tform_tool.transform.rotation.x,
+                                      wrist_tform_tool.transform.rotation.y, wrist_tform_tool.transform.rotation.z,
+                                      wrist_tform_tool.transform.rotation.w]
+            req.wrist_tform_tool = wrist_tform_tool_array
             resp = self.pose_gripper(req)
             self.result_pub.publish(resp.success)
 
@@ -62,6 +62,7 @@ class SpotArmCommand:
 if __name__ == "__main__":
     rospy.init_node("spot_arm_command")
     spot_arm = SpotArmCommand()
+    rate = rospy.Rate(10)
     while not rospy.is_shutdown():
         while True:
             spot_arm.br.sendTransform((0.019557, 0, 0), tf.transformations.quaternion_from_euler(0, 0, 0),
@@ -80,5 +81,6 @@ if __name__ == "__main__":
                 spot_arm.br.sendTransform(pos, rot, rospy.Time.now(), "ui_gripper_origin", "gripper")
             except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
                 continue
+            rate.sleep()
 
     rospy.spin()

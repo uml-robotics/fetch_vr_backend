@@ -1,6 +1,6 @@
 #! /usr/bin/env python2
 import rospy
-from control_msgs.msg import GripperCommandGoal, GripperCommand
+from control_msgs.msg import GripperCommandGoal, GripperCommandActionResult
 import math
 from spot_msgs.srv import GripperAngleMove, GripperAngleMoveRequest
 
@@ -10,6 +10,8 @@ class Gripper:
         rospy.Subscriber("/gripper_command", GripperCommandGoal, self.gripper_command_cb)
         rospy.wait_for_service("/spot/gripper_angle_open")
         self.gripper_command = rospy.ServiceProxy("/spot/gripper_angle_open", GripperAngleMove)
+        self.gripper_result_pub = rospy.Publisher("/gripper_controller/gripper_action/result",
+                                                  GripperCommandActionResult, queue_size=10)
         self.commands = []
         rospy.loginfo("[SPOT_GRIPPER]: finished configuring!")
 
@@ -26,7 +28,11 @@ if __name__ == "__main__":
         if len(gripper.commands) > 0:
             while len(gripper.commands) > 0:
                 radians = gripper.commands.pop(0)
+                # Publish and log the result to console
                 resp = gripper.gripper_command(GripperAngleMoveRequest(gripper_angle=radians))
+                msg = GripperCommandActionResult()
+                msg.result.reached_goal = resp.success
+                gripper.gripper_result_pub.publish(msg)
                 if resp.success:
                     rospy.loginfo("[SPOT_GRIPPER]: Success moving gripper! Radians: {}".format(radians))
                 else:
