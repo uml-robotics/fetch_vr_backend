@@ -50,7 +50,7 @@ class InterruptQuestions:
     }
 
     SLIDER_ANSWERS = { 
-        "In terms of distance, what percent of the way are you to your next target? Please use the slider." : "Submit"
+        "In terms of distance, what percent of the way are you to your next target? Please use the slider." : "Don't know"
     }
 
     GRID_ANSWERS = {
@@ -130,6 +130,7 @@ class InterruptQuestions:
         )
 
         self.marker = []
+        self.marker_location = None
 
         self.gridframe.grid(row=0, column=0, padx=0, pady=0)
 
@@ -146,7 +147,7 @@ class InterruptQuestions:
         
         answers = self.GRID_ANSWERS[question].split(';')
         for answer in answers:
-            Choice = tk.Button(master=self.gridframe, text=answer, width=30,command=self.onButtonPressed)
+            Choice = tk.Button(master=self.gridframe, text=answer, width=30,command=lambda:self.onButtonPressed(answer))
             Choice.pack()
 
 
@@ -159,6 +160,7 @@ class InterruptQuestions:
         )
 
         self.marker = []
+        self.marker_location = None
 
         timeLabel = tk.Label(master=self.mapframe, text=question)
         timeLabel.pack(padx=5, pady=5)
@@ -174,7 +176,7 @@ class InterruptQuestions:
         
         answers = self.MAP_ANSWERS[question].split(';')
         for answer in answers:
-            Choice = tk.Button(master=self.mapframe, text=answer, width=30,command=self.onButtonPressed)
+            Choice = tk.Button(master=self.mapframe, text=answer, width=30,command=lambda:self.onButtonPressed(answer))
             Choice.pack()
 
 
@@ -201,7 +203,7 @@ class InterruptQuestions:
 
         answers = self.MC_MAP_ANSWERS[question].split(';')
         for answer in answers:
-            Choice = tk.Button(master=self.mapframe, text=answer, width=30,command=self.onButtonPressed)
+            Choice = tk.Button(master=self.mapframe, text=answer, width=30,command=lambda:self.onButtonPressed(answer))
             Choice.pack()
 
     def setupSliderQuestion(self, question):
@@ -225,8 +227,10 @@ class InterruptQuestions:
 
         answers = self.SLIDER_ANSWERS[question].split(';')
         for answer in answers:
-            Choice = tk.Button(master=self.frame, text=answer, width=30,command=self.onButtonPressed)
+            Choice = tk.Button(master=self.frame, text=answer, width=30,command=lambda:self.onButtonPressed(answer))
             Choice.pack()
+        submit_button = tk.Button(master=self.frame, text="Submit", width=30,command=lambda:self.onButtonPressed(self.slider_value.get()))
+        submit_button.pack()
 
 
     def process_next_question(self):
@@ -253,12 +257,13 @@ class InterruptQuestions:
             print( "QUESTION NOT RECOGNIZED??")
             self.window.withdraw()
 
-    def onButtonPressed(self):
+    def onButtonPressed(self, text):
         self.current_question = self.current_question + 1
         if self.current_question < 3:
             self.process_next_question()
         else:
             self.window.withdraw()
+        print("QUESTION: " + str("") + " RESPONSE: " + str(text))
 
     def callback(self, msg):
         self.question = msg.data.split(';')
@@ -271,6 +276,8 @@ class InterruptQuestions:
         '''Callback for when the user clicks the mouse'''
         x_coord = (event.x // self.grid_size) * self.grid_size + self.grid_size / 2 + 1
         y_coord = (event.y // self.grid_size) * self.grid_size + self.grid_size / 2 + 1
+
+        self.marker_location = ((event.x // self.grid_size), (event.y // self.grid_size))
 
         # MIDDLE TILE PRESSED
         if event.x // self.grid_size == 1 and event.y // self.grid_size == 1:
@@ -305,6 +312,9 @@ class InterruptQuestions:
         '''Callback for when the user clicks the mouse'''
         x_coord = event.x    
         y_coord = event.y
+
+        self.marker_location = (x_coord,y_coord)
+
         if len(self.marker) != 2:
             self.marker.append(self.canvas.create_line((x_coord + 10, y_coord + 10,
                                          x_coord - 10, y_coord - 10), fill='red'))
@@ -327,7 +337,7 @@ class InterruptQuestions:
                                      self.img.width(), i), fill='black')
                                      
     def on_marker_created(self, frame):
-        self.submit_button = tk.Button(master=frame, text="Submit", width=30,command=self.onButtonPressed)
+        self.submit_button = tk.Button(master=frame, text="Submit", width=30,command=lambda:self.onButtonPressed(self.marker_location))
         self.submit_button.pack()
         self.reset_button = tk.Button(master=frame, text="Reset", width=30,command=self.reset_marker)
         self.reset_button.pack()
