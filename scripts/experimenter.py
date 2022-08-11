@@ -240,6 +240,10 @@ def onStartSAPressed():
         saTimeLabel.config(text='CAN NOT RUN SA FOR MANIP!')
         return
 
+    if currentSAIndex >= 3:
+        saTimeLabel.config(text='CAN NOT RUN MORE THAN 3 SA PER RUN!')
+        return
+
     if isSAStarted:
         clearSATimer()
     else:

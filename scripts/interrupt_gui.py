@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from matplotlib import offsetbox
 import Tkinter as tk
 from Tkinter import *
 import PIL
@@ -43,7 +44,9 @@ class InterruptQuestions:
 
     # Uses a map image in the prompt
     MC_MAP_ANSWERS = { 
-        "Based on where the robot is currently located on the grid, if the robot drives up 2 grid blocks, will it run into any obstacles?" : "Yes;No;Don't know"
+        "Based on where the robot is currently located on the grid, if the robot drives up 2 grid blocks, will it run into any obstacles?" : "Yes;No;Don't know",
+        "Based on where the robot is currently located on the grid, if the robot drives down 2 grid blocks, will it run into any obstacles." : "Yes;No;Don't know",
+        "Based on where the robot is currently located on the grid, if the robot drives right 2 grid blocks, will it run into any obstacles." : "Yes;No;Don't know"
     }
 
     SLIDER_ANSWERS = { 
@@ -108,16 +111,11 @@ class InterruptQuestions:
         )
         self.frame.grid(row=0, column=0, padx=1, pady=1)
         #self.frame.pack()
-        print("Setting up multiple choice question2")
 
         timeLabel = tk.Label(master=self.frame, text=question)
         timeLabel.pack(padx=5, pady=5)
-
-        if self.MC_ANSWERS.has_key(question):
-            print("HAS KEY")
         
         answers = self.MC_ANSWERS[question].split(';')
-        print("Setting up multiple choice question3")
         for answer in answers:
             Choice = tk.Button(master=self.frame, text=answer, width=30,command=self.onButtonPressed)
             Choice.pack()
@@ -131,26 +129,25 @@ class InterruptQuestions:
             borderwidth=1
         )
 
-        self.gridframe.grid(row=0, column=0, padx=1, pady=1)
+        self.marker = []
+
+        self.gridframe.grid(row=0, column=0, padx=0, pady=0)
 
         timeLabel = tk.Label(master=self.gridframe, text=question)
         timeLabel.pack(padx=5, pady=5)
 
         self.img = tk.PhotoImage(file=(self.rospack.get_path('fetch_vr_backend')+"/resources/grid_relative_no_lines.png"))
 
-        self.canvas = tk.Canvas(self.gridframe, width=640, height=480)
+        self.canvas = tk.Canvas(self.gridframe, width=self.img.width(), height=self.img.height())
         self.canvas.pack()
-        self.canvas.create_image(self.canvas.winfo_width() / 2,self.canvas.winfo_height() / 2, anchor=CENTER, image=self.img)
-
-        if self.GRID_ANSWERS.has_key(question):
-            print("HAS KEY")
+        self.canvas.create_image(self.img.width() / 2,self.img.height() / 2, anchor=CENTER, image=self.img)
+        self.draw_grid(3)
+        self.canvas.bind("<Button 1>", self.on_grid_clicked)
         
         answers = self.GRID_ANSWERS[question].split(';')
         for answer in answers:
             Choice = tk.Button(master=self.gridframe, text=answer, width=30,command=self.onButtonPressed)
             Choice.pack()
-
-#On grid clicked add buttons
 
 
     def setupMapQuestion(self,question):
@@ -161,31 +158,79 @@ class InterruptQuestions:
             borderwidth=1
         )
 
+        self.marker = []
+
         timeLabel = tk.Label(master=self.mapframe, text=question)
         timeLabel.pack(padx=5, pady=5)
 
-        self.mapframe.grid(row=0, column=0, padx=1, pady=1)
+        self.mapframe.grid(row=0, column=0, padx=0, pady=0)
 
         self.img = tk.PhotoImage(file=(self.rospack.get_path('fetch_vr_backend')+"/resources/GridMap.png"))
 
-        self.canvas = tk.Canvas(self.mapframe, width=640, height=480)
+        self.canvas = tk.Canvas(self.mapframe, width=self.img.width(), height=self.img.height())
         self.canvas.pack()
-        self.canvas.create_image(self.canvas.winfo_width() / 2,self.canvas.winfo_height() / 2, anchor=CENTER, image=self.img)
-
-        if self.MAP_ANSWERS.has_key(question):
-            print("HAS KEY")
+        self.canvas.create_image(self.img.width() / 2,self.img.height() / 2, anchor=CENTER, image=self.img)
+        self.canvas.bind("<Button 1>", self.on_map_clicked)
         
         answers = self.MAP_ANSWERS[question].split(';')
         for answer in answers:
             Choice = tk.Button(master=self.mapframe, text=answer, width=30,command=self.onButtonPressed)
             Choice.pack()
 
-#On map clicked add buttons
+
+    def setupMCMapQuestion(self,question):
+        print("setting up mc map question")
+        self.mapframe = tk.Frame(
+            master=self.window,
+            relief=tk.RAISED,
+            borderwidth=1
+        )
+
+        timeLabel = tk.Label(master=self.mapframe, text=question)
+        timeLabel.pack(padx=5, pady=5)
+
+        self.mapframe.grid(row=0, column=0, padx=0, pady=0)
+
+        self.img = tk.PhotoImage(file=(self.rospack.get_path('fetch_vr_backend')+"/resources/GridMap.png"))
+
+        self.canvas = tk.Canvas(self.mapframe, width=self.img.width(), height=self.img.height())
+        self.canvas.pack()
+        self.canvas.create_image(self.img.width() / 2,self.img.height() / 2, anchor=CENTER, image=self.img)
+        
+        self.draw_grid(10)
+
+        answers = self.MC_MAP_ANSWERS[question].split(';')
+        for answer in answers:
+            Choice = tk.Button(master=self.mapframe, text=answer, width=30,command=self.onButtonPressed)
+            Choice.pack()
+
+    def setupSliderQuestion(self, question):
+        print("Setting up slider question")
+
+        #self.create_window()
+        self.frame = tk.Frame(
+            master=self.window,
+            relief=tk.RAISED,
+            borderwidth=1
+        )
+        self.frame.grid(row=0, column=0, padx=1, pady=1)
+
+        timeLabel = tk.Label(master=self.frame, text=question)
+        timeLabel.pack(padx=5, pady=5)
+
+        self.slider_value = tk.IntVar()
+
+        slider = tk.Scale(master=self.frame, variable=self.slider_value, from_=0, to=100, length=200, orient=tk.HORIZONTAL)  
+        slider.pack()
+
+        answers = self.SLIDER_ANSWERS[question].split(';')
+        for answer in answers:
+            Choice = tk.Button(master=self.frame, text=answer, width=30,command=self.onButtonPressed)
+            Choice.pack()
 
 
     def process_next_question(self):
         print(self.question[self.current_question])
-
 
         if hasattr(self, 'frame'):
             self.frame.destroy()
@@ -194,26 +239,26 @@ class InterruptQuestions:
         if hasattr(self, 'gridframe'):
             self.gridframe.destroy()
 
-        if self.current_question < 2:
-            if self.MC_ANSWERS.has_key(self.question[self.current_question]):
-                self.setupMultipleChoiceQuestion(self.question[self.current_question])
-            elif self.MAP_ANSWERS.has_key(self.question[self.current_question]):
-                print ("MAP NOT IMPLEMENTED YET")
-                self.setupMapQuestion(self.question[self.current_question])
-            elif self.GRID_ANSWERS.has_key(self.question[self.current_question]):
-                print ("Grid NOT IMPLEMENTED YET")
-                self.setupGridQuestion(self.question[self.current_question])
-            else:
-                print( "QUESTION NOT RECOGNIZED??")
-                self.window.withdraw()
+        if self.MC_ANSWERS.has_key(self.question[self.current_question]):
+            self.setupMultipleChoiceQuestion(self.question[self.current_question])
+        elif self.MAP_ANSWERS.has_key(self.question[self.current_question]):
+            self.setupMapQuestion(self.question[self.current_question])
+        elif self.GRID_ANSWERS.has_key(self.question[self.current_question]):
+            self.setupGridQuestion(self.question[self.current_question])
+        elif self.MC_MAP_ANSWERS.has_key(self.question[self.current_question]):
+            self.setupMCMapQuestion(self.question[self.current_question])
+        elif self.SLIDER_ANSWERS.has_key(self.question[self.current_question]):
+            self.setupSliderQuestion(self.question[self.current_question])
         else:
+            print( "QUESTION NOT RECOGNIZED??")
             self.window.withdraw()
 
     def onButtonPressed(self):
         self.current_question = self.current_question + 1
-        self.process_next_question()
-
-
+        if self.current_question < 3:
+            self.process_next_question()
+        else:
+            self.window.withdraw()
 
     def callback(self, msg):
         self.question = msg.data.split(';')
@@ -222,6 +267,79 @@ class InterruptQuestions:
         self.process_next_question()
 
 
+    def on_grid_clicked(self, event):
+        '''Callback for when the user clicks the mouse'''
+        x_coord = (event.x // self.grid_size) * self.grid_size + self.grid_size / 2 + 1
+        y_coord = (event.y // self.grid_size) * self.grid_size + self.grid_size / 2 + 1
+
+        # MIDDLE TILE PRESSED
+        if event.x // self.grid_size == 1 and event.y // self.grid_size == 1:
+            self.reset_marker()
+            return
+
+        if len(self.marker) != 4:
+            self.marker.append(self.canvas.create_line((x_coord - self.grid_size / 2, y_coord + self.grid_size / 2,
+                                         x_coord + self.grid_size / 2, y_coord + self.grid_size / 2), fill='red'))
+
+            self.marker.append(self.canvas.create_line((x_coord - self.grid_size / 2, y_coord - self.grid_size / 2,
+                                         x_coord + self.grid_size / 2, y_coord - self.grid_size / 2), fill='red'))
+
+            self.marker.append(self.canvas.create_line((x_coord + self.grid_size / 2, y_coord - self.grid_size / 2,
+                                         x_coord + self.grid_size / 2, y_coord + self.grid_size / 2), fill='red'))
+
+            self.marker.append(self.canvas.create_line((x_coord - self.grid_size / 2, y_coord - self.grid_size / 2,
+                                         x_coord - self.grid_size / 2, y_coord + self.grid_size / 2), fill='red'))
+            self.on_marker_created(self.gridframe)
+        else:
+            self.canvas.coords(self.marker[0], (x_coord - self.grid_size / 2, y_coord + self.grid_size / 2,
+                                         x_coord + self.grid_size / 2, y_coord + self.grid_size / 2))
+            self.canvas.coords(self.marker[1], (x_coord - self.grid_size / 2, y_coord - self.grid_size / 2,
+                                         x_coord + self.grid_size / 2, y_coord - self.grid_size / 2))
+            self.canvas.coords(self.marker[2], (x_coord + self.grid_size / 2, y_coord - self.grid_size / 2,
+                                         x_coord + self.grid_size / 2, y_coord + self.grid_size / 2))
+            self.canvas.coords(self.marker[3], (x_coord - self.grid_size / 2, y_coord - self.grid_size / 2,
+                                         x_coord - self.grid_size / 2, y_coord + self.grid_size / 2))
+
+
+    def on_map_clicked(self, event):
+        '''Callback for when the user clicks the mouse'''
+        x_coord = event.x    
+        y_coord = event.y
+        if len(self.marker) != 2:
+            self.marker.append(self.canvas.create_line((x_coord + 10, y_coord + 10,
+                                         x_coord - 10, y_coord - 10), fill='red'))
+            self.marker.append(self.canvas.create_line((x_coord - 10, y_coord + 10,
+                                         x_coord + 10, y_coord - 10), fill='red'))
+            self.on_marker_created(self.mapframe)
+        else:
+            self.canvas.coords(self.marker[0], (x_coord + 10, y_coord + 10,
+                                         x_coord - 10, y_coord - 10))
+            self.canvas.coords(self.marker[1], (x_coord - 10, y_coord + 10,
+                                         x_coord + 10, y_coord - 10))
+
+    def draw_grid(self, num_rows):
+        self.grid_size = self.img.width() / num_rows
+        for i in range(1, int(self.img.width() + 1), self.grid_size):
+            self.canvas.create_line((i, 0,
+                                     i, self.img.height()), fill='black')
+        for i in range(1, int(self.img.height() + 1), self.grid_size):
+            self.canvas.create_line((0, i,
+                                     self.img.width(), i), fill='black')
+                                     
+    def on_marker_created(self, frame):
+        self.submit_button = tk.Button(master=frame, text="Submit", width=30,command=self.onButtonPressed)
+        self.submit_button.pack()
+        self.reset_button = tk.Button(master=frame, text="Reset", width=30,command=self.reset_marker)
+        self.reset_button.pack()
+
+    def reset_marker(self):
+        for component in self.marker:
+            self.canvas.delete(component)
+        self.marker = []
+        if hasattr(self, 'submit_button'):
+            self.submit_button.pack_forget()
+        if hasattr(self, 'reset_button'):
+            self.reset_button.pack_forget()
 
 if __name__ == '__main__':
 
