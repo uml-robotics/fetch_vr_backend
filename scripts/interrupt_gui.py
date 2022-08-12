@@ -96,6 +96,7 @@ class InterruptQuestions:
         self.window.withdraw()
         #self.destroy_window()
         self.rospack = rospkg.RosPack()
+        self.answerPub = rospy.Publisher('answer', String, queue_size=10)
         self.window.mainloop()
 
 
@@ -286,6 +287,7 @@ class InterruptQuestions:
 
         response_str = str(participant_id) + ";" + str(run_number) + ";" + str(interrupt_number) + ";" + str(level) + ";" + self.question_type + ";" +self.question[self.current_question] + ";" + str(text)
         print(response_str)
+        self.answerPub.publish(response_str)
 
         self.current_question = self.current_question + 1
         if self.current_question < 3:
