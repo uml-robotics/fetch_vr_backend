@@ -309,11 +309,15 @@ def clearSATimer():
 
 
 def askSA(q1, q2, q3):
+    global currentSAIndex
+    rospy.set_param('/user_study/participant_id', id)
+    rospy.set_param('/user_study/run_number', currentRunID)
+    rospy.set_param('/user_study/interrupt_number', currentSAIndex + 1)
+
     questionStr = SA1_OPTIONS[q1] + ";" + SA2_OPTIONS[q2] + ";" + SA3_OPTIONS[q3]  #sa1.get() + ";" + sa2.get() + ";" + sa3.get()
 
     clearSATimer()
 
-    global currentSAIndex
     currentSAIndex = currentSAIndex + 1
 
     print("ASKING: " + questionStr)

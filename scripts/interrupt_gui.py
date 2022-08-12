@@ -117,7 +117,7 @@ class InterruptQuestions:
         
         answers = self.MC_ANSWERS[question].split(';')
         for answer in answers:
-            Choice = tk.Button(master=self.frame, text=answer, width=30,command=self.onButtonPressed)
+            Choice = tk.Button(master=self.frame, text=answer, width=30,command=lambda current_answer=answer: self.onButtonPressed(current_answer))
             Choice.pack()
 
 
@@ -147,7 +147,7 @@ class InterruptQuestions:
         
         answers = self.GRID_ANSWERS[question].split(';')
         for answer in answers:
-            Choice = tk.Button(master=self.gridframe, text=answer, width=30,command=lambda:self.onButtonPressed(answer))
+            Choice = tk.Button(master=self.gridframe, text=answer, width=30,command=lambda current_answer=answer: self.onButtonPressed(current_answer))
             Choice.pack()
 
 
@@ -176,7 +176,7 @@ class InterruptQuestions:
         
         answers = self.MAP_ANSWERS[question].split(';')
         for answer in answers:
-            Choice = tk.Button(master=self.mapframe, text=answer, width=30,command=lambda:self.onButtonPressed(answer))
+            Choice = tk.Button(master=self.mapframe, text=answer, width=30,command=lambda current_answer=answer: self.onButtonPressed(current_answer))
             Choice.pack()
 
 
@@ -203,7 +203,7 @@ class InterruptQuestions:
 
         answers = self.MC_MAP_ANSWERS[question].split(';')
         for answer in answers:
-            Choice = tk.Button(master=self.mapframe, text=answer, width=30,command=lambda:self.onButtonPressed(answer))
+            Choice = tk.Button(master=self.mapframe, text=answer, width=30,command=lambda current_answer=answer: self.onButtonPressed(current_answer))
             Choice.pack()
 
     def setupSliderQuestion(self, question):
@@ -227,7 +227,7 @@ class InterruptQuestions:
 
         answers = self.SLIDER_ANSWERS[question].split(';')
         for answer in answers:
-            Choice = tk.Button(master=self.frame, text=answer, width=30,command=lambda:self.onButtonPressed(answer))
+            Choice = tk.Button(master=self.frame, text=answer, width=30,command=lambda current_answer=answer: self.onButtonPressed(current_answer))
             Choice.pack()
         submit_button = tk.Button(master=self.frame, text="Submit", width=30,command=lambda:self.onButtonPressed(self.slider_value.get()))
         submit_button.pack()
@@ -244,26 +244,54 @@ class InterruptQuestions:
             self.gridframe.destroy()
 
         if self.MC_ANSWERS.has_key(self.question[self.current_question]):
+            self.question_type = "mc"
             self.setupMultipleChoiceQuestion(self.question[self.current_question])
         elif self.MAP_ANSWERS.has_key(self.question[self.current_question]):
+            self.question_type = "map"
             self.setupMapQuestion(self.question[self.current_question])
         elif self.GRID_ANSWERS.has_key(self.question[self.current_question]):
+            self.question_type = "grid"
             self.setupGridQuestion(self.question[self.current_question])
         elif self.MC_MAP_ANSWERS.has_key(self.question[self.current_question]):
+            self.question_type = "mc"
             self.setupMCMapQuestion(self.question[self.current_question])
         elif self.SLIDER_ANSWERS.has_key(self.question[self.current_question]):
+            self.question_type = "slider"
             self.setupSliderQuestion(self.question[self.current_question])
         else:
             print( "QUESTION NOT RECOGNIZED??")
             self.window.withdraw()
 
     def onButtonPressed(self, text):
+        participant_id = -1
+        if rospy.has_param('/user_study/participant_id'):
+            participant_id = rospy.get_param('/user_study/participant_id')
+
+        run_number = -1
+        if rospy.has_param('/user_study/run_number'):
+            run_number = rospy.get_param('/user_study/run_number')
+
+        interrupt_number = -1
+        if rospy.has_param('/user_study/interrupt_number'):
+            interrupt_number = rospy.get_param('/user_study/interrupt_number')
+
+        level = -1
+        if self.question[self.current_question] in self.SA1_OPTIONS:
+            level = 1
+        elif self.question[self.current_question] in self.SA2_OPTIONS:
+            level = 2
+        elif self.question[self.current_question] in self.SA3_OPTIONS:
+            level = 3
+
+
+        response_str = str(participant_id) + ";" + str(run_number) + ";" + str(interrupt_number) + ";" + str(level) + ";" + self.question_type + ";" +self.question[self.current_question] + ";" + str(text)
+        print(response_str)
+
         self.current_question = self.current_question + 1
         if self.current_question < 3:
             self.process_next_question()
         else:
             self.window.withdraw()
-        print("QUESTION: " + str("") + " RESPONSE: " + str(text))
 
     def callback(self, msg):
         self.question = msg.data.split(';')
