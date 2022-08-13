@@ -10,6 +10,7 @@ from PIL import ImageTk, Image
 import rospy
 from std_msgs.msg import String
 import rospkg
+import os
 
 class InterruptQuestions:
 
@@ -288,6 +289,16 @@ class InterruptQuestions:
         response_str = str(participant_id) + ";" + str(run_number) + ";" + str(interrupt_number) + ";" + str(level) + ";" + self.question_type + ";" +self.question[self.current_question] + ";" + str(text)
         print(response_str)
         self.answerPub.publish(response_str)
+
+        data_path = self.rospack.get_path('fetch_vr_backend')+"/data"
+        if not os.path.exists(data_path):
+            os.makedirs(data_path)
+        full_file_path = data_path + "/Participant_" + str(participant_id) + ".csv"
+        if not os.path.isfile(full_file_path):
+            with open(full_file_path, 'w') as f:
+                f.write("ParticipantID;Run;Interruption;SALevel;Type;Question;Answer\n")
+        with open(full_file_path, 'a') as f:
+            f.write(response_str + '\n')
 
         self.current_question = self.current_question + 1
         if self.current_question < 3:
