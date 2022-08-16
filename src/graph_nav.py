@@ -1,14 +1,18 @@
 #! /usr/bin/env python3
+import geometry_msgs.msg
+import std_msgs.msg
 from std_msgs.msg import Bool, String, Header, Int16MultiArray
-from geometry_msgs.msg import PoseStamped, Pose
+from geometry_msgs.msg import PoseStamped, Pose, TransformStamped, Vector3, Quaternion
 from sensor_msgs.msg import PointCloud2, PointField
-from spot_msgs.srv import ListGraph, ListGraphRequest, GetWaypointPoses, GetWaypointPosesRequest
+from spot_msgs.msg import LocalizationState
 from bosdyn.api.graph_nav import map_pb2
 from bosdyn.client.math_helpers import SE3Pose
 from bosdyn.client.frame_helpers import get_a_tform_b, ODOM_FRAME_NAME
 import os
 import numpy as np
 import rospy
+from tf import transformations as ts
+import tf2_ros
 
 def load_map(path):
     with open(os.path.join(path, "graph"), "rb") as graph_file:
@@ -78,7 +82,9 @@ def load_map(path):
 class GraphNavLoader:
     def __init__(self, path):
         self.path = path
-
+        self.tf_buffer = tf2_ros.Buffer()
+        self.tf_listener = tf2_ros.TransformListener(self.tf_buffer)
+        self.br = tf2_ros.TransformBroadcaster()
         self.current_graph, self.current_waypoints, self.current_waypoint_snapshots, \
             self.current_edge_snapshots, self.current_anchors, self.current_anchored_world_objects = load_map(path)
 
@@ -101,7 +107,24 @@ class GraphNavLoader:
         # For getting adjacency matrix
         rospy.Subscriber("/spot_vr/trigger_get_edges", Bool, self.get_edges_cb)
         self.edge_pub = rospy.Publisher("/spot_vr/edges", String, queue_size=1)
+
+        # For performing localization
+        self.localization_state = None
+        rospy.Subscriber("/spot_vr/trigger_localization", Bool, self.localize_cb)
+        rospy.Subscriber("/spot/status/localization_state", LocalizationState, self.localization_state_cb)
+        self.localization_result_pub = rospy.Publisher("/spot_vr/localization_result", PoseStamped, queue_size=1)
         rospy.loginfo("[GraphNavLoader]: finished configuring!")
+
+    def localization_state_cb(self, msg):
+        self.localization_state = msg
+
+    def localize_cb(self, msg):
+        odom_tform_seed = self.tf_buffer.lookup_transform("seed", "odom", rospy.Time())
+        ps = PoseStamped()
+        ps.header.frame_id = "odom"
+        ps.pose.position = odom_tform_seed.transform.translation
+        ps.pose.orientation = odom_tform_seed.transform.rotation
+        self.localization_result_pub.publish(ps)
 
     def list_graph_cb(self, msg):
         # publish ids to a topic one by one
@@ -197,7 +220,36 @@ def se3_to_msg(pose):
 def main():
     rospy.init_node("graph_nav_vr")
     path = rospy.get_param("/spot_vr/graph_nav_filepath")
-    GraphNavLoader(path)
+    graph_nav = GraphNavLoader(path)
+    rate = rospy.Rate(5)
+    while not rospy.is_shutdown():
+        if not graph_nav.localization_state == None and graph_nav.localization_state.seed_tform_body:
+            t = TransformStamped()
+            t.header.stamp = rospy.Time.now()
+            t.header.frame_id = "body"
+            t.child_frame_id = "seed"
+            pose = graph_nav.localization_state.seed_tform_body
+            t.transform.translation.x = pose.pose.position.x
+            t.transform.translation.y = pose.pose.position.y
+            t.transform.translation.z = pose.pose.position.z
+            t.transform.rotation.x = pose.pose.orientation.x
+            t.transform.rotation.y = pose.pose.orientation.y
+            t.transform.rotation.z = pose.pose.orientation.z
+            t.transform.rotation.w = pose.pose.orientation.w
+
+            # invert the transform
+            mat = ts.concatenate_matrices(ts.translation_matrix([t.transform.translation.x,
+                                                                 t.transform.translation.y,
+                                                                 t.transform.translation.z]),
+                                          ts.quaternion_matrix([t.transform.rotation.x,
+                                                                t.transform.rotation.y,
+                                                                t.transform.rotation.z,
+                                                                t.transform.rotation.w]))
+            inversed_trans = ts.inverse_matrix(mat)
+            t.transform.translation = Vector3(*ts.translation_from_matrix(inversed_trans))
+            t.transform.rotation = Quaternion(*ts.quaternion_from_matrix(inversed_trans))
+            graph_nav.br.sendTransform(t)
+            rate.sleep()
     rospy.spin()
 
 
