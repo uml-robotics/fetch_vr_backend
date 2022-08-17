@@ -265,7 +265,7 @@ class InterruptQuestions:
             self.window.withdraw()
 
     def onButtonPressed(self, text):
-        participant_id = -1
+        participant_id = '-1'
         if rospy.has_param('/user_study/participant_id'):
             participant_id = rospy.get_param('/user_study/participant_id')
 
