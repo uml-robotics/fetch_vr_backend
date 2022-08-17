@@ -286,7 +286,7 @@ class InterruptQuestions:
             level = 3
 
 
-        response_str = str(participant_id) + ";" + str(run_number) + ";" + str(interrupt_number) + ";" + str(level) + ";" + self.question_type + ";" +self.question[self.current_question] + ";" + str(text)
+        response_str = str(participant_id) + ";2D;" + str(run_number) + ";" + str(interrupt_number) + ";" + str(level) + ";" + self.question_type + ";" +self.question[self.current_question] + ";" + str(text)
         print(response_str)
         self.answerPub.publish(response_str)
 
@@ -296,7 +296,7 @@ class InterruptQuestions:
         full_file_path = data_path + "/Participant_" + str(participant_id) + ".csv"
         if not os.path.isfile(full_file_path):
             with open(full_file_path, 'w') as f:
-                f.write("ParticipantID;Run;Interruption;SALevel;Type;Question;Answer\n")
+                f.write("ParticipantID;Interface;Run;Interruption;SALevel;Type;Question;Answer\n")
         with open(full_file_path, 'a') as f:
             f.write(response_str + '\n')
 
