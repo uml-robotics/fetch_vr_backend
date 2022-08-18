@@ -1,10 +1,11 @@
 #! /usr/bin/env python3
 import geometry_msgs.msg
 import std_msgs.msg
-from std_msgs.msg import Bool, String, Header, Int16MultiArray
+from std_msgs.msg import Bool, String, Header, Int16MultiArray, Int32
 from geometry_msgs.msg import PoseStamped, Pose, TransformStamped, Vector3, Quaternion
 from sensor_msgs.msg import PointCloud2, PointField
 from spot_msgs.msg import LocalizationState
+from spot_msgs.msg import NavigateToAction, NavigateToGoal, NavigateToFeedback
 from bosdyn.api.graph_nav import map_pb2
 from bosdyn.client.math_helpers import SE3Pose
 from bosdyn.client.frame_helpers import get_a_tform_b, ODOM_FRAME_NAME
@@ -13,6 +14,8 @@ import numpy as np
 import rospy
 from tf import transformations as ts
 import tf2_ros
+import actionlib
+import threading
 
 def load_map(path):
     with open(os.path.join(path, "graph"), "rb") as graph_file:
@@ -104,7 +107,7 @@ class GraphNavLoader:
         rospy.Subscriber("/spot_vr/trigger_get_snapshot_points", Bool, self.get_snapshot_points_cb)
         self.snapshot_points_pub = rospy.Publisher("/spot_vr/snapshot_points", PointCloud2, queue_size=100)
 
-        # For getting adjacency matrix
+        # For getting edges
         rospy.Subscriber("/spot_vr/trigger_get_edges", Bool, self.get_edges_cb)
         self.edge_pub = rospy.Publisher("/spot_vr/edges", String, queue_size=1)
 
@@ -113,7 +116,27 @@ class GraphNavLoader:
         rospy.Subscriber("/spot_vr/trigger_localization", Bool, self.localize_cb)
         rospy.Subscriber("/spot/status/localization_state", LocalizationState, self.localization_state_cb)
         self.localization_result_pub = rospy.Publisher("/spot_vr/localization_result", PoseStamped, queue_size=1)
+
+        # For actually navigating to a given waypoint
+        self.nav_client = actionlib.SimpleActionClient('/spot/navigate_to', NavigateToAction)
+        self.nav_client.wait_for_server()
+        rospy.Subscriber("/spot_vr/navigate_to", String, self.navigate_to_cb)
+
+        # Navigation feedback stuff
+        rospy.Subscriber("/spot/navigate_to/feedback", NavigateToFeedback, self.navigate_to_feedback_cb)
+        self.nav_status_pub = rospy.Publisher("/spot_vr/navigate_to_status", Int32, queue_size=10)
+        self.nav_waypoint_pub = rospy.Publisher("/spot_vr/closest_waypoint", String, queue_size=10)
         rospy.loginfo("[GraphNavLoader]: finished configuring!")
+
+    def navigate_to_feedback_cb(self, msg):
+        self.nav_status_pub.publish(Int32(data=msg.status))
+        self.nav_waypoint_pub.publish(String(data=msg.waypoint_id))
+
+    def navigate_to_cb(self, msg):
+        self.nav_client.send_goal(NavigateToGoal(upload_path=self.path, navigate_to=msg.data,
+                                                 initial_localization_fiducial=True))
+        self.nav_client.wait_for_result()
+        resp = self.nav_client.get_result()
 
     def localization_state_cb(self, msg):
         self.localization_state = msg
