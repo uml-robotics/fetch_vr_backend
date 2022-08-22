@@ -95,6 +95,8 @@ runIDSelect = None
 runID = None
 
 runConfigs = None
+raw_config = ''
+interface = ''
 
 currentRunType = "None"
 currentRunID = -1
@@ -345,6 +347,10 @@ def onIDConfirmed():
             if term['id'] == id:
                global runConfigs
                runConfigs = term['run']
+               global raw_config
+               raw_config = term['raw_config']
+               global interface
+               interface = term['interface']
                isValidID = True
                break
         if isValidID:
@@ -368,7 +374,7 @@ def loadExperimenterUI():
     )
 
     frame.grid(row=0, column=0, padx=5, pady=5)
-    currentIDLabel = tk.Label(master=frame, text='Participant ID: ' + id)
+    currentIDLabel = tk.Label(master=frame, text="Interface: " + interface + "\nRun Order: " + raw_config + '\nParticipant ID: ' + id) 
     currentIDLabel.pack(padx=5, pady=5)
 
     global startBtn
@@ -384,7 +390,10 @@ def loadExperimenterUI():
 
     global runType
     runType = tk.StringVar(frame)
-    runType.set(RUN_TYPE[0])
+    for run in runConfigs:
+        if run['id'] == 1:
+            runType.set(RUN_TYPE[run['type'] == 'Manipulation'])
+            break
 
     global runTypeSelect
     runTypeSelect = tk.OptionMenu(frame, runType, *RUN_TYPE)

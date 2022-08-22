@@ -45,11 +45,15 @@ for i in range(0, NUM_PARTICIPANTS):
     arena_config = arena.split(";")
     sa_config = sa.split(";")
     run_config = []
+    raw_config = ''
     for i in range (0, 6):
+        if i != 0:
+            raw_config += ';'
         run = ObjDict()
         run['id'] = i + 1
         run['type'] = run_order[i//3]
         run['arena_config'] = arena_config[i%3]
+        raw_config += run_order[i//3][0] + arena_config[i%3]
         if run_order[i//3] == 'Navigation':
             current_sa = sa_config[i%3].split(",")
             question_config = []
@@ -64,6 +68,8 @@ for i in range(0, NUM_PARTICIPANTS):
         run_config.append(run)
 
     json_entry['run'] = run_config
+    json_entry['raw_config'] = raw_config
+
 
     config.append(json_entry)
 

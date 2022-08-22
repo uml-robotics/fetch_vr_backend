@@ -3,6 +3,7 @@
         {
             "id": "1", 
             "interface": "VR", 
+            "raw_config": "M1;M2;M3;N1;N2;N3", 
             "run": [
                 {
                     "arena_config": "1", 
@@ -90,6 +91,7 @@
         {
             "id": "2", 
             "interface": "2D", 
+            "raw_config": "M1;M2;M3;N1;N2;N3", 
             "run": [
                 {
                     "arena_config": "1", 
@@ -177,6 +179,7 @@
         {
             "id": "3", 
             "interface": "VR", 
+            "raw_config": "N1;N2;N3;M1;M2;M3", 
             "run": [
                 {
                     "arena_config": "1", 
@@ -264,6 +267,7 @@
         {
             "id": "4", 
             "interface": "2D", 
+            "raw_config": "N1;N2;N3;M1;M2;M3", 
             "run": [
                 {
                     "arena_config": "1", 
@@ -351,6 +355,7 @@
         {
             "id": "5", 
             "interface": "VR", 
+            "raw_config": "M3;M1;M2;N3;N1;N2", 
             "run": [
                 {
                     "arena_config": "3", 
@@ -438,6 +443,7 @@
         {
             "id": "6", 
             "interface": "2D", 
+            "raw_config": "M3;M1;M2;N3;N1;N2", 
             "run": [
                 {
                     "arena_config": "3", 
@@ -525,6 +531,7 @@
         {
             "id": "7", 
             "interface": "VR", 
+            "raw_config": "N3;N1;N2;M3;M1;M2", 
             "run": [
                 {
                     "arena_config": "3", 
@@ -612,6 +619,7 @@
         {
             "id": "8", 
             "interface": "2D", 
+            "raw_config": "N3;N1;N2;M3;M1;M2", 
             "run": [
                 {
                     "arena_config": "3", 
@@ -699,6 +707,7 @@
         {
             "id": "9", 
             "interface": "VR", 
+            "raw_config": "M2;M3;M1;N2;N3;N1", 
             "run": [
                 {
                     "arena_config": "2", 
@@ -786,6 +795,7 @@
         {
             "id": "10", 
             "interface": "2D", 
+            "raw_config": "M2;M3;M1;N2;N3;N1", 
             "run": [
                 {
                     "arena_config": "2", 
@@ -873,6 +883,7 @@
         {
             "id": "11", 
             "interface": "VR", 
+            "raw_config": "N2;N3;N1;M2;M3;M1", 
             "run": [
                 {
                     "arena_config": "2", 
@@ -960,6 +971,7 @@
         {
             "id": "12", 
             "interface": "2D", 
+            "raw_config": "N2;N3;N1;M2;M3;M1", 
             "run": [
                 {
                     "arena_config": "2", 
