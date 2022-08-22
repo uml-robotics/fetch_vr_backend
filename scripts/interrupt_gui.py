@@ -3,12 +3,9 @@
 from matplotlib import offsetbox
 import Tkinter as tk
 from Tkinter import *
-import PIL
-from PIL import ImageTk, Image
-#import ImageTK
-#import Image
 import rospy
 from std_msgs.msg import String
+from std_msgs.msg import Bool
 import rospkg
 import os
 
@@ -40,7 +37,7 @@ class InterruptQuestions:
         "What color is the obstacle closest to the robot?" : "Yellow;Orange;Grey;None;Don't know",
         "How many objectives has the robot reached thus far?": "0;1;2;None;Don't know",
         "Out of the three objectives, how many are remaining?":"3;2;1;None;Don't know",
-        "What color is the obstacle closest to the robot?": "Yellow;Orange;Grey;None;Don't know",
+        "Which wall is closest to the robot?": "Top;Left;Right;Bottom;Don't know",
     }
 
     # Uses a map image in the prompt
@@ -93,11 +90,14 @@ class InterruptQuestions:
 
     def __init__(self):
         self.sub = rospy.Subscriber("/question", String, self.callback)
+        
         self.create_window()
         self.window.withdraw()
         #self.destroy_window()
         self.rospack = rospkg.RosPack()
         self.answerPub = rospy.Publisher('answer', String, queue_size=10)
+        self.resumePub = rospy.Publisher('resume', Bool, queue_size=10)
+        self.window.attributes('-fullscreen', True)
         self.window.mainloop()
 
 
@@ -304,6 +304,9 @@ class InterruptQuestions:
         if self.current_question < 3:
             self.process_next_question()
         else:
+            msg = Bool()
+            msg.data = True 
+            self.resumePub.publish(msg)
             self.window.withdraw()
 
     def callback(self, msg):

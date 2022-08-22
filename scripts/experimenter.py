@@ -1,17 +1,16 @@
 #!/usr/bin/env python
-from email import header
-import time
 import Tkinter as tk
 import rospy
 from std_msgs.msg import String
 from std_msgs.msg import Bool
 from std_msgs.msg import Header
+from std_msgs.msg import Int32
 import threading
 from datetime import datetime
 from datetime import timedelta
 import json
 import argparse
-import os
+
 
 parser = argparse.ArgumentParser(description="The following parameters are used in this file: ",
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -98,18 +97,31 @@ runIDSelect = None
 runID = None
 
 runConfigs = None
+raw_config = ''
+interface = ''
 
 currentRunType = "None"
 currentRunID = -1
 currentSAIndex = 0
 
+answeringQuestions = False
+
+def resume_callback(msg):
+    global answeringQuestions
+    answeringQuestions = False
+    unPause()
+    
 
 # ROS
 pause_pub = rospy.Publisher('pause', Bool, queue_size=10)
 start_pub = rospy.Publisher('start', Bool, queue_size=10)
 end_pub = rospy.Publisher('stop', Bool, queue_size=10)
 time_pub = rospy.Publisher('runtime', Header, queue_size=10)
+run_number_pub = rospy.Publisher('runnumber', Int32, queue_size=10)
+run_type_pub = rospy.Publisher('runtype', String, queue_size=10)
 question_pub = rospy.Publisher('question', String, queue_size=10)
+
+resume_sub = rospy.Subscriber('resume',Bool, resume_callback)
 rospy.init_node('experimenter_ui', anonymous=True)
 rate = rospy.Rate(10)
 
@@ -127,6 +139,17 @@ def update():
         timeMsg = Header()
         timeMsg.stamp.secs = elapsedTime.total_seconds()
         time_pub.publish(timeMsg)
+
+        if currentRunType is not None:
+            msg = String()
+            msg.data = currentRunType
+            run_type_pub.publish(msg)
+
+        if currentRunID is not -1:
+            msg = Int32()
+            msg.data = currentRunID
+            run_number_pub.publish(msg)
+
         if isSAStarted:
             if(isPaused):
                 elapsedSATime = timedelta(seconds=0)
@@ -214,6 +237,7 @@ def endRun():
     # RESET PAUSE
     if isPaused:
         unPause()
+
     global totalPauseDuration
     totalPauseDuration = timedelta(0)
 
@@ -250,20 +274,31 @@ def onStartSAPressed():
         startSATimer()
 
 def startSATimer():
-    global isSAStarted
+    global isSAStarted, answeringQuestions
     isSAStarted = True
+    pause()
+    answeringQuestions = True
     saBtn.configure(text="CANCEL SA TIMER")
 
     q_config = None
     for val in runConfigs:
-        if val['id'] == str(currentRunID):
-            q_config = val['question'][currentSAIndex]
-            print(q_config)
+        normalizedRunID = val['id']
+        if normalizedRunID > 3:
+            normalizedRunID = normalizedRunID - 3
+        if val['type'] == currentRunType and normalizedRunID == currentRunID:
+            for question_set in val['question']:
+                if question_set['id'] == (currentSAIndex + 1):
+                    q_config = question_set
+                    break
+        if q_config:
+            break
+    print(q_config)
 
     global saCurrentDelay
     saCurrentDelay = q_config['time'] #delay.get()
     global saCallback
-    saCallback = threading.Timer(saCurrentDelay, askSA, [q_config['q1'], q_config['q2'], q_config['q3']])
+    saQuestionIndex = q_config['index'] - 1
+    saCallback = threading.Timer(saCurrentDelay, askSA, [saQuestionIndex, saQuestionIndex, saQuestionIndex])
     saCallback.start()
     global saStartTime
     saStartTime = datetime.now()
@@ -307,8 +342,7 @@ def clearSATimer():
 #    sa2Select.pack()
 #    sa3Select.pack()
 
-
-def askSA(q1, q2, q3):
+def askSA(q1, q2, q3): # keeping 3 arguments so we can change back easily if needed
     global currentSAIndex
     rospy.set_param('/user_study/participant_id', id)
     rospy.set_param('/user_study/run_number', currentRunID)
@@ -340,6 +374,10 @@ def onIDConfirmed():
             if term['id'] == id:
                global runConfigs
                runConfigs = term['run']
+               global raw_config
+               raw_config = term['raw_config']
+               global interface
+               interface = term['interface']
                isValidID = True
                break
         if isValidID:
@@ -363,7 +401,7 @@ def loadExperimenterUI():
     )
 
     frame.grid(row=0, column=0, padx=5, pady=5)
-    currentIDLabel = tk.Label(master=frame, text='Participant ID: ' + id)
+    currentIDLabel = tk.Label(master=frame, text="Interface: " + interface + "\nRun Order: " + raw_config + '\nParticipant ID: ' + id) 
     currentIDLabel.pack(padx=5, pady=5)
 
     global startBtn
@@ -379,7 +417,10 @@ def loadExperimenterUI():
 
     global runType
     runType = tk.StringVar(frame)
-    runType.set(RUN_TYPE[0])
+    for run in runConfigs:
+        if run['id'] == 1:
+            runType.set(RUN_TYPE[run['type'] == 'Manipulation'])
+            break
 
     global runTypeSelect
     runTypeSelect = tk.OptionMenu(frame, runType, *RUN_TYPE)
