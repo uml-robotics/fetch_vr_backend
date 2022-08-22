@@ -36,7 +36,7 @@ for i in range(0, NUM_PARTICIPANTS):
     run_order.append(RUN_TYPE[((i // (len(INTERFACE_TYPE))) + 1) % 2])
     arena = ARENA_CONFIG[(i // (len(INTERFACE_TYPE) * len(RUN_TYPE))) % 3]
     sa = SA_CONFIG[i%4]
-    print("Participant: " + str(participant_id) + " Interface: " + interface + "Run Type: " + str(run_order) + " Arena config: " + arena + " SA Config: " + sa)
+    print("Participant: " + str(participant_id) + " Interface: " + interface + " Run Type: " + str(run_order) + " Arena config: " + arena + " SA Config: " + sa)
     
     json_entry = ObjDict()
     json_entry['id'] = str(participant_id)

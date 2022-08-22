@@ -94,6 +94,7 @@ class InterruptQuestions:
         #self.destroy_window()
         self.rospack = rospkg.RosPack()
         self.answerPub = rospy.Publisher('answer', String, queue_size=10)
+        self.window.attributes('-fullscreen', True)
         self.window.mainloop()
 
 
