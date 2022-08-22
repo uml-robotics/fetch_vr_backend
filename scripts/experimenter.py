@@ -11,7 +11,6 @@ from datetime import timedelta
 import json
 import argparse
 
-
 parser = argparse.ArgumentParser(description="The following parameters are used in this file: ",
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 

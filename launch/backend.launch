@@ -1,0 +1,20 @@
+<launch>
+
+    <node name="waypoint_node" pkg="fetch_vr_backend" type="waypoint_node" />
+    <node name="gripper_node" pkg="fetch_vr_backend" type="gripper_node" />
+    <!-- <node name="direct_control_node" pkg="fetch_vr_backend" type="direct_control_node" /> -->
+    <!-- <node name="nav_node" pkg="fetch_vr_backend" type="nav_node" /> -->
+    <node name="nav_plan_node" pkg="fetch_vr_backend" type="nav_plan_node" />
+    <node name="arm_command_node" pkg="fetch_vr_backend" type="arm_command_node" />
+    <node name="head_command_node" pkg="fetch_vr_backend" type="head_command_node" />
+    <node name="torso_command_node" pkg="fetch_vr_backend" type="torso_command_node" />
+
+    <node pkg="tf" type="static_transform_publisher" name="target_a" args="-0.165 0.55 0 0 0 0 map target_a 100" />
+    <node pkg="tf" type="static_transform_publisher" name="target_b" args="-0.165 2.638 0 0 0 0 map target_b 100" />
+    <node pkg="tf" type="static_transform_publisher" name="target_c" args="3.213 2.638 0 0 0 0 map target_c 100" />
+
+    <node pkg="tf" type="static_transform_publisher" name="obstacle_a" args="1.48 0.25 0 0 0 0 map obstacle_a 100" />
+    <node pkg="tf" type="static_transform_publisher" name="obstacle_b" args="0.25 1.53 0 0 0 0 map obstacle_b 100" />
+    <node pkg="tf" type="static_transform_publisher" name="obstacle_c" args="2.798 1.53 0 0 0 0 map obstacle_c 100" />
+
+</launch>
