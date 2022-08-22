@@ -11,8 +11,8 @@ SA_CONFIG = ["1,2,3;4,1,3;2,4,1",
              "3,4,1;2,3,1;4,2,3",
              "4,1,2;3,4,2;1,3,4"]
 SA_TIME_CONFIG = ["90;135;190",
-                  "190;90;135",
-                  "135;190;90"]
+                  "190;135;90",
+                  "135;90;190"]
 
 
 parser = argparse.ArgumentParser(description="The following parameters are used in this file: ",
@@ -46,22 +46,23 @@ for i in range(0, NUM_PARTICIPANTS):
     sa_config = sa.split(";")
     run_config = []
     raw_config = ''
-    for i in range (0, 6):
-        if i != 0:
+    for r in range (0, 6):
+        if r != 0:
             raw_config += ';'
         run = ObjDict()
-        run['id'] = i + 1
-        run['type'] = run_order[i//3]
-        run['arena_config'] = arena_config[i%3]
-        raw_config += run_order[i//3][0] + arena_config[i%3]
-        if run_order[i//3] == 'Navigation':
-            current_sa = sa_config[i%3].split(",")
+        run['id'] = r + 1
+        run['type'] = run_order[r//3]
+        run['arena_config'] = arena_config[r%3]
+        raw_config += run_order[r//3][0] + arena_config[r%3]
+        if run_order[r//3] == 'Navigation':
+            sa_time = SA_TIME_CONFIG[r%3].split(";")
+            current_sa = sa_config[r%3].split(",")
             question_config = []
             for j in range (0,3):
                 question = ObjDict()
                 question['id'] = j+1
                 question['index'] = int(current_sa[j])
-                question['time'] = 1
+                question['time'] = int(sa_time[j])
                 question_config.append(question)
             run['question'] = question_config
 
