@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-from email import header
-import time
 import Tkinter as tk
 import rospy
 from std_msgs.msg import String
@@ -11,7 +9,6 @@ from datetime import datetime
 from datetime import timedelta
 import json
 import argparse
-import os
 
 parser = argparse.ArgumentParser(description="The following parameters are used in this file: ",
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -256,14 +253,23 @@ def startSATimer():
 
     q_config = None
     for val in runConfigs:
-        if val['id'] == str(currentRunID):
-            q_config = val['question'][currentSAIndex]
-            print(q_config)
+        normalizedRunID = val['id']
+        if normalizedRunID > 3:
+            normalizedRunID = normalizedRunID - 3
+        if val['type'] == currentRunType and normalizedRunID == currentRunID:
+            for question_set in val['question']:
+                if question_set['id'] == (currentSAIndex + 1):
+                    q_config = question_set
+                    break
+        if q_config:
+            break
+    print(q_config)
 
     global saCurrentDelay
     saCurrentDelay = q_config['time'] #delay.get()
     global saCallback
-    saCallback = threading.Timer(saCurrentDelay, askSA, [q_config['q1'], q_config['q2'], q_config['q3']])
+    saQuestionIndex = q_config['index'] - 1
+    saCallback = threading.Timer(saCurrentDelay, askSA, [saQuestionIndex, saQuestionIndex, saQuestionIndex])
     saCallback.start()
     global saStartTime
     saStartTime = datetime.now()
@@ -307,8 +313,7 @@ def clearSATimer():
 #    sa2Select.pack()
 #    sa3Select.pack()
 
-
-def askSA(q1, q2, q3):
+def askSA(q1, q2, q3): # keeping 3 arguments so we can change back easily if needed
     global currentSAIndex
     rospy.set_param('/user_study/participant_id', id)
     rospy.set_param('/user_study/run_number', currentRunID)

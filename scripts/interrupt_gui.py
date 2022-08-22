@@ -3,10 +3,6 @@
 from matplotlib import offsetbox
 import Tkinter as tk
 from Tkinter import *
-import PIL
-from PIL import ImageTk, Image
-#import ImageTK
-#import Image
 import rospy
 from std_msgs.msg import String
 import rospkg
@@ -40,7 +36,7 @@ class InterruptQuestions:
         "What color is the obstacle closest to the robot?" : "Yellow;Orange;Grey;None;Don't know",
         "How many objectives has the robot reached thus far?": "0;1;2;None;Don't know",
         "Out of the three objectives, how many are remaining?":"3;2;1;None;Don't know",
-        "What color is the obstacle closest to the robot?": "Yellow;Orange;Grey;None;Don't know",
+        "Which wall is closest to the robot?": "Top;Left;Right;Bottom;Don't know",
     }
 
     # Uses a map image in the prompt
