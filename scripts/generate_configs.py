@@ -10,9 +10,9 @@ SA_CONFIG = ["1,2,3;4,1,3;2,4,1",
              "2,3,4;1,2,4;3,1,2",
              "3,4,1;2,3,1;4,2,3",
              "4,1,2;3,4,2;1,3,4"]
-SA_TIME_CONFIG = ["90;135;190",
-                  "190;135;90",
-                  "135;90;190"]
+SA_TIME_CONFIG = ["60;90;120",
+                  "120;90;60",
+                  "90;60;120"]
 
 
 parser = argparse.ArgumentParser(description="The following parameters are used in this file: ",
