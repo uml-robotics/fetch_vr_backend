@@ -1,6 +1,94 @@
 {
     "configs": [
         {
+            "id": "-1", 
+            "interface": "VR", 
+            "raw_config": "M1;M2;M3;N1;N2;N3", 
+            "run": [
+                {
+                    "arena_config": "1", 
+                    "id": 1, 
+                    "type": "Manipulation"
+                }, 
+                {
+                    "arena_config": "2", 
+                    "id": 2, 
+                    "type": "Manipulation"
+                }, 
+                {
+                    "arena_config": "3", 
+                    "id": 3, 
+                    "type": "Manipulation"
+                }, 
+                {
+                    "arena_config": "1", 
+                    "id": 4, 
+                    "question": [
+                        {
+                            "id": 1, 
+                            "index": 1, 
+                            "time": 1
+                        }, 
+                        {
+                            "id": 2, 
+                            "index": 2, 
+                            "time": 1
+                        }, 
+                        {
+                            "id": 3, 
+                            "index": 3, 
+                            "time": 1
+                        }
+                    ], 
+                    "type": "Navigation"
+                }, 
+                {
+                    "arena_config": "2", 
+                    "id": 5, 
+                    "question": [
+                        {
+                            "id": 1, 
+                            "index": 4, 
+                            "time": 1
+                        }, 
+                        {
+                            "id": 2, 
+                            "index": 1, 
+                            "time": 1
+                        }, 
+                        {
+                            "id": 3, 
+                            "index": 3, 
+                            "time": 1
+                        }
+                    ], 
+                    "type": "Navigation"
+                }, 
+                {
+                    "arena_config": "3", 
+                    "id": 6, 
+                    "question": [
+                        {
+                            "id": 1, 
+                            "index": 2, 
+                            "time": 1
+                        }, 
+                        {
+                            "id": 2, 
+                            "index": 4, 
+                            "time": 1
+                        }, 
+                        {
+                            "id": 3, 
+                            "index": 1, 
+                            "time": 1
+                        }
+                    ], 
+                    "type": "Navigation"
+                }
+            ]
+        }, 
+        {
             "id": "1", 
             "interface": "VR", 
             "raw_config": "M1;M2;M3;N1;N2;N3", 

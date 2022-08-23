@@ -4,6 +4,8 @@ import rospy
 from std_msgs.msg import String
 from std_msgs.msg import Bool
 from std_msgs.msg import Header
+from geometry_msgs.msg import TransformStamped
+import tf
 import threading
 from datetime import datetime
 from datetime import timedelta
@@ -23,6 +25,9 @@ with open(args.filename) as f:
         print(e)
 
 # CONSTANTS
+ROS_PREFIX = "user_study/"
+
+
 RUN_TYPE = [
 "Navigation",
 "Manipulation"
@@ -60,6 +65,12 @@ SA3_OPTIONS = [
 "Based on where the robot is currently located on the grid, if the robot drives right 2 grid blocks, will it run into any obstacles.",
 "In which direction would the robot need to turn toward to be at the next target?",
 "In terms of distance, what percent of the way are you to your next target? Please use the slider."
+]
+
+OBSTACLE_COLORS = [
+    "orange;yellow;grey",
+    "grey;orange;yellow",
+    "yellow;grey;orange"
 ]
 
 # GLOBALS
@@ -104,12 +115,14 @@ currentSAIndex = 0
 
 
 # ROS
+rospy.init_node('experimenter_ui', anonymous=True)
 pause_pub = rospy.Publisher('pause', Bool, queue_size=10)
 start_pub = rospy.Publisher('start', Bool, queue_size=10)
 end_pub = rospy.Publisher('stop', Bool, queue_size=10)
 time_pub = rospy.Publisher('runtime', Header, queue_size=10)
 question_pub = rospy.Publisher('question', String, queue_size=10)
-rospy.init_node('experimenter_ui', anonymous=True)
+transform_pub = rospy.Publisher(ROS_PREFIX + 'tracked_poses', TransformStamped, queue_size=10)
+listener = tf.TransformListener()
 rate = rospy.Rate(10)
 
 def update():
@@ -253,12 +266,14 @@ def startSATimer():
     isSAStarted = True
     saBtn.configure(text="CANCEL SA TIMER")
 
+    arena_config = -1
     q_config = None
     for val in runConfigs:
         normalizedRunID = val['id']
         if normalizedRunID > 3:
             normalizedRunID = normalizedRunID - 3
         if val['type'] == currentRunType and normalizedRunID == currentRunID:
+            arena_config = val['arena_config']
             for question_set in val['question']:
                 if question_set['id'] == (currentSAIndex + 1):
                     q_config = question_set
@@ -271,7 +286,7 @@ def startSATimer():
     saCurrentDelay = q_config['time'] #delay.get()
     global saCallback
     saQuestionIndex = q_config['index'] - 1
-    saCallback = threading.Timer(saCurrentDelay, askSA, [saQuestionIndex, saQuestionIndex, saQuestionIndex])
+    saCallback = threading.Timer(saCurrentDelay, askSA, [saQuestionIndex, saQuestionIndex, saQuestionIndex, arena_config])
     saCallback.start()
     global saStartTime
     saStartTime = datetime.now()
@@ -315,7 +330,7 @@ def clearSATimer():
 #    sa2Select.pack()
 #    sa3Select.pack()
 
-def askSA(q1, q2, q3): # keeping 3 arguments so we can change back easily if needed
+def askSA(q1, q2, q3, arena): # keeping 3 arguments so we can change back easily if needed
     global currentSAIndex
     rospy.set_param('/user_study/participant_id', id)
     rospy.set_param('/user_study/run_number', currentRunID)
@@ -327,9 +342,38 @@ def askSA(q1, q2, q3): # keeping 3 arguments so we can change back easily if nee
 
     currentSAIndex = currentSAIndex + 1
 
+    obstacle_config = OBSTACLE_COLORS[currentRunID].split(";")
+
+    publishTransform('map', 'base_link')
+    publishTransform('base_link', 'target_a')
+    publishTransform('base_link', 'target_b')
+    publishTransform('base_link', 'target_c')
+    publishTransform('base_link', 'obstacle_a', obstacle_config[0])
+    publishTransform('base_link', 'obstacle_b', obstacle_config[1])
+    publishTransform('base_link', 'obstacle_c', obstacle_config[2])
+
     print("ASKING: " + questionStr)
     question_pub.publish(questionStr)
     rate.sleep()
+
+def publishTransform(_from, _to, new_name=""):
+    if new_name == "":
+        new_name = _to
+    try:
+        tf = listener.lookupTransform(_from, _to, rospy.Time(0))
+        tf_stamped = TransformStamped()
+        tf_stamped.header.frame_id = _from
+        tf_stamped.child_frame_id = new_name
+        tf_stamped.transform.translation.x = tf[0][0]
+        tf_stamped.transform.translation.y = tf[0][1]
+        tf_stamped.transform.translation.z = tf[0][2]
+        tf_stamped.transform.rotation.x = tf[1][0]
+        tf_stamped.transform.rotation.y = tf[1][1]
+        tf_stamped.transform.rotation.z = tf[1][2]
+        tf_stamped.transform.rotation.w = tf[1][3]
+        transform_pub.publish(tf_stamped)
+    except Exception as e:
+            print(e)
 
 def onIDConfirmed():
     global id
@@ -388,20 +432,19 @@ def loadExperimenterUI():
     global currentRunLabel
     currentRunLabel = tk.Label(master=frame, text='')
 
+    global runID
+    runID = tk.IntVar(frame)
     global runType
     runType = tk.StringVar(frame)
     for run in runConfigs:
         if run['id'] == 1:
             runType.set(RUN_TYPE[run['type'] == 'Manipulation'])
+            runID.set(RUN_ID[int(run['arena_config']) - 1])
             break
 
     global runTypeSelect
     runTypeSelect = tk.OptionMenu(frame, runType, *RUN_TYPE)
     runTypeSelect.pack()
-
-    global runID
-    runID = tk.IntVar(frame)
-    runID.set(RUN_ID[0])
 
     global runIDSelect
     runIDSelect = tk.OptionMenu(frame, runID, *RUN_ID)
