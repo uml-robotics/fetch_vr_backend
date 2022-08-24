@@ -77,9 +77,14 @@ OBSTACLE_COLORS = [
 id = -1
 isStarted = False
 startTime = -1
+continueTime = -1
 isPaused = False
+isReset = False
 pauseStartTime = -1
 totalPauseDuration = timedelta(0)
+totalResetDuration = timedelta(0)
+activeCheckPointPauseDuration = timedelta(0)
+activeCheckPointResetDuration = timedelta(0)
 isSAStarted = False
 saCallback = None
 saCurrentDelay = -1
@@ -87,9 +92,12 @@ saStartTime = -1
 
 startBtn = None
 pauseBtn = None
-saBtn = None
+resetBtn = None
+checkpointBtn = None
 timeLabel = None
 saTimeLabel = None
+resetLabel = None
+timeSplitLabel = None
 sa1Select = None
 sa2Select = None
 sa3Select = None
@@ -113,6 +121,7 @@ currentRunType = "None"
 currentRunID = -1
 currentSAIndex = 0
 
+checkpoints = []
 
 # ROS
 rospy.init_node('experimenter_ui', anonymous=True)
@@ -127,23 +136,29 @@ rate = rospy.Rate(10)
 
 def update():
     if isStarted:
-        totalElapsedTime = datetime.now()-startTime
-
+        currentTime = datetime.now()
+        totalElapsedTime = currentTime-startTime
+        #print("TOTAL ELAPSED: " + str(totalElapsedTime))
+    
         currentPauseElapsedTime = timedelta(0)
         if isPaused:
-            currentPauseElapsedTime = datetime.now() - pauseStartTime
+            currentPauseElapsedTime = currentTime - pauseStartTime
+        
+        #print("CURRENT PAUSE: " + str(currentPauseElapsedTime))
+        #print("TOTAL PAUSE: " + str(totalPauseDuration))
 
-        elapsedTime = totalElapsedTime - currentPauseElapsedTime - totalPauseDuration
+        elapsedTime = totalElapsedTime - currentPauseElapsedTime - totalPauseDuration - totalResetDuration
+        #print("ADJUSTED ELAPSED: " + str(elapsedTime))
 
         timeLabel.config(text=str(elapsedTime).split(".")[0])
         timeMsg = Header()
         timeMsg.stamp.secs = elapsedTime.total_seconds()
         time_pub.publish(timeMsg)
         if isSAStarted:
-            if(isPaused):
+            if isPaused or isReset:
                 elapsedSATime = timedelta(seconds=0)
             else:
-                elapsedSATime = datetime.now() - saStartTime
+                elapsedSATime = currentTime - saStartTime
 
             countdown = timedelta(seconds=saCurrentDelay) - elapsedSATime
 
@@ -168,6 +183,8 @@ def pause():
     pauseBtn.configure(text="RESUME")
     global pauseStartTime
     pauseStartTime = datetime.now()
+    print("PAUSED")
+    #print("Pause STARTED!" + str(pauseStartTime) + " : " + str(pauseStartTime - startTime))
     if isSAStarted:
         pauseSATimer()
 
@@ -175,9 +192,23 @@ def unPause():
     global isPaused
     isPaused = False
     pauseBtn.configure(text="PAUSE")
+    currentTime = datetime.now()
+
+    global isReset
+    if isReset:
+        #global continueTime
+        #print("SETTING CONTINUE TIME: " + str(continueTime))
+        #continueTime = currentTime
+        isReset = False
+
     global totalPauseDuration
     global pauseStartTime
-    totalPauseDuration += (datetime.now() - pauseStartTime)
+    global activeCheckPointPauseDuration
+    activeCheckPointPauseDuration += (currentTime - pauseStartTime)
+    totalPauseDuration += (currentTime - pauseStartTime)
+    print("Elapsed Time: " + str(currentTime - startTime))
+    print("Pause: " + str(totalPauseDuration))
+    print("Reset: " + str(totalResetDuration))
     pauseStartTime = -1
     if isSAStarted:
         unPauseSATimer()
@@ -193,6 +224,8 @@ def startRun():
     isStarted = True
     global startTime
     startTime = datetime.now()
+    global continueTime
+    continueTime = startTime
 
     startBtn.configure(text="END RUN")
 
@@ -208,6 +241,8 @@ def startRun():
     saTimeLabel.configure(text="")
 
     start_pub.publish(True)
+    
+    onCheckpointReached()    
     rate.sleep()
 
 def endRun():
@@ -228,10 +263,26 @@ def endRun():
         unPause()
     global totalPauseDuration
     totalPauseDuration = timedelta(0)
+    global activeCheckPointPauseDuration
+    activeCheckPointPauseDuration = timedelta(0)
 
     # RESET SA
     if isSAStarted:
         clearSATimer()
+
+    # RESET CHECKPOINTS
+    global isReset
+    isReset = False
+    global checkpoints
+    checkpoints = []
+    resetLabel.configure(text="")
+    timeSplitLabel.configure(text="")
+    global totalResetDuration
+    totalResetDuration = timedelta(0)
+    global activeCheckPointResetDuration
+    activeCheckPointResetDuration = timedelta(0)
+    global continueTime
+    continueTime = -1
 
     startBtn.configure(text="START RUN")
     timeLabel.configure(text='')
@@ -243,28 +294,36 @@ def endRun():
 
     end_pub.publish(True)
 
-def onStartSAPressed():
+def onCheckpointReached():
     if not isStarted or isPaused:
         saTimeLabel.config(text='CAN NOT RUN SA WHEN NOT IN A RUN!')
-        return
-
-    if currentRunType == "Manipulation":
-        saTimeLabel.config(text='CAN NOT RUN SA FOR MANIP!')
         return
 
     if currentSAIndex >= 3:
         saTimeLabel.config(text='CAN NOT RUN MORE THAN 3 SA PER RUN!')
         return
 
+    global continueTime
+
+    if currentRunType == "Manipulation":
+        if not isReset:
+            continueTime = datetime.now()
+            addCheckpoint(continueTime-startTime)
+        return
+
     if isSAStarted:
         clearSATimer()
     else:
         startSATimer()
+        if not isReset:
+            continueTime = saStartTime
+            addCheckpoint(continueTime-startTime)
 
 def startSATimer():
     global isSAStarted
     isSAStarted = True
-    saBtn.configure(text="CANCEL SA TIMER")
+    if currentRunType == "Navigation":
+        checkpointBtn.configure(text="CANCEL SA TIMER")
 
     arena_config = -1
     q_config = None
@@ -314,7 +373,7 @@ def unPauseSATimer():
 def clearSATimer():
     global isSAStarted
     isSAStarted = False
-    saBtn.configure(text="START SA TIMER")
+    checkpointBtn.configure(text="CHECKPOINT REACHED")
     global saCurrentDelay
     saCurrentDelay = -1
     global saCallback
@@ -329,6 +388,51 @@ def clearSATimer():
 #    sa1Select.pack()
 #    sa2Select.pack()
 #    sa3Select.pack()
+
+def resetToCheckpoint():
+    global isReset
+    if isReset:
+        return
+
+    if not isStarted or not isPaused:
+        resetLabel.configure(text="Run must be paused to reset!")
+        return
+
+    if isSAStarted:
+        clearSATimer()
+
+    isReset = True
+
+    global activeCheckPointResetDuration
+    print("Pause start: " + str(pauseStartTime - startTime))
+    print("Continue start: " + str(continueTime - startTime))
+    print("Elapsed time: " + str((pauseStartTime - continueTime)))
+    print("Runtime reset: " + str(activeCheckPointResetDuration))
+    timeReset = (pauseStartTime - continueTime) - activeCheckPointPauseDuration - activeCheckPointResetDuration
+    print("Time to reset: " + str(timeReset))
+    activeCheckPointResetDuration += timeReset
+    print("Updated Runtime reset: " + str(activeCheckPointResetDuration))
+    print("Pause reset: " + str(activeCheckPointPauseDuration))
+    global totalResetDuration
+    totalResetDuration += timeReset
+    print("Total reset: " + str(totalResetDuration))
+
+
+def addCheckpoint(duration):
+    global activeCheckPointPauseDuration
+    activeCheckPointPauseDuration = timedelta(0)
+    global activeCheckPointResetDuration
+    activeCheckPointResetDuration = timedelta(0)
+
+    checkpoints.append(duration)
+
+    currentPauseElapsedTime = timedelta(0)
+    if isPaused:
+        currentPauseElapsedTime = datetime.now() - pauseStartTime
+    checkpoint_no_pause = duration - currentPauseElapsedTime - totalPauseDuration - totalResetDuration
+
+    txt = timeSplitLabel['text'] + '\n' + str(checkpoint_no_pause).split(".")[0]
+    timeSplitLabel.configure(text=txt)
 
 def askSA(q1, q2, q3, arena): # keeping 3 arguments so we can change back easily if needed
     global currentSAIndex
@@ -470,10 +574,10 @@ def loadExperimenterUI():
     )
 
     frame.grid(row=1, column=0, padx=5, pady=5)
-    global saBtn
-    saBtn = tk.Button(master=frame, text="START SA TIMER", width=30,
-                      command=onStartSAPressed)
-    saBtn.pack(padx=5, pady=5)
+    global checkpointBtn
+    checkpointBtn = tk.Button(master=frame, text="CHECKPOINT REACHED", width=30,
+                      command=onCheckpointReached)
+    checkpointBtn.pack(padx=5, pady=5)
     global saTimeLabel
     saTimeLabel = tk.Label(master=frame, text='')
     saTimeLabel.pack(padx=5, pady=5)
@@ -515,6 +619,18 @@ def loadExperimenterUI():
     global sa3Select
     sa3Select = tk.OptionMenu(frame, sa3, *SA3_OPTIONS)
 #    sa3Select.pack()
+
+    global resetBtn
+    resetBtn = tk.Button(master=frame, text="RESET TO CHECKPOINT", width=30,
+                      command=resetToCheckpoint)
+    resetBtn.pack(padx=5, pady=5)
+    global resetLabel
+    resetLabel = tk.Label(master=frame, text='')
+    resetLabel.pack(padx=5, pady=5)
+    global timeSplitLabel
+    timeSplitLabel = tk.Label(master=frame, text='')
+    timeSplitLabel.pack(padx=5, pady=5)
+
 
     global start_frame
     start_frame.destroy()
