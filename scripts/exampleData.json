@@ -115,17 +115,17 @@
                         {
                             "id": 1, 
                             "index": 1, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 2, 
                             "index": 2, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 3, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -137,17 +137,17 @@
                         {
                             "id": 1, 
                             "index": 4, 
-                            "time": 190
+                            "time": 120
                         }, 
                         {
                             "id": 2, 
                             "index": 1, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 3, 
-                            "time": 90
+                            "time": 60
                         }
                     ], 
                     "type": "Navigation"
@@ -159,17 +159,17 @@
                         {
                             "id": 1, 
                             "index": 2, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 2, 
                             "index": 4, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 3, 
                             "index": 1, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -203,17 +203,17 @@
                         {
                             "id": 1, 
                             "index": 2, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 2, 
                             "index": 3, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 4, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -225,17 +225,17 @@
                         {
                             "id": 1, 
                             "index": 1, 
-                            "time": 190
+                            "time": 120
                         }, 
                         {
                             "id": 2, 
                             "index": 2, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 4, 
-                            "time": 90
+                            "time": 60
                         }
                     ], 
                     "type": "Navigation"
@@ -247,17 +247,17 @@
                         {
                             "id": 1, 
                             "index": 3, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 2, 
                             "index": 1, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 3, 
                             "index": 2, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -276,17 +276,17 @@
                         {
                             "id": 1, 
                             "index": 3, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 2, 
                             "index": 4, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 1, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -298,17 +298,17 @@
                         {
                             "id": 1, 
                             "index": 2, 
-                            "time": 190
+                            "time": 120
                         }, 
                         {
                             "id": 2, 
                             "index": 3, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 1, 
-                            "time": 90
+                            "time": 60
                         }
                     ], 
                     "type": "Navigation"
@@ -320,17 +320,17 @@
                         {
                             "id": 1, 
                             "index": 4, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 2, 
                             "index": 2, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 3, 
                             "index": 3, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -364,17 +364,17 @@
                         {
                             "id": 1, 
                             "index": 4, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 2, 
                             "index": 1, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 2, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -386,17 +386,17 @@
                         {
                             "id": 1, 
                             "index": 3, 
-                            "time": 190
+                            "time": 120
                         }, 
                         {
                             "id": 2, 
                             "index": 4, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 2, 
-                            "time": 90
+                            "time": 60
                         }
                     ], 
                     "type": "Navigation"
@@ -408,17 +408,17 @@
                         {
                             "id": 1, 
                             "index": 1, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 2, 
                             "index": 3, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 3, 
                             "index": 4, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -467,17 +467,17 @@
                         {
                             "id": 1, 
                             "index": 1, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 2, 
                             "index": 2, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 3, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -489,17 +489,17 @@
                         {
                             "id": 1, 
                             "index": 4, 
-                            "time": 190
+                            "time": 120
                         }, 
                         {
                             "id": 2, 
                             "index": 1, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 3, 
-                            "time": 90
+                            "time": 60
                         }
                     ], 
                     "type": "Navigation"
@@ -511,17 +511,17 @@
                         {
                             "id": 1, 
                             "index": 2, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 2, 
                             "index": 4, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 3, 
                             "index": 1, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -555,17 +555,17 @@
                         {
                             "id": 1, 
                             "index": 2, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 2, 
                             "index": 3, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 4, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -577,17 +577,17 @@
                         {
                             "id": 1, 
                             "index": 1, 
-                            "time": 190
+                            "time": 120
                         }, 
                         {
                             "id": 2, 
                             "index": 2, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 4, 
-                            "time": 90
+                            "time": 60
                         }
                     ], 
                     "type": "Navigation"
@@ -599,17 +599,17 @@
                         {
                             "id": 1, 
                             "index": 3, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 2, 
                             "index": 1, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 3, 
                             "index": 2, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -628,17 +628,17 @@
                         {
                             "id": 1, 
                             "index": 3, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 2, 
                             "index": 4, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 1, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -650,17 +650,17 @@
                         {
                             "id": 1, 
                             "index": 2, 
-                            "time": 190
+                            "time": 120
                         }, 
                         {
                             "id": 2, 
                             "index": 3, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 1, 
-                            "time": 90
+                            "time": 60
                         }
                     ], 
                     "type": "Navigation"
@@ -672,17 +672,17 @@
                         {
                             "id": 1, 
                             "index": 4, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 2, 
                             "index": 2, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 3, 
                             "index": 3, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -716,17 +716,17 @@
                         {
                             "id": 1, 
                             "index": 4, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 2, 
                             "index": 1, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 2, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -738,17 +738,17 @@
                         {
                             "id": 1, 
                             "index": 3, 
-                            "time": 190
+                            "time": 120
                         }, 
                         {
                             "id": 2, 
                             "index": 4, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 2, 
-                            "time": 90
+                            "time": 60
                         }
                     ], 
                     "type": "Navigation"
@@ -760,17 +760,17 @@
                         {
                             "id": 1, 
                             "index": 1, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 2, 
                             "index": 3, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 3, 
                             "index": 4, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -819,17 +819,17 @@
                         {
                             "id": 1, 
                             "index": 1, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 2, 
                             "index": 2, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 3, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -841,17 +841,17 @@
                         {
                             "id": 1, 
                             "index": 4, 
-                            "time": 190
+                            "time": 120
                         }, 
                         {
                             "id": 2, 
                             "index": 1, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 3, 
-                            "time": 90
+                            "time": 60
                         }
                     ], 
                     "type": "Navigation"
@@ -863,17 +863,17 @@
                         {
                             "id": 1, 
                             "index": 2, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 2, 
                             "index": 4, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 3, 
                             "index": 1, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -907,17 +907,17 @@
                         {
                             "id": 1, 
                             "index": 2, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 2, 
                             "index": 3, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 4, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -929,17 +929,17 @@
                         {
                             "id": 1, 
                             "index": 1, 
-                            "time": 190
+                            "time": 120
                         }, 
                         {
                             "id": 2, 
                             "index": 2, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 4, 
-                            "time": 90
+                            "time": 60
                         }
                     ], 
                     "type": "Navigation"
@@ -951,17 +951,17 @@
                         {
                             "id": 1, 
                             "index": 3, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 2, 
                             "index": 1, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 3, 
                             "index": 2, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -980,17 +980,17 @@
                         {
                             "id": 1, 
                             "index": 3, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 2, 
                             "index": 4, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 1, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -1002,17 +1002,17 @@
                         {
                             "id": 1, 
                             "index": 2, 
-                            "time": 190
+                            "time": 120
                         }, 
                         {
                             "id": 2, 
                             "index": 3, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 1, 
-                            "time": 90
+                            "time": 60
                         }
                     ], 
                     "type": "Navigation"
@@ -1024,17 +1024,17 @@
                         {
                             "id": 1, 
                             "index": 4, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 2, 
                             "index": 2, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 3, 
                             "index": 3, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -1068,17 +1068,17 @@
                         {
                             "id": 1, 
                             "index": 4, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 2, 
                             "index": 1, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 2, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
@@ -1090,17 +1090,17 @@
                         {
                             "id": 1, 
                             "index": 3, 
-                            "time": 190
+                            "time": 120
                         }, 
                         {
                             "id": 2, 
                             "index": 4, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 3, 
                             "index": 2, 
-                            "time": 90
+                            "time": 60
                         }
                     ], 
                     "type": "Navigation"
@@ -1112,17 +1112,17 @@
                         {
                             "id": 1, 
                             "index": 1, 
-                            "time": 135
+                            "time": 90
                         }, 
                         {
                             "id": 2, 
                             "index": 3, 
-                            "time": 90
+                            "time": 60
                         }, 
                         {
                             "id": 3, 
                             "index": 4, 
-                            "time": 190
+                            "time": 120
                         }
                     ], 
                     "type": "Navigation"
