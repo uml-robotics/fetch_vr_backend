@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+from bosdyn.api.graph_nav import graph_nav_pb2
 import geometry_msgs.msg
 import std_msgs.msg
 from std_msgs.msg import Bool, String, Header, Int16MultiArray, Int32
@@ -129,10 +130,11 @@ class GraphNavLoader:
         rospy.loginfo("[GraphNavLoader]: finished configuring!")
 
     def navigate_to_feedback_cb(self, msg):
-        self.nav_status_pub.publish(Int32(data=msg.status))
-        self.nav_waypoint_pub.publish(String(data=msg.waypoint_id))
+        self.nav_status_pub.publish(Int32(data=msg.feedback.status))
+        self.nav_waypoint_pub.publish(String(data=msg.feedback.waypoint_id))
 
     def navigate_to_cb(self, msg):
+        rospy.loginfo("Navigating to waypoint {}".format(msg.data))
         self.nav_client.send_goal(NavigateToGoal(upload_path=self.path, navigate_to=msg.data,
                                                  initial_localization_fiducial=True))
         self.nav_client.wait_for_result()

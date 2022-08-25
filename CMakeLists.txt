@@ -136,7 +136,7 @@ include_directories(
  add_executable(direct_control_node  src/direct_control.cpp)
  add_executable(nav_node  src/nav.cpp)
  add_executable(nav_plan_node  src/nav_plan.cpp)
- add_executable(arm_command_node  src/arm_command.cpp)
+ add_executable(arm_command_node  src/arm_command.cpp src/theora_stream.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

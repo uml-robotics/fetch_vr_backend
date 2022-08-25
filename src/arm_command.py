@@ -56,7 +56,7 @@ class SpotArmCommand:
             # ps.header.frame_id = "odom"
             # rospy.loginfo(ps.pose.orientation)
             # ps = self.tf_buffer.transform(ps, "flat_body", timeout=rospy.Duration(10))
-            # rospy.loginfo(ps.pose.orientation)
+            rospy.loginfo(pose.orientation)
             # # Send the pose to the hand pose server
             req = HandPoseRequest()
             req.pose_point = [pose.position.x, pose.position.y, pose.position.z,
@@ -84,7 +84,7 @@ class SpotArmCommand:
 if __name__ == "__main__":
     rospy.init_node("spot_arm_command")
     spot_arm = SpotArmCommand()
-    rate = rospy.Rate(10)
+    rate = rospy.Rate(3)
     while not rospy.is_shutdown():
         while True:
             try:

@@ -1,0 +1,8 @@
+<launch>
+    <node name="compress_image1" pkg="image_transport" type="republish" output="screen">
+        <remap from="in_transport" to="raw" />
+        <remap from="in_base_topic" to="/spot/camera/frontleft/image" />
+        <remap from="out_transport" to="compressed" />
+        <remap from="out_base_topic" to="/spot/camera/frontleft/image/" />
+    </node>
+</launch>

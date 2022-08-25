@@ -11,7 +11,7 @@
     <node name="spot_control_node" pkg="fetch_vr_backend" type="spot_control.py" output="screen" />
     <node name="spot_manip_node" pkg="fetch_vr_backend" type="arm_command.py" output="screen" />
     <node name="spot_gripper_node" pkg="fetch_vr_backend" type="gripper.py" output="screen" />
-
+    <node name="compress_image_node" pkg="fetch_vr_backend" type="images.sh" />
 <!--     <node name="graph_nav_node" pkg="fetch_vr_backend" type="graph_nav.py" output="screen" /> -->
     <node pkg="nodelet" type="nodelet" name="nodelet1" output="log"
         args="load depth_image_proc/point_cloud_xyz nodelet_manager">
