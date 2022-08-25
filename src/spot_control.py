@@ -4,6 +4,7 @@ from std_srvs.srv import Trigger, TriggerResponse, TriggerRequest
 from std_msgs.msg import String, Bool, Int32
 import actionlib
 from spot_msgs.msg import TrajectoryAction, TrajectoryGoal, TrajectoryResult, PowerState, ManipulatorState
+from spot_msgs.srv import DockRobotRequest, DockRobot
 from geometry_msgs.msg import PoseStamped
 
 
@@ -38,7 +39,7 @@ class SpotControl:
         rospy.wait_for_service("/spot/arm_unstow")
         self.claim = rospy.ServiceProxy("/spot/claim", Trigger)
         self.power_on = rospy.ServiceProxy("/spot/power_on", Trigger)
-        self.dock = rospy.ServiceProxy("/spot/dock", Trigger)
+        self.dock = rospy.ServiceProxy("/spot/dock", DockRobot)
         self.undock = rospy.ServiceProxy("/spot/undock", Trigger)
         self.stop = rospy.ServiceProxy("/spot/stop", Trigger)
         self.power_off = rospy.ServiceProxy("/spot/power_off", Trigger)
@@ -86,7 +87,7 @@ class SpotControl:
         elif msg.data == "sit":
             resp = self.sit(TriggerRequest())
         elif msg.data == "dock":
-            resp = self.dock(TriggerRequest())
+            resp = self.dock(DockRobotRequest(id=rospy.get_param("/spot_vr/dock_id")))
             pass
         elif msg.data == "undock":
             resp = self.undock(TriggerRequest())

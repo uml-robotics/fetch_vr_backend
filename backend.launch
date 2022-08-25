@@ -1,5 +1,6 @@
 <launch>
 <!--     <param name="/spot_vr/graph_nav_filepath" type="string" value="/home/jacobe90/Documents/blueprint_example.walk/"/> -->
+    <param name="/spot_vr/dock_id" type="string" value="520"/>
     <node pkg="nodelet" type="nodelet" name="nodelet_manager" output="log" args="manager" />
 <!--     <node name="waypoint_node" pkg="fetch_vr_backend" type="waypoint_node" /> -->
 <!--     <node name="gripper_node" pkg="fetch_vr_backend" type="gripper_node" /> -->
