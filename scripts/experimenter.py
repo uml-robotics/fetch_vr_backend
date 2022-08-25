@@ -80,7 +80,6 @@ startTime = -1
 continueTime = -1
 isPaused = False
 isReset = False
-shouldRestartSA = False
 pauseStartTime = -1
 totalPauseDuration = timedelta(0)
 totalResetDuration = timedelta(0)
@@ -122,9 +121,6 @@ currentRunType = "None"
 currentRunID = -1
 currentSAIndex = 0
 
-arena_config = -1
-saQuestionIndex = -1
-
 checkpoints = []
 
 # ROS
@@ -142,12 +138,17 @@ def update():
     if isStarted:
         currentTime = datetime.now()
         totalElapsedTime = currentTime-startTime
+        #print("TOTAL ELAPSED: " + str(totalElapsedTime))
     
         currentPauseElapsedTime = timedelta(0)
         if isPaused:
             currentPauseElapsedTime = currentTime - pauseStartTime
+        
+        #print("CURRENT PAUSE: " + str(currentPauseElapsedTime))
+        #print("TOTAL PAUSE: " + str(totalPauseDuration))
 
         elapsedTime = totalElapsedTime - currentPauseElapsedTime - totalPauseDuration - totalResetDuration
+        #print("ADJUSTED ELAPSED: " + str(elapsedTime))
 
         timeLabel.config(text=str(elapsedTime).split(".")[0])
         timeMsg = Header()
@@ -182,6 +183,8 @@ def pause():
     pauseBtn.configure(text="RESUME")
     global pauseStartTime
     pauseStartTime = datetime.now()
+    print("PAUSED")
+    #print("Pause STARTED!" + str(pauseStartTime) + " : " + str(pauseStartTime - startTime))
     if isSAStarted:
         pauseSATimer()
 
@@ -193,17 +196,19 @@ def unPause():
 
     global isReset
     if isReset:
+        #global continueTime
+        #print("SETTING CONTINUE TIME: " + str(continueTime))
+        #continueTime = currentTime
         isReset = False
-        global shouldRestartSA
-        if shouldRestartSA:
-            shouldRestartSA = False
-            startSATimer()
 
     global totalPauseDuration
     global pauseStartTime
     global activeCheckPointPauseDuration
     activeCheckPointPauseDuration += (currentTime - pauseStartTime)
     totalPauseDuration += (currentTime - pauseStartTime)
+    print("Elapsed Time: " + str(currentTime - startTime))
+    print("Pause: " + str(totalPauseDuration))
+    print("Reset: " + str(totalResetDuration))
     pauseStartTime = -1
     if isSAStarted:
         unPauseSATimer()
@@ -236,7 +241,7 @@ def startRun():
     saTimeLabel.configure(text="")
 
     start_pub.publish(True)
-
+    
     onCheckpointReached()    
     rate.sleep()
 
@@ -301,9 +306,6 @@ def onCheckpointReached():
     global continueTime
 
     if currentRunType == "Manipulation":
-        if len(checkpoints) > 3:
-            saTimeLabel.config(text='CAN NOT RUN MORE THAN 3 CHECKPOINTS PER RUN!')
-            return
         if not isReset:
             continueTime = datetime.now()
             addCheckpoint(continueTime-startTime)
@@ -323,7 +325,6 @@ def startSATimer():
     if currentRunType == "Navigation":
         checkpointBtn.configure(text="CANCEL SA TIMER")
 
-    global arena_config
     arena_config = -1
     q_config = None
     for val in runConfigs:
@@ -343,7 +344,6 @@ def startSATimer():
     global saCurrentDelay
     saCurrentDelay = q_config['time'] #delay.get()
     global saCallback
-    global saQuestionIndex
     saQuestionIndex = q_config['index'] - 1
     saCallback = threading.Timer(saCurrentDelay, askSA, [saQuestionIndex, saQuestionIndex, saQuestionIndex, arena_config])
     saCallback.start()
@@ -359,17 +359,13 @@ def pauseSATimer():
     global saCallback
     if(saCallback):
         saCallback.cancel()
-        saCallback = None
     totalTimeRun = pauseStartTime - saStartTime
     global saCurrentDelay
     saCurrentDelay -= totalTimeRun.total_seconds()
 
 def unPauseSATimer():
     global saCallback
-    if saCallback:
-        saCallback.cancel()
-        saCallback = None
-    saCallback = threading.Timer(saCurrentDelay, askSA, [saQuestionIndex, saQuestionIndex, saQuestionIndex, arena_config])
+    saCallback = threading.Timer(saCurrentDelay, askSA)
     saCallback.start()
     global saStartTime
     saStartTime = datetime.now()
@@ -383,7 +379,6 @@ def clearSATimer():
     global saCallback
     if(saCallback):
         saCallback.cancel()
-        saCallback = None
     global saStartTime
     saStartTime = -1
 
@@ -405,16 +400,23 @@ def resetToCheckpoint():
 
     if isSAStarted:
         clearSATimer()
-        global shouldRestartSA
-        shouldRestartSA = True
 
     isReset = True
 
     global activeCheckPointResetDuration
+    print("Pause start: " + str(pauseStartTime - startTime))
+    print("Continue start: " + str(continueTime - startTime))
+    print("Elapsed time: " + str((pauseStartTime - continueTime)))
+    print("Runtime reset: " + str(activeCheckPointResetDuration))
     timeReset = (pauseStartTime - continueTime) - activeCheckPointPauseDuration - activeCheckPointResetDuration
+    print("Time to reset: " + str(timeReset))
     activeCheckPointResetDuration += timeReset
+    print("Updated Runtime reset: " + str(activeCheckPointResetDuration))
+    print("Pause reset: " + str(activeCheckPointPauseDuration))
     global totalResetDuration
     totalResetDuration += timeReset
+    print("Total reset: " + str(totalResetDuration))
+
 
 def addCheckpoint(duration):
     global activeCheckPointPauseDuration
