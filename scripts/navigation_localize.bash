@@ -1,5 +1,5 @@
 #!/bin/bash
-echo -e "\n\n\nPlease move the robot to the starting square. Then please select the run number or checkpoint."
+echo -e "\n\n\nPlease move the robot to the square at the last checkpoint or the start if they did not reach a checkpoint.\nThen please select the run number if they did not reach a checkpoint, or the cooresponging checkpoint."
 select val in "Run_1" "Run_2" "Run_3" "Checkpoint_A" "Checkpoint_B" "Checkpoint_C" "Exit"; do
   case $val in
     Run_1 )
