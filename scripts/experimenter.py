@@ -103,12 +103,12 @@ currentSAIndex = 0
 
 # ROS
 rospy.init_node('experimenter_ui', anonymous=True)
-pause_pub = rospy.Publisher('pause', Bool, queue_size=10)
-start_pub = rospy.Publisher('start', Bool, queue_size=10)
-end_pub = rospy.Publisher('stop', Bool, queue_size=10)
-time_pub = rospy.Publisher('runtime', Header, queue_size=10)
-question_pub = rospy.Publisher('question', String, queue_size=10)
-transform_pub = rospy.Publisher(ROS_PREFIX + 'tracked_poses', TransformStamped, queue_size=10)
+pause_pub = rospy.Publisher(ROS_PREFIX + 'pause', Bool, queue_size=10)
+start_pub = rospy.Publisher(ROS_PREFIX + 'start', Bool, queue_size=10)
+end_pub = rospy.Publisher(ROS_PREFIX + 'stop', Bool, queue_size=10)
+time_pub = rospy.Publisher(ROS_PREFIX + 'runtime', Header, queue_size=10)
+question_pub = rospy.Publisher(ROS_PREFIX + 'sa/' + 'question', String, queue_size=10)
+transform_pub = rospy.Publisher(ROS_PREFIX + 'sa/' + 'tracked_poses', TransformStamped, queue_size=10)
 listener = tf.TransformListener()
 rate = rospy.Rate(10)
 
