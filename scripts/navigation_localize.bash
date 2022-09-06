@@ -1,8 +1,8 @@
 #!/bin/bash
-echo -e "\n\n\nPlease move the robot to the starting square. Then please select the run number."
-select val in "1" "2" "3" "Exit"; do
+echo -e "\n\n\nPlease move the robot to the square at the last checkpoint or the start if they did not reach a checkpoint.\nThen please select the run number if they did not reach a checkpoint, or the cooresponging checkpoint."
+select val in "Run_1" "Run_2" "Run_3" "Checkpoint_A" "Checkpoint_B" "Checkpoint_C" "Exit"; do
   case $val in
-    1 )
+    Run_1 )
 rostopic pub -1 /initialpose geometry_msgs/PoseWithCovarianceStamped "header:
   seq: 0
   stamp:
@@ -18,7 +18,7 @@ pose:
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
         break
         ;;
-    2 )
+    Run_2 )
 rostopic pub -1 /initialpose geometry_msgs/PoseWithCovarianceStamped "header:
   seq: 0
   stamp:
@@ -34,7 +34,7 @@ pose:
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
       break
       ;;
-    3 )
+    Run_3 )
 rostopic pub -1 /initialpose geometry_msgs/PoseWithCovarianceStamped "header:
   seq: 0
   stamp:
@@ -50,6 +50,54 @@ pose:
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
       break
       ;;
+Checkpoint_A )
+rostopic pub -1 /initialpose geometry_msgs/PoseWithCovarianceStamped "header:
+  seq: 0
+  stamp:
+    secs: 0
+    nsecs: 0
+  frame_id: 'map'
+pose:
+  pose:
+    position: {x: 0.39, y: 0.55, z: 0.0}
+    orientation: {x: 0.0, y: 0.0, z: 0.99994837871, w: 0.0101607044529}
+  covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+        break
+        ;;
+Checkpoint_B )
+rostopic pub -1 /initialpose geometry_msgs/PoseWithCovarianceStamped "header:
+  seq: 0
+  stamp:
+    secs: 0
+    nsecs: 0
+  frame_id: 'map'
+pose:
+  pose:
+    position: {x: 0.39, y: 2.638, z: 0.0}
+    orientation: {x: 0.0, y: 0.0, z: 0.99994837871, w: 0.0101607044529}
+  covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+        break
+        ;;
+Checkpoint_C )
+rostopic pub -1 /initialpose geometry_msgs/PoseWithCovarianceStamped "header:
+  seq: 0
+  stamp:
+    secs: 0
+    nsecs: 0
+  frame_id: 'map'
+pose:
+  pose:
+    position: {x: 2.658, y: 2.638, z: 0.0}
+    orientation: {x: 0.0, y: 0.0, z: 0.0, w: 1.0}
+  covariance: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+        break
+        ;;
     Exit ) exit;;
   esac
 done
