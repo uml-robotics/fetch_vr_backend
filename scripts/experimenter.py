@@ -99,6 +99,7 @@ interface = ''
 currentRunType = "None"
 currentRunID = -1
 currentSAIndex = 0
+answersReceived = 0
 
 
 # ROS
@@ -109,6 +110,7 @@ end_pub = rospy.Publisher(ROS_PREFIX + 'stop', Bool, queue_size=10)
 time_pub = rospy.Publisher(ROS_PREFIX + 'runtime', Header, queue_size=10)
 question_pub = rospy.Publisher(ROS_PREFIX + 'sa/' + 'question', String, queue_size=10)
 transform_pub = rospy.Publisher(ROS_PREFIX + 'sa/' + 'tracked_poses', TransformStamped, queue_size=10)
+answer_sub = rospy.Subscriber(ROS_PREFIX + 'sa/' + 'answer', String, answer_cb)
 listener = tf.TransformListener()
 rate = rospy.Rate(10)
 
@@ -194,6 +196,8 @@ def startRun():
 
     saTimeLabel.configure(text="")
 
+    onStartSAPressed()
+
     start_pub.publish(True)
     rate.sleep()
 
@@ -209,6 +213,8 @@ def endRun():
     currentRunID = -1
     global currentSAIndex
     currentSAIndex = 0
+    global answersReceived
+    answersReceived = 0
 
     # RESET PAUSE
     if isPaused:
@@ -243,6 +249,9 @@ def onStartSAPressed():
         saTimeLabel.config(text='CAN NOT RUN MORE THAN 6 SA PER RUN!')
         return
 
+    global answersReceived
+    answersReceived = 0
+    
     if isSAStarted:
         clearSATimer()
     else:
@@ -332,6 +341,12 @@ def askSA(q1, q2, q3, arena): # keeping 3 arguments so we can change back easily
     print("ASKING: " + questionStr)
     question_pub.publish(questionStr)
     rate.sleep()
+
+def answer_cb(answer):
+    global answersReceived
+    answersReceived += 1
+    if answersReceived < 3 and currentSAIndex < 6:
+        onStartSAPressed()
 
 def publishTransform(_from, _to, new_name=""):
     if new_name == "":
