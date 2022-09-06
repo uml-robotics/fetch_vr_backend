@@ -39,11 +39,6 @@ RUN_ID = [
 3
 ]
 
-DELAY_OPTIONS = [
-90,
-135,
-180
-]
 
 SA1_OPTIONS = [
 "Where is the obstacle closest to the robot?",
@@ -90,14 +85,6 @@ pauseBtn = None
 saBtn = None
 timeLabel = None
 saTimeLabel = None
-sa1Select = None
-sa2Select = None
-sa3Select = None
-delaySelect = None
-delay = None
-sa1 = None
-sa2 = None
-sa3 = None
 
 currentRunLabel = None
 runTypeSelect = None
@@ -252,8 +239,8 @@ def onStartSAPressed():
         saTimeLabel.config(text='CAN NOT RUN SA FOR MANIP!')
         return
 
-    if currentSAIndex >= 3:
-        saTimeLabel.config(text='CAN NOT RUN MORE THAN 3 SA PER RUN!')
+    if currentSAIndex >= 6:
+        saTimeLabel.config(text='CAN NOT RUN MORE THAN 6 SA PER RUN!')
         return
 
     if isSAStarted:
@@ -283,18 +270,13 @@ def startSATimer():
     print(q_config)
 
     global saCurrentDelay
-    saCurrentDelay = q_config['time'] #delay.get()
+    saCurrentDelay = q_config['time']
     global saCallback
     saQuestionIndex = q_config['index'] - 1
     saCallback = threading.Timer(saCurrentDelay, askSA, [saQuestionIndex, saQuestionIndex, saQuestionIndex, arena_config])
     saCallback.start()
     global saStartTime
     saStartTime = datetime.now()
-
-    #delaySelect.pack_forget()
-    #sa1Select.pack_forget()
-    #sa2Select.pack_forget()
-    #sa3Select.pack_forget()
 
 def pauseSATimer():
     global saCallback
@@ -324,11 +306,6 @@ def clearSATimer():
     saStartTime = -1
 
     saTimeLabel.config(text='')
-
-#    delaySelect.pack()
-#    sa1Select.pack()
-#    sa2Select.pack()
-#    sa3Select.pack()
 
 def askSA(q1, q2, q3, arena): # keeping 3 arguments so we can change back easily if needed
     global currentSAIndex
@@ -477,44 +454,6 @@ def loadExperimenterUI():
     global saTimeLabel
     saTimeLabel = tk.Label(master=frame, text='')
     saTimeLabel.pack(padx=5, pady=5)
-
-    frame = tk.Frame(
-        master=window,
-        relief=tk.RAISED,
-        borderwidth=1
-    )
-
-    global delay
-    delay = tk.IntVar(frame)
-    delay.set(DELAY_OPTIONS[0])
-
-    global sa1
-    sa1 = tk.StringVar(frame)
-    sa1.set(SA1_OPTIONS[0])
-
-    global sa2
-    sa2 = tk.StringVar(frame)
-    sa2.set(SA2_OPTIONS[0])
-
-    global sa3
-    sa3 = tk.StringVar(frame)
-    sa3.set(SA3_OPTIONS[0])
-
-    frame.grid(row=1, column=2, padx=5, pady=5)
-
-    global delaySelect
-    delaySelect = tk.OptionMenu(frame, delay, *DELAY_OPTIONS)
-#    delaySelect.pack()
-
-    global sa1Select
-    sa1Select = tk.OptionMenu(frame, sa1, *SA1_OPTIONS)
-#    sa1Select.pack()
-    global sa2Select
-    sa2Select = tk.OptionMenu(frame, sa2, *SA2_OPTIONS)
-#    sa2Select.pack()
-    global sa3Select
-    sa3Select = tk.OptionMenu(frame, sa3, *SA3_OPTIONS)
-#    sa3Select.pack()
 
     global start_frame
     start_frame.destroy()

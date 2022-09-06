@@ -6,13 +6,13 @@ import json
 INTERFACE_TYPE = ["VR","2D"]
 RUN_TYPE = ["Manipulation", "Navigation"]
 ARENA_CONFIG = ["1;2;3", "3;1;2", "2;3;1"]
-SA_CONFIG = ["1,2,3;4,1,3;2,4,1", 
-             "2,3,4;1,2,4;3,1,2",
-             "3,4,1;2,3,1;4,2,3",
-             "4,1,2;3,4,2;1,3,4"]
-SA_TIME_CONFIG = ["60;90;120",
-                  "120;90;60",
-                  "90;60;120"]
+SA_CONFIG = ["1,2,3,2,1,3;4,1,3,4,3,1;2,4,1,4,1,2", 
+             "2,3,4,3,2,4;1,2,4,1,4,2;3,1,2,1,2,3",
+             "3,4,1,4,3,1;2,3,1,2,1,3;4,2,3,2,3,4",
+             "4,1,2,1,4,2;3,4,2,3,2,4;1,3,4,3,4,1"]
+SA_TIME_CONFIG = ["60;90;120;60;90;120",
+                  "120;90;60;120;90;60",
+                  "90;60;120;90;60;120"]
 
 
 parser = argparse.ArgumentParser(description="The following parameters are used in this file: ",
@@ -58,7 +58,7 @@ for i in range(0, NUM_PARTICIPANTS):
             sa_time = SA_TIME_CONFIG[r%3].split(";")
             current_sa = sa_config[r%3].split(",")
             question_config = []
-            for j in range (0,3):
+            for j in range (0,6):
                 question = ObjDict()
                 question['id'] = j+1
                 question['index'] = int(current_sa[j])
