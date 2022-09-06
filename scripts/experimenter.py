@@ -101,6 +101,11 @@ currentRunID = -1
 currentSAIndex = 0
 answersReceived = 0
 
+def answer_cb(answer):
+    global answersReceived
+    answersReceived += 1
+    if answersReceived < 3 and currentSAIndex < 6:
+        onStartSAPressed()
 
 # ROS
 rospy.init_node('experimenter_ui', anonymous=True)
@@ -341,12 +346,6 @@ def askSA(q1, q2, q3, arena): # keeping 3 arguments so we can change back easily
     print("ASKING: " + questionStr)
     question_pub.publish(questionStr)
     rate.sleep()
-
-def answer_cb(answer):
-    global answersReceived
-    answersReceived += 1
-    if answersReceived < 3 and currentSAIndex < 6:
-        onStartSAPressed()
 
 def publishTransform(_from, _to, new_name=""):
     if new_name == "":
