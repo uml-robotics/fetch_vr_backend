@@ -83,6 +83,7 @@ saStartTime = -1
 startBtn = None
 pauseBtn = None
 #saBtn = None
+saLabel = None
 timeLabel = None
 saTimeLabel = None
 
@@ -341,7 +342,8 @@ def askSA(q1, q2, q3, arena): # keeping 3 arguments so we can change back easily
     clearSATimer()
 
     currentSAIndex = currentSAIndex + 1
-
+    global saLabel
+    saLabel.configure(text="Number of SA asked: " + str(currentSAIndex))
     obstacle_config = OBSTACLE_COLORS[currentRunID].split(";")
 
     publishTransform('map', 'base_link')
@@ -470,6 +472,9 @@ def loadExperimenterUI():
     )
 
     frame.grid(row=1, column=0, padx=5, pady=5)
+    global saLabel
+    saLabel = tk.Label(master=frame, text='Number of SA asked: 0')
+    saLabel.pack(padx=5, pady=5)
     #global saBtn
     #saBtn = tk.Button(master=frame, text="START SA TIMER", width=30,
     #                  command=onStartSAPressed)
