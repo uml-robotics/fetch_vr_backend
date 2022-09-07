@@ -82,7 +82,7 @@ saStartTime = -1
 
 startBtn = None
 pauseBtn = None
-saBtn = None
+#saBtn = None
 timeLabel = None
 saTimeLabel = None
 
@@ -100,12 +100,18 @@ currentRunType = "None"
 currentRunID = -1
 currentSAIndex = 0
 answersReceived = 0
+arena_config = -1
+saQuestionIndex = -1
 
 def answer_cb(answer):
     global answersReceived
     answersReceived += 1
-    if answersReceived < 3 and currentSAIndex < 6:
+    if answersReceived != 3:
+        return
+    unPause()
+    if currentSAIndex < 6:
         onStartSAPressed()
+    
 
 # ROS
 rospy.init_node('experimenter_ui', anonymous=True)
@@ -257,16 +263,17 @@ def onStartSAPressed():
     global answersReceived
     answersReceived = 0
     
-    if isSAStarted:
-        clearSATimer()
-    else:
-        startSATimer()
+    #if isSAStarted:
+    #    clearSATimer()
+    #else:
+    startSATimer()
 
 def startSATimer():
     global isSAStarted
     isSAStarted = True
-    saBtn.configure(text="CANCEL SA TIMER")
+    #saBtn.configure(text="CANCEL SA TIMER")
 
+    global arena_config
     arena_config = -1
     q_config = None
     for val in runConfigs:
@@ -286,6 +293,7 @@ def startSATimer():
     global saCurrentDelay
     saCurrentDelay = q_config['time']
     global saCallback
+    global saQuestionIndex
     saQuestionIndex = q_config['index'] - 1
     saCallback = threading.Timer(saCurrentDelay, askSA, [saQuestionIndex, saQuestionIndex, saQuestionIndex, arena_config])
     saCallback.start()
@@ -302,7 +310,7 @@ def pauseSATimer():
 
 def unPauseSATimer():
     global saCallback
-    saCallback = threading.Timer(saCurrentDelay, askSA)
+    saCallback = threading.Timer(saCurrentDelay, askSA, [saQuestionIndex, saQuestionIndex, saQuestionIndex, arena_config])
     saCallback.start()
     global saStartTime
     saStartTime = datetime.now()
@@ -310,7 +318,7 @@ def unPauseSATimer():
 def clearSATimer():
     global isSAStarted
     isSAStarted = False
-    saBtn.configure(text="START SA TIMER")
+    #saBtn.configure(text="START SA TIMER")
     global saCurrentDelay
     saCurrentDelay = -1
     global saCallback
@@ -322,6 +330,7 @@ def clearSATimer():
     saTimeLabel.config(text='')
 
 def askSA(q1, q2, q3, arena): # keeping 3 arguments so we can change back easily if needed
+    pause()
     global currentSAIndex
     rospy.set_param('/user_study/participant_id', id)
     rospy.set_param('/user_study/run_number', currentRunID)
@@ -461,10 +470,10 @@ def loadExperimenterUI():
     )
 
     frame.grid(row=1, column=0, padx=5, pady=5)
-    global saBtn
-    saBtn = tk.Button(master=frame, text="START SA TIMER", width=30,
-                      command=onStartSAPressed)
-    saBtn.pack(padx=5, pady=5)
+    #global saBtn
+    #saBtn = tk.Button(master=frame, text="START SA TIMER", width=30,
+    #                  command=onStartSAPressed)
+    #saBtn.pack(padx=5, pady=5)
     global saTimeLabel
     saTimeLabel = tk.Label(master=frame, text='')
     saTimeLabel.pack(padx=5, pady=5)
