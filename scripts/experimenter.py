@@ -12,6 +12,8 @@ from datetime import datetime
 from datetime import timedelta
 import json
 import argparse
+import os
+import subprocess
 
 parser = argparse.ArgumentParser(description="The following parameters are used in this file: ",
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -105,6 +107,8 @@ answersReceived = 0
 arena_config = -1
 saQuestionIndex = -1
 
+process = None
+bag_directory = "/home/csrobot/experimentdata"
 
 def answer_cb(answer):
     global answersReceived
@@ -173,6 +177,18 @@ def update():
             saTimeLabel.config(text=str(countdown).split(".")[0])
     window.after(100, lambda: update())
 
+def startBag():
+    global process
+    bag_name = bag_directory + "P" + id + "_"+currentRunType + "_" + str(currentRunID)
+    process = subprocess.Popen(["rosbag", "record", "--output-name="+bag_name, "tf"])
+    
+
+def stopBag():
+    global process
+    #print ("Stopping bag recording")
+    process.terminate()
+    return
+
 def onPausePressed():
     if not isStarted:
         return
@@ -231,7 +247,7 @@ def startRun():
     saTimeLabel.configure(text="")
 
     onStartSAPressed()
-
+    startBag()
     start_pub.publish(True)
     rate.sleep()
 
@@ -249,6 +265,8 @@ def endRun():
     currentSAIndex = 0
     global answersReceived
     answersReceived = 0
+
+    stopBag()
 
     # RESET PAUSE
     if isPaused:
