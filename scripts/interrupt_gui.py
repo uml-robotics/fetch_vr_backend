@@ -10,6 +10,8 @@ import os
 
 class InterruptQuestions:
 
+    ROS_PREFIX = "user_study/"
+
     SA1_OPTIONS = [
     "Where is the obstacle closest to the robot?",
     "What color is the obstacle closest to the robot?",
@@ -88,12 +90,12 @@ class InterruptQuestions:
         self.window.state(newstate='normal')
 
     def __init__(self):
-        self.sub = rospy.Subscriber("/question", String, self.callback)
+        self.sub = rospy.Subscriber(self.ROS_PREFIX + 'sa/' + 'question', String, self.callback)
         self.create_window()
         self.window.withdraw()
         #self.destroy_window()
         self.rospack = rospkg.RosPack()
-        self.answerPub = rospy.Publisher('answer', String, queue_size=10)
+        self.answerPub = rospy.Publisher(self.ROS_PREFIX + 'sa/' + 'answer', String, queue_size=10)
         self.window.attributes('-fullscreen', True)
         self.window.mainloop()
 
