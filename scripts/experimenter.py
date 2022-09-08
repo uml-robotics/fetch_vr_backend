@@ -70,7 +70,7 @@ OBSTACLE_COLORS = [
 ]
 
 # GLOBALS
-id = -1
+id = "0"
 isStarted = False
 startTime = -1
 isPaused = False
@@ -157,7 +157,7 @@ def update():
             msg.data = currentRunID
             run_number_pub.publish(msg)
 
-        if id is not -1:
+        if id is not "0":
             msg = String()
             msg.data = id
             participant_id_pub.publish(msg)
