@@ -5,6 +5,7 @@ from std_msgs.msg import String
 from std_msgs.msg import Bool
 from std_msgs.msg import Header
 from geometry_msgs.msg import TransformStamped
+from std_msgs.msg import Int32
 import tf
 import threading
 from datetime import datetime
@@ -69,7 +70,7 @@ OBSTACLE_COLORS = [
 ]
 
 # GLOBALS
-id = -1
+id = "0"
 isStarted = False
 startTime = -1
 isPaused = False
@@ -104,6 +105,7 @@ answersReceived = 0
 arena_config = -1
 saQuestionIndex = -1
 
+
 def answer_cb(answer):
     global answersReceived
     answersReceived += 1
@@ -122,6 +124,10 @@ end_pub = rospy.Publisher(ROS_PREFIX + 'stop', Bool, queue_size=10)
 time_pub = rospy.Publisher(ROS_PREFIX + 'runtime', Header, queue_size=10)
 question_pub = rospy.Publisher(ROS_PREFIX + 'sa/' + 'question', String, queue_size=10)
 transform_pub = rospy.Publisher(ROS_PREFIX + 'sa/' + 'tracked_poses', TransformStamped, queue_size=10)
+run_number_pub = rospy.Publisher(ROS_PREFIX +'runnumber', Int32, queue_size=10)
+run_type_pub = rospy.Publisher(ROS_PREFIX + 'runtype', String, queue_size=10)
+participant_id_pub = rospy.Publisher(ROS_PREFIX + 'participant_id', String, queue_size=10)
+
 answer_sub = rospy.Subscriber(ROS_PREFIX + 'sa/' + 'answer', String, answer_cb)
 listener = tf.TransformListener()
 rate = rospy.Rate(10)
@@ -140,6 +146,22 @@ def update():
         timeMsg = Header()
         timeMsg.stamp.secs = elapsedTime.total_seconds()
         time_pub.publish(timeMsg)
+
+        if currentRunType is not None:
+            msg = String()
+            msg.data = currentRunType
+            run_type_pub.publish(msg)
+        
+        if currentRunID is not -1:
+            msg = Int32()
+            msg.data = currentRunID
+            run_number_pub.publish(msg)
+
+        if id is not "0":
+            msg = String()
+            msg.data = id
+            participant_id_pub.publish(msg)
+
         if isSAStarted:
             if(isPaused):
                 elapsedSATime = timedelta(seconds=0)
@@ -344,7 +366,7 @@ def askSA(q1, q2, q3, arena): # keeping 3 arguments so we can change back easily
     currentSAIndex = currentSAIndex + 1
     global saLabel
     saLabel.configure(text="Number of SA asked: " + str(currentSAIndex))
-    obstacle_config = OBSTACLE_COLORS[currentRunID].split(";")
+    obstacle_config = OBSTACLE_COLORS[currentRunID - 1].split(";")
 
     publishTransform('map', 'base_link')
     publishTransform('base_link', 'target_a')
