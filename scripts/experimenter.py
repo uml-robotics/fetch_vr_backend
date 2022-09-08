@@ -366,7 +366,7 @@ def askSA(q1, q2, q3, arena): # keeping 3 arguments so we can change back easily
     currentSAIndex = currentSAIndex + 1
     global saLabel
     saLabel.configure(text="Number of SA asked: " + str(currentSAIndex))
-    obstacle_config = OBSTACLE_COLORS[currentRunID].split(";")
+    obstacle_config = OBSTACLE_COLORS[currentRunID - 1].split(";")
 
     publishTransform('map', 'base_link')
     publishTransform('base_link', 'target_a')
