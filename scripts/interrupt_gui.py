@@ -235,8 +235,14 @@ class InterruptQuestions:
         submit_button.pack()
 
 
-    def process_next_question(self):        print(self.file_path)
-
+    def process_next_question(self):
+        print(self.question[self.question])
+        if hasattr(self, 'frame'):
+            self.frame.destroy()
+        if hasattr(self, 'frame'):
+            self.mapframe.destroy()
+        if hasattr(self, 'gridframe'):
+            self.gridframe.destroy()
 
         if self.MC_ANSWERS.has_key(self.question[self.current_question]):
             self.question_type = "mc"
