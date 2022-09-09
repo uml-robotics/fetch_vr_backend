@@ -236,10 +236,10 @@ class InterruptQuestions:
 
 
     def process_next_question(self):
-        print(self.question[self.question])
+        print(self.question[self.current_question])
         if hasattr(self, 'frame'):
             self.frame.destroy()
-        if hasattr(self, 'frame'):
+        if hasattr(self, 'mapframe'):
             self.mapframe.destroy()
         if hasattr(self, 'gridframe'):
             self.gridframe.destroy()
