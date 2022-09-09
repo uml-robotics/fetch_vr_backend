@@ -14,14 +14,20 @@ import json
 import argparse
 import os
 import subprocess
+import rospkg
 
-parser = argparse.ArgumentParser(description="The following parameters are used in this file: ",
-                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+rospy.init_node('experimenter_ui', anonymous=True)
+rospack = rospkg.RosPack()
 
-parser.add_argument("-f", "--filename",  help="JSON File for participant configs",  required=True)
+config_path = rospy.get_param('/experimenter/user_study/configpath',rospack.get_path('fetch_vr_backend')+"/config/participant_configs.json")
 
-args = parser.parse_args()
-with open(args.filename) as f:
+#parser = argparse.ArgumentParser(description="The following parameters are used in this file: ",
+#                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+#parser.add_argument("-f", "--filename",  help="JSON File for participant configs",  required=True)
+
+#args = parser.parse_args()
+with open(config_path) as f:
     try:
         json.load(f)
     except Exception as e:
@@ -121,7 +127,7 @@ def answer_cb(answer):
     
 
 # ROS
-rospy.init_node('experimenter_ui', anonymous=True)
+
 pause_pub = rospy.Publisher(ROS_PREFIX + 'pause', Bool, queue_size=10)
 start_pub = rospy.Publisher(ROS_PREFIX + 'start', Bool, queue_size=10)
 end_pub = rospy.Publisher(ROS_PREFIX + 'stop', Bool, queue_size=10)
@@ -133,6 +139,9 @@ run_type_pub = rospy.Publisher(ROS_PREFIX + 'runtype', String, queue_size=10)
 participant_id_pub = rospy.Publisher(ROS_PREFIX + 'participant_id', String, queue_size=10)
 
 answer_sub = rospy.Subscriber(ROS_PREFIX + 'sa/' + 'answer', String, answer_cb)
+
+file_path = rospy.get_param('/experimenter/user_study/logpath',rospack.get_path('fetch_vr_backend')+"/data")
+
 listener = tf.TransformListener()
 rate = rospy.Rate(10)
 
@@ -422,7 +431,7 @@ def onIDConfirmed():
     id = idInput.get(1.0, "end-1c")
     id = id.strip()
 
-    with open(args.filename) as f:
+    with open(config_path) as f:
         data = json.load(f)
 ## For Debug
 #        print(json.dumps(data, indent=4, sort_keys=True))

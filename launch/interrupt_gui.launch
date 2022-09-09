@@ -1,0 +1,7 @@
+<launch>
+
+    <node name="interrupt_gui" pkg="fetch_vr_backend" type="interrupt_gui.py" output="screen"> 
+        <param name="/user_study/logpath" value="/home/csrobot/synology/vr-experiment"/>
+    </node>
+
+</launch>

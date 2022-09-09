@@ -95,6 +95,7 @@ class InterruptQuestions:
         self.window.withdraw()
         #self.destroy_window()
         self.rospack = rospkg.RosPack()
+        self.file_path = rospy.get_param('/interrupt_gui/user_study/logpath',self.rospack.get_path('fetch_vr_backend')+"/data")
         self.answerPub = rospy.Publisher(self.ROS_PREFIX + 'sa/' + 'answer', String, queue_size=10)
         self.window.attributes('-fullscreen', True)
         self.window.mainloop()
@@ -236,7 +237,6 @@ class InterruptQuestions:
 
     def process_next_question(self):
         print(self.question[self.current_question])
-
         if hasattr(self, 'frame'):
             self.frame.destroy()
         if hasattr(self, 'mapframe'):
@@ -289,7 +289,7 @@ class InterruptQuestions:
         print(response_str)
         self.answerPub.publish(response_str)
 
-        data_path = self.rospack.get_path('fetch_vr_backend')+"/data"
+        data_path = self.file_path
         if not os.path.exists(data_path):
             os.makedirs(data_path)
         full_file_path = data_path + "/Participant_" + str(participant_id) + ".csv"
