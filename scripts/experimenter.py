@@ -180,7 +180,7 @@ def update():
 def startBag():
     global process
     bag_name = bag_directory + "P" + id + "_"+currentRunType + "_" + str(currentRunID)
-    process = subprocess.Popen(["rosbag", "record", "--output-name="+bag_name, "tf"])
+    process = subprocess.Popen(["rosbag", "record", "--output-name="+bag_name, "/tf","/tf_static","/base_scan","/head_camera/rgb/image_raw/compressed", "-e", "/user_study.*", "-e","/move_group.*", "-e","/move_base.*","-e","/head_controller.*","-e","/arm_with_torso_controller.*","-e","","-e","/gripper_controller.*","-e","/fetch_rviz_interface.*"])
     
 
 def stopBag():
