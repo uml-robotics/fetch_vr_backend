@@ -19,7 +19,7 @@ import rospkg
 rospy.init_node('experimenter_ui', anonymous=True)
 rospack = rospkg.RosPack()
 
-config_path = rospy.get_param('/experimenter/user_study/configpath',self.rospack.get_path('fetch_vr_backend')+"/config/participant_configs.json")
+config_path = rospy.get_param('/experimenter/user_study/configpath',rospack.get_path('fetch_vr_backend')+"/config/participant_configs.json")
 
 #parser = argparse.ArgumentParser(description="The following parameters are used in this file: ",
 #                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -140,7 +140,7 @@ participant_id_pub = rospy.Publisher(ROS_PREFIX + 'participant_id', String, queu
 
 answer_sub = rospy.Subscriber(ROS_PREFIX + 'sa/' + 'answer', String, answer_cb)
 
-file_path = rospy.get_param('/experimenter/user_study/logpath',self.rospack.get_path('fetch_vr_backend')+"/data")
+file_path = rospy.get_param('/experimenter/user_study/logpath',rospack.get_path('fetch_vr_backend')+"/data")
 
 listener = tf.TransformListener()
 rate = rospy.Rate(10)
@@ -431,7 +431,7 @@ def onIDConfirmed():
     id = idInput.get(1.0, "end-1c")
     id = id.strip()
 
-    with open(args.filename) as f:
+    with open(config_path) as f:
         data = json.load(f)
 ## For Debug
 #        print(json.dumps(data, indent=4, sort_keys=True))
