@@ -2,7 +2,7 @@
 
     <node name="experimenter" pkg="fetch_vr_backend" type="experimenter.py" output="screen"> 
         <!--<arg name="-f" value=""/>-->
-        <param name="/user_study/logpath" value="/home/csrobot/synology/vr-experiment" />
+        <param name="/user_study/logpath" value="/home/jordan/synology/vr-experiment/" />
         <param name="/user_study/config" value="$(find fetch_vr_backend)/config/participant_configs.json" />
     </node>
 

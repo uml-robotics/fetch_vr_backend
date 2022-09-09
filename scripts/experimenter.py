@@ -140,7 +140,7 @@ participant_id_pub = rospy.Publisher(ROS_PREFIX + 'participant_id', String, queu
 
 answer_sub = rospy.Subscriber(ROS_PREFIX + 'sa/' + 'answer', String, answer_cb)
 
-file_path = rospy.get_param('/experimenter/user_study/logpath',rospack.get_path('fetch_vr_backend')+"/data")
+file_path = rospy.get_param('/experimenter/user_study/logpath',rospack.get_path('fetch_vr_backend')+"/data/")
 
 listener = tf.TransformListener()
 rate = rospy.Rate(10)
@@ -188,7 +188,7 @@ def update():
 
 def startBag():
     global process
-    bag_name = bag_directory + "P" + id + "_"+currentRunType + "_" + str(currentRunID)
+    bag_name = file_path + "P" + id + "_"+currentRunType + "_" + str(currentRunID)
     process = subprocess.Popen(["rosbag", "record", "--output-name="+bag_name, "/tf","/tf_static","/base_scan","/head_camera/rgb/image_raw/compressed", "-e", "/user_study.*", "-e","/move_group.*", "-e","/move_base.*","-e","/head_controller.*","-e","/arm_with_torso_controller.*","-e","","-e","/gripper_controller.*","-e","/fetch_rviz_interface.*"])
     
 
