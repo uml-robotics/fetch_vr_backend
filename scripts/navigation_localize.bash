@@ -1,8 +1,8 @@
 #!/bin/bash
 echo -e "\n\n\nPlease move the robot to the square at the last checkpoint or the start if they did not reach a checkpoint.\nThen please select the run number if they did not reach a checkpoint, or the cooresponging checkpoint."
-select val in "Run_1" "Run_2" "Run_3" "Checkpoint_A" "Checkpoint_B" "Checkpoint_C" "Exit"; do
+select val in "Config_1" "Config_2" "Config_3" "Checkpoint_A" "Checkpoint_B" "Checkpoint_C" "Exit"; do
   case $val in
-    Run_1 )
+    Config_1 )
 rostopic pub -1 /initialpose geometry_msgs/PoseWithCovarianceStamped "header:
   seq: 0
   stamp:
@@ -18,7 +18,7 @@ pose:
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
         break
         ;;
-    Run_2 )
+    Config_2 )
 rostopic pub -1 /initialpose geometry_msgs/PoseWithCovarianceStamped "header:
   seq: 0
   stamp:
@@ -34,7 +34,7 @@ pose:
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
       break
       ;;
-    Run_3 )
+    Config_3 )
 rostopic pub -1 /initialpose geometry_msgs/PoseWithCovarianceStamped "header:
   seq: 0
   stamp:
