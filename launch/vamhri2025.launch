@@ -1,0 +1,22 @@
+<launch>
+
+    <include file="$(find ros_tcp_endpoint)/launch/endpoint.launch" />
+    <include file="$(find fetch_moveit_config)/launch/move_group.launch" />
+    
+    <node name="descriptionpublisher" pkg="fetch_vr_backend" type="republish_description.py" />
+
+    <node name="waypoint_node" pkg="fetch_vr_backend" type="waypoint_node" />
+    <node name="gripper_node" pkg="fetch_vr_backend" type="gripper_node" />
+    <!-- <node name="direct_control_node" pkg="fetch_vr_backend" type="direct_control_node" /> -->
+    <!-- <node name="nav_node" pkg="fetch_vr_backend" type="nav_node" /> -->
+    <node name="nav_plan_node" pkg="fetch_vr_backend" type="nav_plan_node" />
+    <node name="arm_command_node" pkg="fetch_vr_backend" type="arm_command_node" />
+    <node name="head_command_node" pkg="fetch_vr_backend" type="head_command_node" />
+    <node name="torso_command_node" pkg="fetch_vr_backend" type="torso_command_node" />
+
+
+    <include file="$(find fetch_vr_backend)/launch/include/navigation.launch">
+        <arg name="mapfile" value="$(find fetch_vr_backend)/maps/vr-experiment/latest.yaml" />
+    </include>
+
+</launch>
