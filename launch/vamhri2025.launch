@@ -4,6 +4,7 @@
     <include file="$(find fetch_moveit_config)/launch/move_group.launch" />
     
     <node name="descriptionpublisher" pkg="fetch_vr_backend" type="republish_description.py" />
+    <node name="publish_tf" pkg="fetch_vr_backend" type="republish_tf.py" />
 
     <node name="waypoint_node" pkg="fetch_vr_backend" type="waypoint_node" />
     <node name="gripper_node" pkg="fetch_vr_backend" type="gripper_node" />
