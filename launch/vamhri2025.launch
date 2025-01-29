@@ -1,10 +1,14 @@
 <launch>
 
     <include file="$(find ros_tcp_endpoint)/launch/endpoint.launch" />
-    <include file="$(find fetch_moveit_config)/launch/move_group.launch" />
+   <include file="$(find fetch_moveit_config)/launch/move_group.launch" /> 
     
     <node name="descriptionpublisher" pkg="fetch_vr_backend" type="republish_description.py" />
     <node name="publish_tf" pkg="fetch_vr_backend" type="republish_tf.py" />
+
+    <node name="image_throttle" pkg="topic_tools" type="throttle" args="messages /head_camera/rgb/image_raw/compressed 10.0" />
+    <!--<node name="cloud_throttle" pkg="topic_tools" type="throttle" args="messages /head_camera/depth_registered/points 0.5" /> -->
+    <node name="cloud_throttle" pkg="topic_tools" type="throttle" args="messages /head_camera/depth_downsample/points 0.5 /head_camera/depth_registered/points_throttle" />
 
     <node name="waypoint_node" pkg="fetch_vr_backend" type="waypoint_node" />
     <node name="gripper_node" pkg="fetch_vr_backend" type="gripper_node" />
