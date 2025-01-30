@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import rospy
 from tf2_msgs.msg import TFMessage
 

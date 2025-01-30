@@ -18,6 +18,7 @@ tf::TransformListener* listener_;
 ros::Publisher plan_pub;
 ros::Publisher waypoint_error_pub;
 ros::Publisher is_done_pub;
+ros::Publisher current_waypoints_pub;
 
 moveit::planning_interface::MoveGroupInterface::Plan plan;
 std::list<moveit::planning_interface::MoveGroupInterface::Plan> planList;
@@ -48,6 +49,7 @@ void jointCommandsCb(const geometry_msgs::PoseArray::ConstPtr& msg)
 
        poses.push_back(new_pose);
        moveit_msgs::RobotTrajectory trajectory;
+       current_waypoints_pub.publish(*msg);
 
         if(!planList.empty()){
             robot_state::RobotState start_state(*(move_fetch_ptr->getCurrentState()));
@@ -126,6 +128,7 @@ int main(int argc, char** argv){
     plan_pub = nh.advertise<trajectory_msgs::JointTrajectory>("/joint_plan", 1000);
     is_done_pub = nh.advertise<std_msgs::Bool>("/is_joint_plan_sent", 1000);
     waypoint_error_pub = nh.advertise<std_msgs::Int32>("/manip_out_of_range_waypoints", 1000);
+    current_waypoints_pub = nh.advertise<geometry_msgs::PoseArray>("/gripper_goal/current", 1000);
 
     moveit::planning_interface::MoveGroupInterface move_fetch("arm_with_torso");
     move_fetch_ptr = &move_fetch;
