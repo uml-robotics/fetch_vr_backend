@@ -22,6 +22,7 @@
     <node name="arm_command_node" pkg="fetch_vr_backend" type="arm_command_node" />
     <node name="head_command_node" pkg="fetch_vr_backend" type="head_command_node" />
     <node name="torso_command_node" pkg="fetch_vr_backend" type="torso_command_node" />
+    <node name="waypoint_republisher_node" pkg="fetch_vr_backend" type="waypoint_republisher_node" />
 
 
     <include file="$(find fetch_vr_backend)/launch/include/navigation.launch">

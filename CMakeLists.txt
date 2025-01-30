@@ -139,6 +139,7 @@ include_directories(
  add_executable(arm_command_node  src/arm_command.cpp)
  add_executable(head_command_node  src/head_command.cpp)
  add_executable(torso_command_node  src/torso_command.cpp)
+ add_executable(waypoint_republisher_node  src/waypoint_republisher.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -176,6 +177,9 @@ target_link_libraries(torso_command_node
    ${catkin_LIBRARIES}
  )
 
+ target_link_libraries(waypoint_republisher_node
+   ${catkin_LIBRARIES}
+ )
 #############
 ## Install ##
 #############
