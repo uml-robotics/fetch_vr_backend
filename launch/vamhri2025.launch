@@ -11,8 +11,8 @@
     <node name="cloud_throttle" pkg="topic_tools" type="throttle" args="messages /head_camera/depth_registered/points/filtered 1 /head_camera/depth_registered/points/filtered/throttled" />
 
     <node name="voxel_filter_node" pkg="pointcloud_tools" type="voxel_filter_node" />
-<!--    <node name="bag_recorder_node" pkg="bag_replay" type="bag_recorder.py" />
-    <node name="bag_replay_node" pkg="bag_replay" type="bag_replay.py" /> -->
+    <node name="bag_recorder_node" pkg="bag_replay" type="bag_recorder.py" output="screen" />
+    <node name="bag_replay_node" pkg="bag_replay" type="bag_replay.py" output="screen" /> 
 
     <node name="waypoint_node" pkg="fetch_vr_backend" type="waypoint_node" />
     <node name="gripper_node" pkg="fetch_vr_backend" type="gripper_node" />
