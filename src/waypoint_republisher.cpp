@@ -23,11 +23,12 @@ int main(int argc, char** argv)
 
     // Publisher for the PoseArray topic
     pose_array_pub = nh.advertise<geometry_msgs::PoseArray>("/gripper_goal/current", 1000);
-
+    ros::Rate rate(10);
     while (ros::ok())
     {
         pose_array_pub.publish(_msg);
         ros::spinOnce();
+	rate.sleep();
     }
 
     return 0;
